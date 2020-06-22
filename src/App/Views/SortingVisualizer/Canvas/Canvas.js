@@ -12,9 +12,17 @@ import {
   doubleSelectionSort,
   gnomeSort,
   insertionSort,
+  combSort,
+  swap,
 } from './Algorithms/algorithms';
 
 const { Option } = Select;
+
+/*
+
+TODO DEPLOY TO NETFLIY.COM
+
+*/
 
 // Array of random numbers
 export let arr = [];
@@ -47,8 +55,14 @@ let globalP;
 // Current state index in the loop
 let stateIdx = 0;
 
+// Previous state index in the loop
+let oldStateIdx;
+
 // The direction the visualization is playing (1 === 'forward'; -1 === 'backward')
 let dir = 1;
+
+// Background Color
+let backgroundColor;
 
 // Visualization method
 export let vMethod = 'barPlot';
@@ -139,6 +153,10 @@ const Canvas = () => {
       label: 'Insertion Sort',
     },
     {
+      value: 'combSort',
+      label: 'Comb Sort',
+    },
+    {
       value: 'quickSort',
       label: 'Quick Sort',
       children: [
@@ -160,7 +178,6 @@ const Canvas = () => {
 
   const handleCascaderChange = (value) => {
     algorithm = value[value.length - 1];
-    console.log(value);
   };
 
   const sort = () => {
@@ -201,6 +218,8 @@ const Canvas = () => {
       callSort(doubleSelectionSort);
     } else if (algorithm === 'insertionSort') {
       callSort(insertionSort);
+    } else if (algorithm === 'combSort') {
+      callSort(combSort);
     }
   };
 
@@ -246,12 +265,23 @@ const Canvas = () => {
 
   return (
     <>
-      <Row>
+      <Row
+        style={{ backgroundColor: '#111d2c', height: '50px', padding: '8px' }}
+      >
         <Col span={4}>
-          <Select
-            defaultValue='barPlot'
-            onChange={handleVMethodChange}
+          <Button
+            type='primary'
+            onClick={pauseOrPlay}
+            style={{ marginRight: '5px' }}
           >
+            {'Play/Pause'}
+          </Button>
+        </Col>
+        <Col span={20}></Col>
+      </Row>
+      <Row style={{ backgroundColor: '#faf9f0' }}>
+        <Col span={4}>
+          <Select defaultValue='barPlot' onChange={handleVMethodChange}>
             {selectOptions}
           </Select>
           <Cascader
@@ -274,11 +304,12 @@ const Canvas = () => {
             defaultValue={1}
             onChange={handleIncrementChange}
           />
-          <Button onClick={pauseOrPlay} style={{ marginRight: '5px' }}>
-            {'Play/Pause'}
-          </Button>
           <Button onClick={forwardOrReverse}>{'Forward/Reverse'}</Button>
-          <Button onClick={randomize}>{'Randomize'}</Button>
+          <Select placeholder='Randomization method' onChange={randomize}>
+            <Option value='default'>Default</Option>
+            <Option value='reversed'>Reversed input</Option>
+            <Option value='almostSorted'>Almost sorted</Option>
+          </Select>
         </Col>
         <Col span={2}>
           <Button type='primary' onClick={sort}>
@@ -296,14 +327,14 @@ const Canvas = () => {
 export default Canvas;
 
 const showLastState = (index) => {
-  globalP.background(100);
-  for (let bar of states[index]) {
-    bar.show();
+  for (let element of states[index]) {
+    element.show('#ffffff');
   }
 };
 
 export const sketch = (p) => {
   globalP = p;
+  backgroundColor = 100;
 
   p.setup = () => {
     p.createCanvas(width, height);
@@ -319,33 +350,63 @@ export const sketch = (p) => {
   // DRAW
   p.draw = () => {
     if (loop) {
-      p.background(100);
-      for (let i = 0; i < count; i++) {
-        const bar = states[stateIdx][i];
-        bar.show();
+      if (oldStateIdx !== undefined && oldStateIdx !== null) {
+        if (stateIdx > oldStateIdx) {
+          for (let i = oldStateIdx; i < stateIdx; i++) {
+            if (i >= states.length) break;
+            for (let element of states[i]) {
+              element.show('#ffffff');
+            }
+          }
+        } else {/*
+          let shouldStop = false;
+          if (stateIdx < 0) {
+            stateIdx = 0;
+            shouldStop = true;
+          }
+          for (let i = oldStateIdx; i >= stateIdx; i--) {
+            for (let element of states[i]) {
+              element.show('#00ff00');
+            }
+          }
+          
+          if (shouldStop) {
+            p.noLoop();
+            loop = false;
+            stateIdx = -1;
+            return;
+          }*/
+        }
       }
-
-      stateIdx += dir * inc;
 
       if (stateIdx >= states.length) {
         showLastState(states.length - 1);
 
         p.noLoop();
         loop = false;
+        return;
       } else if (stateIdx < 0) {
         showLastState(0);
 
         p.noLoop();
         loop = false;
+        return;
       }
+
+      for (let element of states[stateIdx]) {
+        element.show();
+      }
+
+      oldStateIdx = stateIdx;
+      stateIdx += dir * inc;
     }
   };
 };
 
-const randomize = () => {
+const randomize = (value) => {
   if (elements.length === 0) {
     globalP.background(100);
-    randomizeHelper();
+    randomizeHelper(value);
     showAllBars();
   } else {
     // Reset everything to the beginning state (as if the app was just started)
@@ -357,28 +418,51 @@ const randomize = () => {
     stateIdx = 0;
     loop = false;
 
-    randomizeHelper();
+    randomizeHelper(value);
     showAllBars();
   }
 };
 
 // Generate 'count' random numbers
-const randomizeHelper = () => {
-  let numbers = [];
+const randomizeHelper = (value) => {
+  if (!value) {
+    return;
+  } else {
+    if (value === 'default') {
+      let numbers = [];
 
-  for (let i = 0; i < count; i++) {
-    numbers.push(parseInt((i + 1) * (height / count)));
-  }
+      for (let i = 0; i < count; i++) {
+        numbers.push(parseInt((i + 1) * (height / count)));
+      }
 
-  for (let i = 0; i < count; i++) {
-    let rndIdx = Math.floor(Math.random() * (count - i));
+      for (let i = 0; i < count; i++) {
+        let rndIdx = Math.floor(Math.random() * (count - i));
 
-    let rNumber = numbers[rndIdx];
-    numbers.splice(rndIdx, 1);
+        let rNumber = numbers[rndIdx];
+        numbers.splice(rndIdx, 1);
 
-    arr.push(rNumber);
+        arr.push(rNumber);
 
-    addElement(i, rNumber);
+        addElement(i, rNumber);
+      }
+    } else if (value === 'reversed') {
+      for (let i = 0; i < count; i++) {
+        const ele = height - i * (height / count);
+        arr.push(ele);
+        addElement(i, ele);
+      }
+    } else if (value === 'almostSorted') {
+      for (let i = 0; i < count; i++) {
+        const ele = (height / count) * i + 1;
+        arr.push(ele);
+        addElement(i, ele);
+      }
+      for (let i = 0; i < count / 10; i++) {
+        const random1 = Math.floor(Math.random() * count);
+        const random2 = Math.floor(Math.random() * count);
+        swap(elements, random1, random2);
+      }
+    }
   }
 };
 
@@ -386,9 +470,21 @@ const addElement = (idx, rNumber) => {
   let element;
 
   if (vMethod === 'barPlot') {
-    element = new Bar(idx * barWidth, height - rNumber, barWidth, rNumber, '#ffffff');
+    element = new Bar(
+      idx * barWidth,
+      height - rNumber,
+      barWidth,
+      rNumber,
+      '#ffffff'
+    );
   } else if (vMethod === 'hrPyramid') {
-    element = new Bar(idx * barWidth, (height - rNumber) / 2, barWidth, rNumber, '#ffffff');
+    element = new Bar(
+      idx * barWidth,
+      (height - rNumber) / 2,
+      barWidth,
+      rNumber,
+      '#ffffff'
+    );
   } else return;
 
   elements.push(element);
@@ -404,4 +500,4 @@ const showAllBars = () => {
   }
 };
 
-export { globalP };
+export { globalP, backgroundColor, width, height };

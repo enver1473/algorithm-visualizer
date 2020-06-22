@@ -8,7 +8,7 @@ export const bubbleSort = () => {
     for (let j = 0; j < count - i - 1; j++) {
       if (elements[j].getHeight() > elements[j + 1].getHeight()) {
         swap(elements, j, j + 1);
-        pushNewState([j]);
+        pushNewState([j, j + 1]);
       }
     }
   }
@@ -27,16 +27,15 @@ export const coctailShakerSort = () => {
       for (let j = backward; j < count - forward - 1; j++) {
         if (elements[j].getHeight() > elements[j + 1].getHeight()) {
           swap(elements, j, j + 1);
-          pushNewState([j]);
+          pushNewState([j, j + 1]);
         }
       }
       forward++;
     } else {
       for (let j = count - forward - 1; j >= backward + 1; j--) {
-        console.log(i, j);
         if (elements[j].getHeight() < elements[j - 1].getHeight()) {
           swap(elements, j, j - 1);
-          pushNewState([j]);
+          pushNewState([j, j - 1]);
         }
       }
       backward++;
@@ -57,11 +56,14 @@ const partitionLL = (start, end) => {
   for (let i = start; i < end; i++) {
     if (elements[i].getHeight() < pivotValue) {
       swap(elements, i, pivotIdx);
+      pushNewState([i, pivotIdx]);
       pivotIdx++;
+    } else {
+      pushNewState([i, pivotIdx]);
     }
-    pushNewState([i, pivotIdx]);
   }
   swap(elements, pivotIdx, end);
+  pushNewState([pivotIdx, end]);
   return pivotIdx;
 };
 
@@ -71,8 +73,8 @@ const quickSortLLHelper = (start = 0, end = arr.length - 1) => {
   const pivotIdx = partitionLL(start, end);
 
   quickSortLLHelper(start, pivotIdx - 1);
-  quickSortLLHelper(pivotIdx + 1, end);
   pushNewState([pivotIdx]);
+  quickSortLLHelper(pivotIdx + 1, end);
 };
 
 export const quickSortLL = () => {
@@ -94,29 +96,35 @@ const partitionLR = (start, end) => {
       elements[rightIdx].getHeight() < pivotValue
     ) {
       swap(elements, leftIdx, rightIdx);
+      pushNewState([leftIdx, rightIdx]);
       leftIdx++;
       rightIdx--;
     } else if (
       elements[leftIdx].getHeight() <= pivotValue &&
       elements[rightIdx].getHeight() < pivotValue
     ) {
+      pushNewState([leftIdx, rightIdx]);
       leftIdx++;
     } else if (
       elements[leftIdx].getHeight() > pivotValue &&
       elements[rightIdx].getHeight() >= pivotValue
     ) {
+      pushNewState([leftIdx, rightIdx]);
       rightIdx--;
     } else if (
       elements[leftIdx].getHeight() <= pivotValue &&
       elements[rightIdx].getHeight() >= pivotValue
     ) {
+      pushNewState([leftIdx, rightIdx]);
       leftIdx++;
       rightIdx--;
+    } else {
+      pushNewState([leftIdx, rightIdx]);
     }
-    pushNewState([leftIdx, rightIdx]);
   }
 
   swap(elements, leftIdx, end);
+  pushNewState([leftIdx, end]);
   return leftIdx;
 };
 
@@ -126,8 +134,8 @@ const quickSortLRHelper = (start = 0, end = arr.length - 1) => {
   const pivotIdx = partitionLR(start, end);
 
   quickSortLRHelper(start, pivotIdx - 1);
-  quickSortLRHelper(pivotIdx + 1, end);
   pushNewState([pivotIdx]);
+  quickSortLRHelper(pivotIdx + 1, end);
 };
 
 export const quickSortLR = () => {
@@ -151,6 +159,7 @@ const partitionDual = (start, end) => {
   while (middleIdx <= rightIdx) {
     if (elements[middleIdx].getHeight() < leftValue) {
       swap(elements, leftIdx, middleIdx);
+      pushNewState([leftIdx, middleIdx]);
       leftIdx++;
     } else if (elements[middleIdx].getHeight() >= rightValue) {
       while (elements[rightIdx].getHeight() > rightValue && middleIdx < rightIdx) {
@@ -166,13 +175,13 @@ const partitionDual = (start, end) => {
       }
     }
     middleIdx++;
-    pushNewState([leftIdx, middleIdx, rightIdx]);
   }
   leftIdx--;
   rightIdx++;
   swap(elements, leftIdx, start);
   swap(elements, rightIdx, end);
-  pushNewState([leftIdx, start, rightIdx, end]);
+  pushNewState([leftIdx, start]);
+  pushNewState([rightIdx, end]);
   return [leftIdx, rightIdx];
 };
 
@@ -182,9 +191,10 @@ const quickSortDualPivotHelper = (start = 0, end = arr.length - 1) => {
   const [leftIdx, rightIdx] = partitionDual(start, end);
 
   quickSortDualPivotHelper(start, leftIdx - 1);
+  pushNewState([leftIdx]);
   quickSortDualPivotHelper(leftIdx + 1, rightIdx - 1);
+  pushNewState([rightIdx]);
   quickSortDualPivotHelper(rightIdx + 1, end);
-  pushNewState([leftIdx, rightIdx]);
 };
 
 export const quickSortDualPivot = () => {
@@ -300,7 +310,33 @@ export const insertionSort = () => {
 
 // ====== INSERTION SORT ======
 
-// ====== GNOME SORT ======
+// ====== COMB SORT ======
+
+export const combSort = () => {
+  let gap = elements.length;
+  let shrinkFactor = 1.3;
+  let sorted = false;
+
+  while (!sorted) {
+    gap = Math.floor(gap / shrinkFactor);
+
+    if (gap <= 1) {
+      gap = 1;
+      sorted = true;
+    }
+
+    for (let i = 0; i + gap < elements.length; i++) {
+      if (elements[i].getHeight() > elements[i + gap].getHeight()) {
+        swap(elements, i, i + gap);
+        sorted = false;
+      }
+      pushNewState([i, i + gap]);
+    }
+  }
+  pushLastState();
+};
+
+// ====== COMB SORT ======
 
 const pushLastState = () => {
   // Push last state with no accent colors
@@ -322,11 +358,11 @@ const pushLastState = () => {
 
 const pushNewState = (accentIdxs = []) => {
   const newState = [];
-  for (let k = 0; k < count; k++) {
-    let color = '#ffffff';
-    if (accentIdxs.includes(k)) {
-      color = '#ff0000';
-    }
+
+  for (let i = 0; i < accentIdxs.length; i++) {
+    // let color = '#ffffff';
+    let color = '#ff0000';
+    let k = accentIdxs[i];
 
     let element;
 
@@ -337,20 +373,12 @@ const pushNewState = (accentIdxs = []) => {
     }
     newState.push(element);
   }
+
   states.push(newState);
 };
-/*
-const pushElementToState = (args = {}) => {
-  let element;
 
-  if (vMethod === 'barPlot') {
-    
-  }
-
-};
-*/
 // Custom swap function to swap heights and y coordinates of two elements
-const swap = (arr, i, j) => {
+export const swap = (arr, i, j) => {
   const { height, y } = arr[i];
 
   arr[i].height = arr[j].height;
