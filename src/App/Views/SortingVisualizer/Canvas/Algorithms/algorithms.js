@@ -1,12 +1,14 @@
 import { states, elements, count, arr, vMethod } from '../Canvas';
-import Bar from '../Bar';
+import Bar from '../ElementTypes/Bar';
+import Dot from '../ElementTypes/Dot';
 
 // ======  BUBBLE SORT ======
 
 export const bubbleSort = () => {
   for (let i = 0; i < count; i++) {
     for (let j = 0; j < count - i - 1; j++) {
-      if (elements[j].getHeight() > elements[j + 1].getHeight()) {
+      if (elements[j].getValue() > elements[j + 1].getValue()) {
+        pushNewState([j, j + 1]);
         swap(elements, j, j + 1);
         pushNewState([j, j + 1]);
       }
@@ -25,7 +27,8 @@ export const coctailShakerSort = () => {
   for (let i = 0; i < count; i++) {
     if (i % 2 === 0) {
       for (let j = backward; j < count - forward - 1; j++) {
-        if (elements[j].getHeight() > elements[j + 1].getHeight()) {
+        if (elements[j].getValue() > elements[j + 1].getValue()) {
+          pushNewState([j, j + 1]);
           swap(elements, j, j + 1);
           pushNewState([j, j + 1]);
         }
@@ -33,7 +36,8 @@ export const coctailShakerSort = () => {
       forward++;
     } else {
       for (let j = count - forward - 1; j >= backward + 1; j--) {
-        if (elements[j].getHeight() < elements[j - 1].getHeight()) {
+        if (elements[j].getValue() < elements[j - 1].getValue()) {
+          pushNewState([j, j - 1]);
           swap(elements, j, j - 1);
           pushNewState([j, j - 1]);
         }
@@ -50,11 +54,21 @@ export const coctailShakerSort = () => {
 // ======  QUICK SORT LL POINTERS ======
 
 const partitionLL = (start, end) => {
-  const pivotValue = elements[end].getHeight();
+  if (end - start > 4) {
+    let middleIdx = midValue(start, parseInt(start + (end - start) / 2), end);
+    if (middleIdx !== end) {
+      pushNewState([middleIdx, end]);
+      swap(elements, middleIdx, end);
+      pushNewState([middleIdx, end]);
+    }
+  }
+
+  let pivotValue = elements[end].getValue();
   let pivotIdx = start;
 
   for (let i = start; i < end; i++) {
-    if (elements[i].getHeight() < pivotValue) {
+    if (elements[i].getValue() < pivotValue) {
+      pushNewState([i, pivotIdx]);
       swap(elements, i, pivotIdx);
       pushNewState([i, pivotIdx]);
       pivotIdx++;
@@ -62,8 +76,11 @@ const partitionLL = (start, end) => {
       pushNewState([i, pivotIdx]);
     }
   }
+
+  pushNewState([pivotIdx, end]);
   swap(elements, pivotIdx, end);
   pushNewState([pivotIdx, end]);
+
   return pivotIdx;
 };
 
@@ -73,7 +90,6 @@ const quickSortLLHelper = (start = 0, end = arr.length - 1) => {
   const pivotIdx = partitionLL(start, end);
 
   quickSortLLHelper(start, pivotIdx - 1);
-  pushNewState([pivotIdx]);
   quickSortLLHelper(pivotIdx + 1, end);
 };
 
@@ -87,33 +103,43 @@ export const quickSortLL = () => {
 // ====== QUICK SORT LR ======
 
 const partitionLR = (start, end) => {
-  const pivotValue = elements[end].getHeight();
+  if (end - start > 4) {
+    let middleIdx = midValue(start, parseInt(start + (end - start) / 2), end);
+    if (middleIdx !== end) {
+      pushNewState([middleIdx, end]);
+      swap(elements, middleIdx, end);
+      pushNewState([middleIdx, end]);
+    }
+  }
+
+  const pivotValue = elements[end].getValue();
   let leftIdx = start;
   let rightIdx = end - 1;
   while (leftIdx <= rightIdx) {
     if (
-      elements[leftIdx].getHeight() > pivotValue &&
-      elements[rightIdx].getHeight() < pivotValue
+      elements[leftIdx].getValue() > pivotValue &&
+      elements[rightIdx].getValue() < pivotValue
     ) {
+      pushNewState([leftIdx, rightIdx]);
       swap(elements, leftIdx, rightIdx);
       pushNewState([leftIdx, rightIdx]);
       leftIdx++;
       rightIdx--;
     } else if (
-      elements[leftIdx].getHeight() <= pivotValue &&
-      elements[rightIdx].getHeight() < pivotValue
+      elements[leftIdx].getValue() <= pivotValue &&
+      elements[rightIdx].getValue() < pivotValue
     ) {
       pushNewState([leftIdx, rightIdx]);
       leftIdx++;
     } else if (
-      elements[leftIdx].getHeight() > pivotValue &&
-      elements[rightIdx].getHeight() >= pivotValue
+      elements[leftIdx].getValue() > pivotValue &&
+      elements[rightIdx].getValue() >= pivotValue
     ) {
       pushNewState([leftIdx, rightIdx]);
       rightIdx--;
     } else if (
-      elements[leftIdx].getHeight() <= pivotValue &&
-      elements[rightIdx].getHeight() >= pivotValue
+      elements[leftIdx].getValue() <= pivotValue &&
+      elements[rightIdx].getValue() >= pivotValue
     ) {
       pushNewState([leftIdx, rightIdx]);
       leftIdx++;
@@ -123,6 +149,7 @@ const partitionLR = (start, end) => {
     }
   }
 
+  pushNewState([leftIdx, end]);
   swap(elements, leftIdx, end);
   pushNewState([leftIdx, end]);
   return leftIdx;
@@ -134,7 +161,6 @@ const quickSortLRHelper = (start = 0, end = arr.length - 1) => {
   const pivotIdx = partitionLR(start, end);
 
   quickSortLRHelper(start, pivotIdx - 1);
-  pushNewState([pivotIdx]);
   quickSortLRHelper(pivotIdx + 1, end);
 };
 
@@ -148,27 +174,35 @@ export const quickSortLR = () => {
 // ====== QUICK SORT DUAL PIVOT ======
 
 const partitionDual = (start, end) => {
-  if (elements[start].getHeight() > elements[end].getHeight()) {
+  if (elements[start].getValue() > elements[end].getValue()) {
+    pushNewState([start, end]);
     swap(elements, start, end);
+    pushNewState([start, end]);
   }
-  pushNewState([start, end]);
-  const leftValue = elements[start].getHeight(),
-    rightValue = elements[end].getHeight();
+
+  const leftValue = elements[start].getValue(),
+        rightValue = elements[end].getValue();
   let [leftIdx, middleIdx, rightIdx] = [start + 1, start + 1, end - 1];
 
   while (middleIdx <= rightIdx) {
-    if (elements[middleIdx].getHeight() < leftValue) {
+    if (elements[middleIdx].getValue() < leftValue) {
+      pushNewState([leftIdx, middleIdx]);
       swap(elements, leftIdx, middleIdx);
       pushNewState([leftIdx, middleIdx]);
       leftIdx++;
-    } else if (elements[middleIdx].getHeight() >= rightValue) {
-      while (elements[rightIdx].getHeight() > rightValue && middleIdx < rightIdx) {
+    } else if (elements[middleIdx].getValue() >= rightValue) {
+      while (
+        elements[rightIdx].getValue() > rightValue &&
+        middleIdx < rightIdx
+      ) {
         rightIdx--;
       }
+      pushNewState([middleIdx, rightIdx]);
       swap(elements, middleIdx, rightIdx);
       pushNewState([middleIdx, rightIdx]);
       rightIdx--;
-      if (elements[middleIdx].getHeight() < leftValue) {
+      if (elements[middleIdx].getValue() < leftValue) {
+        pushNewState([leftIdx, middleIdx]);
         swap(elements, leftIdx, middleIdx);
         pushNewState([leftIdx, middleIdx]);
         leftIdx++;
@@ -178,6 +212,8 @@ const partitionDual = (start, end) => {
   }
   leftIdx--;
   rightIdx++;
+  pushNewState([leftIdx, start]);
+  pushNewState([rightIdx, end]);
   swap(elements, leftIdx, start);
   swap(elements, rightIdx, end);
   pushNewState([leftIdx, start]);
@@ -191,9 +227,7 @@ const quickSortDualPivotHelper = (start = 0, end = arr.length - 1) => {
   const [leftIdx, rightIdx] = partitionDual(start, end);
 
   quickSortDualPivotHelper(start, leftIdx - 1);
-  pushNewState([leftIdx]);
   quickSortDualPivotHelper(leftIdx + 1, rightIdx - 1);
-  pushNewState([rightIdx]);
   quickSortDualPivotHelper(rightIdx + 1, end);
 };
 
@@ -210,10 +244,11 @@ export const selectionSort = () => {
   for (let i = 0; i < count - 1; i++) {
     let minIdx = i;
     for (let j = i + 1; j < count; j++) {
-      if (elements[j].getHeight() < elements[minIdx].getHeight()) {
+      if (elements[j].getValue() < elements[minIdx].getValue()) {
         minIdx = j;
       }
     }
+    pushNewState([i, minIdx]);
     swap(elements, i, minIdx);
     pushNewState([i, minIdx]);
   }
@@ -229,26 +264,29 @@ export const doubleSelectionSort = () => {
     j = count - 1;
   while (i < j) {
     let minIdx = i;
-    let min = elements[i].getHeight();
+    let min = elements[i].getValue();
     let maxIdx = i;
-    let max = elements[i].getHeight();
+    let max = elements[i].getValue();
 
     for (let k = i; k <= j; k++) {
-      if (elements[k].getHeight() < min) {
+      if (elements[k].getValue() < min) {
         minIdx = k;
-        min = elements[k].getHeight();
-      } else if (elements[k].getHeight() > max) {
+        min = elements[k].getValue();
+      } else if (elements[k].getValue() > max) {
         maxIdx = k;
-        max = elements[k].getHeight();
+        max = elements[k].getValue();
       }
     }
+    pushNewState([i, minIdx]);
     swap(elements, i, minIdx);
     pushNewState([i, minIdx]);
 
-    if (elements[minIdx].getHeight() === max) {
+    if (elements[minIdx].getValue() === max) {
+      pushNewState([j, minIdx]);
       swap(elements, j, minIdx);
       pushNewState([j, minIdx]);
     } else {
+      pushNewState([j, maxIdx]);
       swap(elements, j, maxIdx);
       pushNewState([j, maxIdx]);
     }
@@ -268,13 +306,14 @@ export const gnomeSort = () => {
     if (currentIdx === count - 1) break;
     if (
       currentIdx < count - 1 &&
-      elements[currentIdx].getHeight() > elements[currentIdx + 1].getHeight()
+      elements[currentIdx].getValue() > elements[currentIdx + 1].getValue()
     ) {
       let continueIdx = currentIdx;
       while (
         currentIdx >= 0 &&
-        elements[currentIdx].getHeight() > elements[currentIdx + 1].getHeight()
+        elements[currentIdx].getValue() > elements[currentIdx + 1].getValue()
       ) {
+        pushNewState([currentIdx, currentIdx + 1]);
         swap(elements, currentIdx, currentIdx + 1);
         pushNewState([currentIdx, currentIdx + 1]);
         currentIdx--;
@@ -295,12 +334,14 @@ export const insertionSort = () => {
   for (let i = 1; i < count; i++) {
     let { y, height } = elements[i];
     let j = i - 1;
-    while (j >= 0 && height < elements[j].getHeight()) {
+    while (j >= 0 && height < elements[j].getValue()) {
+      pushNewState([j, j + 1]);
       elements[j + 1].y = elements[j].y;
       elements[j + 1].height = elements[j].height;
       pushNewState([j, j + 1]);
       j--;
     }
+    pushNewState([j + 1, i]);
     elements[j + 1].y = y;
     elements[j + 1].height = height;
     pushNewState([j + 1, i]);
@@ -326,7 +367,8 @@ export const combSort = () => {
     }
 
     for (let i = 0; i + gap < elements.length; i++) {
-      if (elements[i].getHeight() > elements[i + gap].getHeight()) {
+      if (elements[i].getValue() > elements[i + gap].getValue()) {
+        pushNewState([i, i + gap]);
         swap(elements, i, i + gap);
         sorted = false;
       }
@@ -338,6 +380,107 @@ export const combSort = () => {
 
 // ====== COMB SORT ======
 
+// ====== MERGE SORT ======
+/*
+export const mergeSort = () => {
+  let gap = elements.length;
+  let shrinkFactor = 1.3;
+  let sorted = false;
+
+  while (!sorted) {
+    gap = Math.floor(gap / shrinkFactor);
+
+    if (gap <= 1) {
+      gap = 1;
+      sorted = true;
+    }
+
+    for (let i = 0; i + gap < elements.length; i++) {
+      if (elements[i].getValue() > elements[i + gap].getValue()) {
+        pushNewState([i, i + gap]);
+        swap(elements, i, i + gap);
+        sorted = false;
+      }
+      pushNewState([i, i + gap]);
+    }
+  }
+  pushLastState();
+};
+*/
+// ====== MERGE SORT ======
+
+// ====== COMB GNOME SORT ======
+
+export const combGnomeSort = () => {
+  let gap = elements.length;
+  let shrinkFactor = 1.3;
+  let sorted = false;
+
+  while (!sorted) {
+    gap = Math.floor(gap / shrinkFactor);
+
+    if (gap <= 16) {
+      break;
+    }
+
+    for (let i = 0; i + gap < elements.length; i++) {
+      if (elements[i].getValue() > elements[i + gap].getValue()) {
+        pushNewState([i, i + gap]);
+        swap(elements, i, i + gap);
+      }
+      pushNewState([i, i + gap]);
+    }
+  }
+  gnomeSort();
+};
+
+// ====== COMB GNOME SORT ======
+
+// ====== QUICK GNOME SORT ======
+
+const partialGnome = (start, end) => {
+  let currentIdx = start;
+  while (currentIdx <= end) {
+    if (
+      currentIdx < end &&
+      elements[currentIdx].getValue() > elements[currentIdx + 1].getValue()
+    ) {
+      let continueIdx = currentIdx;
+      while (
+        currentIdx >= start &&
+        elements[currentIdx].getValue() > elements[currentIdx + 1].getValue()
+      ) {
+        pushNewState([currentIdx, currentIdx + 1]);
+        swap(elements, currentIdx, currentIdx + 1);
+        pushNewState([currentIdx, currentIdx + 1]);
+        currentIdx--;
+      }
+      currentIdx = continueIdx;
+    } else {
+      currentIdx++;
+    }
+  }
+};
+
+const quickGnomeHelper = (start = 0, end = arr.length - 1) => {
+  if (end - start < 16) {
+    partialGnome(start, end);
+    return;
+  }
+
+  const pivotIdx = partitionLR(start, end);
+
+  quickGnomeHelper(start, pivotIdx - 1);
+  quickGnomeHelper(pivotIdx + 1, end);
+};
+
+export const quickGnomeSort = () => {
+  quickGnomeHelper();
+  pushLastState();
+};
+
+// ====== QUICK GNOME SORT ======
+
 const pushLastState = () => {
   // Push last state with no accent colors
   const newState = [];
@@ -347,9 +490,29 @@ const pushLastState = () => {
     let element;
 
     if (vMethod === 'barPlot') {
-      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
+      element = new Bar(
+        elements[k].x,
+        elements[k].y,
+        elements[k].width,
+        elements[k].height,
+        color
+      );
     } else if (vMethod === 'hrPyramid') {
-      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
+      element = new Bar(
+        elements[k].x,
+        elements[k].y,
+        elements[k].width,
+        elements[k].height,
+        color
+      );
+    } else if (vMethod === 'scatterPlot') {
+      element = new Dot(
+        elements[k].x,
+        elements[k].y,
+        elements[k].width,
+        elements[k].height,
+        color
+      );
     }
     newState.push(element);
   }
@@ -360,16 +523,35 @@ const pushNewState = (accentIdxs = []) => {
   const newState = [];
 
   for (let i = 0; i < accentIdxs.length; i++) {
-    // let color = '#ffffff';
     let color = '#ff0000';
     let k = accentIdxs[i];
 
     let element;
 
     if (vMethod === 'barPlot') {
-      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
+      element = new Bar(
+        elements[k].x,
+        elements[k].y,
+        elements[k].width,
+        elements[k].height,
+        color
+      );
     } else if (vMethod === 'hrPyramid') {
-      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
+      element = new Bar(
+        elements[k].x,
+        elements[k].y,
+        elements[k].width,
+        elements[k].height,
+        color
+      );
+    } else if (vMethod === 'scatterPlot') {
+      element = new Dot(
+        elements[k].x,
+        elements[k].y,
+        elements[k].width,
+        elements[k].height,
+        color
+      );
     }
     newState.push(element);
   }
@@ -386,4 +568,32 @@ export const swap = (arr, i, j) => {
 
   arr[j].height = height;
   arr[j].y = y;
+};
+
+const midValue = (i1, i2, i3) => {
+  let v1 = elements[i1].getValue();
+  let v2 = elements[i2].getValue();
+  let v3 = elements[i3].getValue();
+
+  if (v1 > v2) {
+    if (v1 > v3) {
+      if (v2 > v3) {
+        return i2;
+      } else {
+        return i3;
+      }
+    } else {
+      return i1;
+    }
+  } else {
+    if (v2 > v3) {
+      if (v1 > v3) {
+        return i1;
+      } else {
+        return i3;
+      }
+    } else {
+      return i2;
+    }
+  }
 };

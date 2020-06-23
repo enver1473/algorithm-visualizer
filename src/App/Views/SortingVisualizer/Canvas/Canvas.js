@@ -1,6 +1,7 @@
 import React from 'react';
 import P5Wrapper from 'react-p5-wrapper';
-import Bar from './Bar';
+import Bar from './ElementTypes/Bar';
+import Dot from './ElementTypes/Dot';
 import { Row, Col, Slider, Button, Cascader, Select, notification } from 'antd';
 import {
   bubbleSort,
@@ -13,8 +14,11 @@ import {
   gnomeSort,
   insertionSort,
   combSort,
+  combGnomeSort,
+  quickGnomeSort,
   swap,
 } from './Algorithms/algorithms';
+import Controls from './Controls';
 
 const { Option } = Select;
 
@@ -33,7 +37,7 @@ export let elements = [];
 // Array of arrays of Bar objects = the mid-sorting states
 export let states = [];
 
-let barWidth = 3;
+let barWidth = 1;
 let width = 1000;
 let height = 600;
 
@@ -87,6 +91,7 @@ const pauseOrPlay = () => {
     });
     return;
   }
+
   if (loop) {
     globalP.noLoop();
     loop = false;
@@ -125,6 +130,8 @@ const Canvas = () => {
     8: '8',
     16: '16',
     32: '32',
+    64: '64',
+    128: '128',
   };
 
   const options = [
@@ -155,6 +162,20 @@ const Canvas = () => {
     {
       value: 'combSort',
       label: 'Comb Sort',
+    },
+    {
+      value: 'hybrid',
+      label: 'Hybrid Sorts',
+      children: [
+        {
+          value: 'combGnomeSort',
+          label: 'Comb Gnome Sort'
+        },
+        {
+          value: 'quickGnomeSort',
+          label: 'Quick Gnome Sort'
+        },
+      ],
     },
     {
       value: 'quickSort',
@@ -220,6 +241,10 @@ const Canvas = () => {
       callSort(insertionSort);
     } else if (algorithm === 'combSort') {
       callSort(combSort);
+    } else if (algorithm === 'combGnomeSort') {
+      callSort(combGnomeSort);
+    } else if (algorithm === 'quickGnomeSort') {
+      callSort(quickGnomeSort);
     }
   };
 
@@ -252,6 +277,10 @@ const Canvas = () => {
       value: 'hrPyramid',
       text: 'Horizontal Pyramid',
     },
+    {
+      value: 'scatterPlot',
+      text: 'Scatter Plot',
+    },
   ];
 
   // Handle Visualization Method Change
@@ -268,16 +297,7 @@ const Canvas = () => {
       <Row
         style={{ backgroundColor: '#111d2c', height: '50px', padding: '8px' }}
       >
-        <Col span={4}>
-          <Button
-            type='primary'
-            onClick={pauseOrPlay}
-            style={{ marginRight: '5px' }}
-          >
-            {'Play/Pause'}
-          </Button>
-        </Col>
-        <Col span={20}></Col>
+        <Controls pausePlayClicked={pauseOrPlay} loop={loop} />
       </Row>
       <Row style={{ backgroundColor: '#faf9f0' }}>
         <Col span={4}>
@@ -299,7 +319,7 @@ const Canvas = () => {
           <Slider
             marks={incrementMarks}
             min={1}
-            max={32}
+            max={128}
             step={null}
             defaultValue={1}
             onChange={handleIncrementChange}
@@ -358,24 +378,27 @@ export const sketch = (p) => {
               element.show('#ffffff');
             }
           }
-        } else {/*
+        } else {
           let shouldStop = false;
-          if (stateIdx < 0) {
-            stateIdx = 0;
-            shouldStop = true;
-          }
-          for (let i = oldStateIdx; i >= stateIdx; i--) {
-            for (let element of states[i]) {
-              element.show('#00ff00');
+          if (oldStateIdx < states.length) {
+            for (let i = oldStateIdx; i >= stateIdx; i--) {
+              if (i < 0) {
+                shouldStop = true;
+                break;
+              }
+
+              for (let element of states[i]) {
+                element.show('#ffffff');
+              }
+            }
+
+            if (shouldStop) {
+              p.noLoop();
+              loop = false;
+              stateIdx = -1;
+              return;
             }
           }
-          
-          if (shouldStop) {
-            p.noLoop();
-            loop = false;
-            stateIdx = -1;
-            return;
-          }*/
         }
       }
 
@@ -393,10 +416,15 @@ export const sketch = (p) => {
         return;
       }
 
-      for (let element of states[stateIdx]) {
-        element.show();
+      if (stateIdx > oldStateIdx) {
+        for (let element of states[stateIdx]) {
+          element.show();
+        }
+      } else {
+        for (let i = 0; i < states[stateIdx].length; i++) {
+          states[stateIdx][i].show();
+        }
       }
-
       oldStateIdx = stateIdx;
       stateIdx += dir * inc;
     }
@@ -407,7 +435,7 @@ const randomize = (value) => {
   if (elements.length === 0) {
     globalP.background(100);
     randomizeHelper(value);
-    showAllBars();
+    showAllElements();
   } else {
     // Reset everything to the beginning state (as if the app was just started)
     globalP.noLoop();
@@ -419,7 +447,7 @@ const randomize = (value) => {
     loop = false;
 
     randomizeHelper(value);
-    showAllBars();
+    showAllElements();
   }
 };
 
@@ -485,12 +513,20 @@ const addElement = (idx, rNumber) => {
       rNumber,
       '#ffffff'
     );
+  } else if (vMethod === 'scatterPlot') {
+    element = new Dot(
+      idx * barWidth,
+      height - rNumber,
+      barWidth,
+      barWidth,
+      '#ffffff'
+    );
   } else return;
 
   elements.push(element);
 };
 
-const showAllBars = () => {
+const showAllElements = () => {
   if (elements.length === 0) {
     return;
   }

@@ -1,6 +1,6 @@
-import { globalP, backgroundColor, height as windowHeight} from './Canvas';
+import { globalP, backgroundColor, height as windowHeight} from '../Canvas';
 
-export default class Bar {
+export default class ColoredBar {
   x;
   y;
   width;
@@ -28,8 +28,6 @@ export default class Bar {
     return this;
   };
 
-  getHeight = () => this.height;
-
-  getWidth = () => this.width;
+  getValue = () => this.height;
 }
 
