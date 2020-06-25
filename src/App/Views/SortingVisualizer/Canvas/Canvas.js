@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
+import { Row, Col, notification } from 'antd';
+import _ from 'underscore';
+
 import Bar from './ElementTypes/Bar';
 import Dot from './ElementTypes/Dot';
-import { Row, Col, Slider, Button, Cascader, Select, notification } from 'antd';
 import {
   bubbleSort,
   coctailShakerSort,
@@ -19,14 +21,10 @@ import {
   swap,
 } from './Algorithms/algorithms';
 import Controls from './Controls';
-
-const { Option } = Select;
-
-/*
-
-TODO DEPLOY TO NETFLIY.COM
-
-*/
+import ColoredBar from './ElementTypes/ColoredBar';
+import ColorHeightBar from './ElementTypes/ColorHeightBar';
+import ColoredTriangle from './ElementTypes/ColoredTriangle';
+import Triangle from './ElementTypes/HelperClasses/Triangle';
 
 // Array of random numbers
 export let arr = [];
@@ -37,7 +35,7 @@ export let elements = [];
 // Array of arrays of Bar objects = the mid-sorting states
 export let states = [];
 
-let barWidth = 1;
+let barWidth = 2;
 let width = 1000;
 let height = 600;
 
@@ -68,6 +66,18 @@ let dir = 1;
 // Background Color
 let backgroundColor;
 
+// triangle pointer Distance from Center Multiplier
+let pDCM = (height / 21) * 10;
+
+// triangle point Distance from Center Multiplier
+let pDCMp = (height / 22) * 10;
+
+// screen center X
+let cx = width / 2;
+
+// screen center Y
+let cy = height / 2;
+
 // Visualization method
 export let vMethod = 'barPlot';
 
@@ -77,15 +87,14 @@ const handleSpeedChange = (value) => {
 };
 
 const handleIncrementChange = (value) => {
-  inc = value;
+  inc = Math.pow(2, value - 1);
 };
 
 const pauseOrPlay = () => {
   if (states.length === 0) {
     notification.warning({
       message: 'No animations!',
-      description:
-        'You have to build the animations before trying to play them.',
+      description: 'You have to build the animations before trying to play them.',
       duration: 4,
       placement: 'bottomLeft',
     });
@@ -117,88 +126,22 @@ const forwardOrReverse = () => {
 
 const Canvas = () => {
   let algorithm = '';
-
-  const speedMarks = {
-    1: '1',
-    60: '60',
-  };
-
-  const incrementMarks = {
-    1: '1',
-    2: '2',
-    4: '4',
-    8: '8',
-    16: '16',
-    32: '32',
-    64: '64',
-    128: '128',
-  };
-
-  const options = [
-    {
-      value: 'bubbleSort',
-      label: 'Bubble Sort',
-    },
-    {
-      value: 'coctailShakerSort',
-      label: 'Coctail Shaker Sort',
-    },
-    {
-      value: 'selectionSort',
-      label: 'Selection Sort',
-    },
-    {
-      value: 'doubleSelectionSort',
-      label: 'Double Selection Sort',
-    },
-    {
-      value: 'gnomeSort',
-      label: 'Gnome Sort',
-    },
-    {
-      value: 'insertionSort',
-      label: 'Insertion Sort',
-    },
-    {
-      value: 'combSort',
-      label: 'Comb Sort',
-    },
-    {
-      value: 'hybrid',
-      label: 'Hybrid Sorts',
-      children: [
-        {
-          value: 'combGnomeSort',
-          label: 'Comb Gnome Sort'
-        },
-        {
-          value: 'quickGnomeSort',
-          label: 'Quick Gnome Sort'
-        },
-      ],
-    },
-    {
-      value: 'quickSort',
-      label: 'Quick Sort',
-      children: [
-        {
-          value: 'quickSortLL',
-          label: 'LL Pointers',
-        },
-        {
-          value: 'quickSortLR',
-          label: 'LR Pointers',
-        },
-        {
-          value: 'quickSortDualPivot',
-          label: 'Dual Pivot',
-        },
-      ],
-    },
-  ];
+  let input = 'default';
+  let autoRebuild = false;
 
   const handleCascaderChange = (value) => {
     algorithm = value[value.length - 1];
+    if (!autoRebuild) {
+      notification.warning({
+        message: 'Rebuild animations!',
+        description: `You have to rebuild the animations if you change the algorithm. If you wish the rebuild to happen automatically, check the 'Auto-(re)build' checkbox.`,
+        duration: 8,
+        placement: 'bottomLeft',
+      });
+    } else {
+      randomize(input);
+      sort();
+    }
   };
 
   const sort = () => {
@@ -206,14 +149,22 @@ const Canvas = () => {
     if (arr.length === 0) {
       notification.warning({
         message: 'No array to sort!',
-        description: `You have to generate a random array first using the 'Randomize' button.`,
+        description: `You have to generate an array using the 'Input' select.`,
         duration: 4,
         placement: 'bottomLeft',
       });
       return;
     }
 
-    // If algorithm not picked
+    if (states.length !== 0) {
+      globalP.noLoop();
+      states = [];
+      stateIdx = 0;
+      loop = false;
+      showAllElements();
+    }
+
+    // If algorithm not chosen
     if (!algorithm) {
       notification.warning({
         message: 'Please choose an algorithm!',
@@ -268,76 +219,88 @@ const Canvas = () => {
     }, 300);
   };
 
-  const visualizationOptions = [
-    {
-      value: 'barPlot',
-      text: 'Standard Bar Plot',
-    },
-    {
-      value: 'hrPyramid',
-      text: 'Horizontal Pyramid',
-    },
-    {
-      value: 'scatterPlot',
-      text: 'Scatter Plot',
-    },
-  ];
+  const handleCheckChange = (e) => {
+    autoRebuild = e.target.checked;
+  };
+
+  const handleInputSelect = (value) => {
+    input = value;
+    randomize(input);
+    if (autoRebuild) {
+      sort();
+    }
+  };
 
   // Handle Visualization Method Change
   const handleVMethodChange = (value) => {
     vMethod = value;
+    if (autoRebuild) {
+      randomize(input);
+      sort();
+    }
   };
 
-  const selectOptions = visualizationOptions.map(({ value, text }) => (
-    <Option value={value}>{text}</Option>
-  ));
+  const reShuffle = () => {
+    randomize(input);
+    if (autoRebuild) {
+      sort();
+    }
+  };
+
+  const debounceCountChange = useRef(_.debounce((value) => handleCountChange(value), 500)).current;
+
+  const handleCountChange = (value) => {
+    const values = {
+      1: 10,
+      2: 20,
+      3: 50,
+      4: 100,
+      5: 200,
+      6: 500,
+      7: 1000,
+    }
+    count = values[value];
+    barWidth = width / count;
+    if (autoRebuild) {
+      randomize(input);
+      sort();
+    }
+  };
 
   return (
     <>
       <Row
-        style={{ backgroundColor: '#111d2c', height: '50px', padding: '8px' }}
+        style={{
+          backgroundColor: '#faf9f0',
+          padding: '8px',
+          marginBottom: '30px',
+          boxShadow: '0 5px 10px 10px rgba(0,0,0,0.1)',
+        }}
       >
-        <Controls pausePlayClicked={pauseOrPlay} loop={loop} />
+        <Controls
+          pausePlayClicked={pauseOrPlay}
+          loop={loop}
+          handleVMethodChange={handleVMethodChange}
+          handleAlgorithmChange={handleCascaderChange}
+          handleFpsChange={handleSpeedChange}
+          handleIncrementChange={handleIncrementChange}
+          handleCountChange={debounceCountChange}
+          forwardOrReverse={forwardOrReverse}
+          handleInputSelect={handleInputSelect}
+          buildAnimations={sort}
+          handleCheckChange={handleCheckChange}
+          reShuffle={reShuffle}
+        />
       </Row>
-      <Row style={{ backgroundColor: '#faf9f0' }}>
-        <Col span={4}>
-          <Select defaultValue='barPlot' onChange={handleVMethodChange}>
-            {selectOptions}
-          </Select>
-          <Cascader
-            options={options}
-            onChange={handleCascaderChange}
-            placeholder='Select algorithm'
+      <Row justify='center' style={{ backgroundColor: 'white' }}>
+        <Col span={24}>
+          <P5Wrapper
+            sketch={sketch}
+            style={{
+              boxShadow: '0 0 10px 10px rgba(0,0,0,0.1)',
+              border: '1px solid black',
+            }}
           />
-          <Slider
-            marks={speedMarks}
-            min={1}
-            max={60}
-            defaultValue={60}
-            onChange={handleSpeedChange}
-          />
-          <Slider
-            marks={incrementMarks}
-            min={1}
-            max={128}
-            step={null}
-            defaultValue={1}
-            onChange={handleIncrementChange}
-          />
-          <Button onClick={forwardOrReverse}>{'Forward/Reverse'}</Button>
-          <Select placeholder='Randomization method' onChange={randomize}>
-            <Option value='default'>Default</Option>
-            <Option value='reversed'>Reversed input</Option>
-            <Option value='almostSorted'>Almost sorted</Option>
-          </Select>
-        </Col>
-        <Col span={2}>
-          <Button type='primary' onClick={sort}>
-            {'Build animations'}
-          </Button>
-        </Col>
-        <Col span={18}>
-          <P5Wrapper sketch={sketch} />
         </Col>
       </Row>
     </>
@@ -348,22 +311,25 @@ export default Canvas;
 
 const showLastState = (index) => {
   for (let element of states[index]) {
-    element.show('#ffffff');
+    element.show('lastShow');
   }
 };
 
 export const sketch = (p) => {
   globalP = p;
-  backgroundColor = 100;
+  backgroundColor = 50;
 
   p.setup = () => {
     p.createCanvas(width, height);
 
-    p.background(100);
+    p.colorMode(p.RGB);
+    p.background(backgroundColor);
+    p.angleMode(p.RADIANS);
 
     p.noLoop();
     p.frameRate(fps);
-    p.fill(255);
+    p.fill('#f8efba');
+    p.colorMode(p.HSB);
     p.noStroke();
   };
 
@@ -375,7 +341,7 @@ export const sketch = (p) => {
           for (let i = oldStateIdx; i < stateIdx; i++) {
             if (i >= states.length) break;
             for (let element of states[i]) {
-              element.show('#ffffff');
+              element.show('#f8efba');
             }
           }
         } else {
@@ -388,7 +354,7 @@ export const sketch = (p) => {
               }
 
               for (let element of states[i]) {
-                element.show('#ffffff');
+                element.show('#f8efba');
               }
             }
 
@@ -416,14 +382,8 @@ export const sketch = (p) => {
         return;
       }
 
-      if (stateIdx > oldStateIdx) {
-        for (let element of states[stateIdx]) {
-          element.show();
-        }
-      } else {
-        for (let i = 0; i < states[stateIdx].length; i++) {
-          states[stateIdx][i].show();
-        }
+      for (let i = 0; i < states[stateIdx].length; i++) {
+        states[stateIdx][i].show('red');
       }
       oldStateIdx = stateIdx;
       stateIdx += dir * inc;
@@ -432,14 +392,20 @@ export const sketch = (p) => {
 };
 
 const randomize = (value) => {
+  if (vMethod === 'rainbow' || vMethod === 'rainbowBarPlot' || vMethod === 'rainbowCircle') {
+    globalP.colorMode(globalP.RGB);
+    globalP.background(backgroundColor);
+    globalP.colorMode(globalP.HSB);
+  } else {
+    globalP.colorMode(globalP.RGB);
+    globalP.background(backgroundColor);
+  }
   if (elements.length === 0) {
-    globalP.background(100);
     randomizeHelper(value);
     showAllElements();
   } else {
     // Reset everything to the beginning state (as if the app was just started)
     globalP.noLoop();
-    globalP.background(100);
     arr = [];
     elements = [];
     states = [];
@@ -455,41 +421,52 @@ const randomize = (value) => {
 const randomizeHelper = (value) => {
   if (!value) {
     return;
-  } else {
-    if (value === 'default') {
-      let numbers = [];
+  }
 
-      for (let i = 0; i < count; i++) {
-        numbers.push(parseInt((i + 1) * (height / count)));
+  if (value === 'default') {
+    let numbers = [];
+
+    for (let i = 0; i < count; i++) {
+      let number = parseInt((i + 1) * (height / count));
+
+      if (vMethod === 'rainbowCircle') {
+        number = i + 1;
       }
 
-      for (let i = 0; i < count; i++) {
-        let rndIdx = Math.floor(Math.random() * (count - i));
+      numbers.push(number);
+    }
 
-        let rNumber = numbers[rndIdx];
-        numbers.splice(rndIdx, 1);
+    for (let i = 0; i < count; i++) {
+      let rndIdx = Math.floor(Math.random() * (count - i));
 
-        arr.push(rNumber);
+      let rNumber = numbers[rndIdx];
+      numbers.splice(rndIdx, 1);
 
-        addElement(i, rNumber);
+      arr.push(rNumber);
+
+      addElement(i, rNumber);
+    }
+  } else if (value === 'reversed') {
+    for (let i = 0; i < count; i++) {
+      let ele = height - i * (height / count);
+
+      if (vMethod === 'rainbowCircle') {
+        ele = count - i;
       }
-    } else if (value === 'reversed') {
-      for (let i = 0; i < count; i++) {
-        const ele = height - i * (height / count);
-        arr.push(ele);
-        addElement(i, ele);
-      }
-    } else if (value === 'almostSorted') {
-      for (let i = 0; i < count; i++) {
-        const ele = (height / count) * i + 1;
-        arr.push(ele);
-        addElement(i, ele);
-      }
-      for (let i = 0; i < count / 10; i++) {
-        const random1 = Math.floor(Math.random() * count);
-        const random2 = Math.floor(Math.random() * count);
-        swap(elements, random1, random2);
-      }
+
+      arr.push(ele);
+      addElement(i, ele);
+    }
+  } else if (value === 'almostSorted') {
+    for (let i = 0; i < count; i++) {
+      const ele = (height / count) * i + 1;
+      arr.push(ele);
+      addElement(i, ele);
+    }
+    for (let i = 0; i < count / 10; i++) {
+      const random1 = Math.floor(Math.random() * count);
+      const random2 = Math.floor(Math.random() * count);
+      swap(elements, random1, random2);
     }
   }
 };
@@ -498,28 +475,60 @@ const addElement = (idx, rNumber) => {
   let element;
 
   if (vMethod === 'barPlot') {
-    element = new Bar(
-      idx * barWidth,
-      height - rNumber,
-      barWidth,
-      rNumber,
-      '#ffffff'
-    );
+    element = new Bar(idx * barWidth, height - rNumber, barWidth, rNumber, '#f8efba');
   } else if (vMethod === 'hrPyramid') {
-    element = new Bar(
-      idx * barWidth,
-      (height - rNumber) / 2,
-      barWidth,
-      rNumber,
-      '#ffffff'
-    );
+    element = new Bar(idx * barWidth, (height - rNumber) / 2, barWidth, rNumber, '#f8efba');
   } else if (vMethod === 'scatterPlot') {
-    element = new Dot(
-      idx * barWidth,
-      height - rNumber,
-      barWidth,
-      barWidth,
-      '#ffffff'
+    element = new Dot(idx * barWidth, height - rNumber, barWidth, barWidth, '#f8efba');
+  } else if (vMethod === 'rainbow') {
+    element = new ColoredBar(idx * barWidth, barWidth, rNumber);
+  } else if (vMethod === 'rainbowBarPlot') {
+    element = new ColorHeightBar(idx * barWidth, height - rNumber, barWidth, rNumber, rNumber);
+  } else if (vMethod === 'rainbowCircle') {
+    let x1 = cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
+    let y1 = cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
+    let x2 = cx + globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
+    let y2 = cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
+    let x3 = cx + globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
+    let y3 = cy + globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
+
+    let px1 = cx + globalP.sin(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let py1 = cy + globalP.cos(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let px2 = cx + globalP.sin(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let py2 = cy + globalP.cos(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let px3 =
+      cx + globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * (height / 9) * 4;
+    let py3 =
+      cy + globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * (height / 9) * 4;
+
+    if (count < 100) {
+      px1 = cx + globalP.sin(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+      py1 = cy + globalP.cos(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+      px2 = cx + globalP.sin(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+      py2 = cy + globalP.cos(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+    }
+
+    if (count < 30) {
+      x1 = cx + globalP.sin(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) * (pDCM * 1.2);
+      y1 = cy + globalP.cos(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) * (pDCM * 1.2);
+      x2 = cx + globalP.sin(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) * (pDCM * 1.2);
+      y2 = cy + globalP.cos(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) * (pDCM * 1.2);
+      px1 = cx + globalP.sin(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+      py1 = cy + globalP.cos(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+      px2 = cx + globalP.sin(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+      py2 = cy + globalP.cos(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+    }
+
+    let pointerOverlay = new Triangle(px1, py1, px2, py2, px3, py3, null);
+    let trianglePointer = new Triangle(x1, y1, x2, y2, x3, y3, pointerOverlay);
+
+    element = new ColoredTriangle(
+      cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * (height / 9) * 4,
+      cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * (height / 9) * 4,
+      cx + globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
+      cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
+      rNumber,
+      trianglePointer
     );
   } else return;
 
@@ -532,7 +541,7 @@ const showAllElements = () => {
   }
 
   for (let element of elements) {
-    element.show();
+    element.show('lastShow');
   }
 };
 

@@ -1,6 +1,9 @@
 import { states, elements, count, arr, vMethod } from '../Canvas';
 import Bar from '../ElementTypes/Bar';
 import Dot from '../ElementTypes/Dot';
+import ColoredBar from '../ElementTypes/ColoredBar';
+import ColorHeightBar from '../ElementTypes/ColorHeightBar';
+import ColoredTriangle from '../ElementTypes/ColoredTriangle';
 
 // ======  BUBBLE SORT ======
 
@@ -437,7 +440,7 @@ export const combGnomeSort = () => {
 // ====== COMB GNOME SORT ======
 
 // ====== QUICK GNOME SORT ======
-
+/*
 const partialGnome = (start, end) => {
   let currentIdx = start;
   while (currentIdx <= end) {
@@ -461,10 +464,9 @@ const partialGnome = (start, end) => {
     }
   }
 };
-
+*/
 const quickGnomeHelper = (start = 0, end = arr.length - 1) => {
   if (end - start < 16) {
-    partialGnome(start, end);
     return;
   }
 
@@ -476,7 +478,7 @@ const quickGnomeHelper = (start = 0, end = arr.length - 1) => {
 
 export const quickGnomeSort = () => {
   quickGnomeHelper();
-  pushLastState();
+  gnomeSort();
 };
 
 // ====== QUICK GNOME SORT ======
@@ -485,7 +487,7 @@ const pushLastState = () => {
   // Push last state with no accent colors
   const newState = [];
   for (let k = 0; k < count; k++) {
-    let color = '#ffffff';
+    let color = '#f8efba';
 
     let element;
 
@@ -513,6 +515,16 @@ const pushLastState = () => {
         elements[k].height,
         color
       );
+    } else if (vMethod === 'rainbow') {
+      element = new ColoredBar(
+        elements[k].x,
+        elements[k].width,
+        elements[k].hue / (360 / count),
+      );
+    } else if (vMethod === 'rainbowBarPlot') {
+      element = elements[k].copy();
+    } else if (vMethod === 'rainbowCircle') {
+      element = elements[k].copy();
     }
     newState.push(element);
   }
@@ -552,6 +564,16 @@ const pushNewState = (accentIdxs = []) => {
         elements[k].height,
         color
       );
+    } else if (vMethod === 'rainbow') {
+      element = new ColoredBar(
+        elements[k].x,
+        elements[k].width,
+        elements[k].hue / (360 / count),
+      );
+    } else if (vMethod === 'rainbowBarPlot') {
+      element = elements[k].copy();
+    } else if (vMethod === 'rainbowCircle') {
+      element = elements[k].copy();
     }
     newState.push(element);
   }
@@ -559,15 +581,42 @@ const pushNewState = (accentIdxs = []) => {
   states.push(newState);
 };
 
-// Custom swap function to swap heights and y coordinates of two elements
+// Custom swap function to swap Bar and Dot elements
 export const swap = (arr, i, j) => {
-  const { height, y } = arr[i];
+  if (arr[i] instanceof ColoredBar) {
+    const { hue } = arr[i];
 
-  arr[i].height = arr[j].height;
-  arr[i].y = arr[j].y;
+    arr[i].hue = arr[j].hue;
+    
+    arr[j].hue = hue;
 
-  arr[j].height = height;
-  arr[j].y = y;
+  } else if (arr[i] instanceof ColorHeightBar) {
+    const { height, hue, y } = arr[i];
+  
+    arr[i].height = arr[j].height;
+    arr[i].hue = arr[j].hue;
+    arr[i].y = arr[j].y;
+
+    arr[j].height = height;
+    arr[j].hue = hue;
+    arr[j].y = y;
+
+  } else if (arr[i] instanceof ColoredTriangle) {
+    const { hue } = arr[i];
+    
+    arr[i].hue = arr[j].hue;
+    
+    arr[j].hue = hue;
+
+  } else {
+    const { height, y } = arr[i];
+  
+    arr[i].height = arr[j].height;
+    arr[i].y = arr[j].y;
+  
+    arr[j].height = height;
+    arr[j].y = y;
+  }
 };
 
 const midValue = (i1, i2, i3) => {

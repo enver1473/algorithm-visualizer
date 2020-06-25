@@ -16,14 +16,17 @@ export default class Bar {
   };
 
   show = (newColor) => {
-    const color = newColor ? newColor : this.color;
+    let color = this.color;
+    if (newColor !== 'red' && newColor !== 'lastShow') {
+      color = newColor ? newColor : this.color;
+    }
     globalP.fill(backgroundColor);
     globalP.rect(this.x, 0, this.width, windowHeight);
 
     globalP.fill(color);
     globalP.rect(this.x, this.y, this.width, this.height);
 
-    globalP.fill(255);
+    globalP.fill('#F8EFBA');
     
     return this;
   };

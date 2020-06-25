@@ -1,25 +1,17 @@
 import React from 'react';
-/*
-import Navbar from './Navigation/Navbar/Navbar';
-*/
 import { Layout as AntLayout } from 'antd';
 import 'antd/dist/antd.css';
 import './Layout.css';
+import Canvas from './Views/SortingVisualizer/Canvas/Canvas';
 
-const { /* Header,  */Content } = AntLayout;
+const { Content } = AntLayout;
 
-const Layout = (props) => {
-  /*
-  const style = { minHeight: '100%' };
-  */
+const Layout = () => {
   return (
     <div className='Layout'>
-      {/* <AntLayout style={style}>
-        <Header className='Header'>
-          <Navbar />
-        </Header> */}
-        <Content style={{ height: '100%' }}>{props.children}</Content>{/* 
-      </AntLayout> */}
+      <Content style={{ height: '100%' }}>
+        <Canvas />
+      </Content>
     </div>
   );
 };
