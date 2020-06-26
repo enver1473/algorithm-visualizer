@@ -1,4 +1,4 @@
-import { globalP, backgroundColor, height as windowHeight} from '../Canvas';
+import { globalP, backgroundColor, height as windowHeight } from '../Canvas';
 
 export default class Dot {
   x;
@@ -13,6 +13,10 @@ export default class Dot {
     this.width = width;
     this.height = height;
     this.color = color;
+  }
+
+  copy = () => {
+    return new Dot(this.x, this.y, this.width, this.height, this.color);
   };
 
   show = (newColor) => {
@@ -35,7 +39,7 @@ export default class Dot {
     }
 
     globalP.fill('#F8EFBA');
-    
+
     return this;
   };
 

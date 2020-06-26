@@ -17,7 +17,8 @@ import {
   insertionSort,
   combSort,
   combGnomeSort,
-  quickGnomeSort,
+  quickGnomeSort,/*
+  mergeSort,*/
   swap,
 } from './Algorithms/algorithms';
 import Controls from './Controls';
@@ -196,7 +197,9 @@ const Canvas = () => {
       callSort(combGnomeSort);
     } else if (algorithm === 'quickGnomeSort') {
       callSort(quickGnomeSort);
-    }
+    }/* else if (algorithm === 'mergeSort') {
+      callSort(mergeSort);
+    }*/
   };
 
   const callSort = (sortingFunction) => {

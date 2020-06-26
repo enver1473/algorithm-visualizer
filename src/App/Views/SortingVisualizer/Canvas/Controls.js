@@ -91,7 +91,7 @@ const Controls = ({
       ],
     },
     {
-      value: 'hybrid',
+      value: 'hybridSorts',
       label: 'Hybrid Sorts',
       children: [
         {
@@ -105,7 +105,7 @@ const Controls = ({
       ],
     },
     {
-      value: 'quickSort',
+      value: 'distributionSorts',
       label: 'Distribution Sorts',
       children: [
         {
@@ -127,11 +127,21 @@ const Controls = ({
           ],
         },
       ],
+    },/*
+    {
+      value: 'mergeSorts',
+      label: 'Merge Sorts',
+      children: [
+        {
+          value: 'mergeSort',
+          label: 'Merge Sort',
+        },
+      ],
     },
     {
       value: 'insertionSort',
       label: 'Insertion Sort',
-    },
+    },*/
     {
       value: 'combSort',
       label: 'Comb Sort',

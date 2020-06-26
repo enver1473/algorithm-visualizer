@@ -25,8 +25,8 @@ export default class ColoredTriangle {
 
   copy = () => {
     let newColoredTriangle;
-
     let newRNumber = this.hue / (360 / count);
+    
     newColoredTriangle = new ColoredTriangle(
       this.x1,
       this.y1,

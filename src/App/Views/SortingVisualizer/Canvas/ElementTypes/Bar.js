@@ -1,4 +1,4 @@
-import { globalP, backgroundColor, height as windowHeight} from '../Canvas';
+import { globalP, backgroundColor, height as windowHeight } from '../Canvas';
 
 export default class Bar {
   x;
@@ -13,6 +13,10 @@ export default class Bar {
     this.width = width;
     this.height = height;
     this.color = color;
+  }
+
+  copy = () => {
+    return new Bar(this.x, this.y, this.width, this.height, this.color);
   };
 
   show = (newColor) => {
@@ -27,10 +31,9 @@ export default class Bar {
     globalP.rect(this.x, this.y, this.width, this.height);
 
     globalP.fill('#F8EFBA');
-    
+
     return this;
   };
 
   getValue = () => this.height;
 }
-

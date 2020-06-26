@@ -1,4 +1,4 @@
-import { globalP, backgroundColor, height as windowHeight, count} from '../Canvas';
+import { globalP, backgroundColor, height as windowHeight } from '../Canvas';
 
 export default class ColoredBar {
   x;
@@ -12,14 +12,15 @@ export default class ColoredBar {
     this.y = 0;
     this.width = width;
     this.height = windowHeight;
-    let newHue = rNumber * (360 / count);
+
+    let newHue = globalP.map(rNumber, 1, windowHeight, 0, 360);
     this.hue = newHue;
   };
 
   copy = () => {
     let newColoredBar;
+    let newRNumber = globalP.map(this.hue, 0, 360, 1, windowHeight);
 
-    let newRNumber = this.hue / (360 / count);
     newColoredBar = new ColoredBar(
       this.x,
       this.width,
