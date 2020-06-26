@@ -462,7 +462,12 @@ const randomizeHelper = (value) => {
     }
   } else if (value === 'almostSorted') {
     for (let i = 0; i < count; i++) {
-      const ele = (height / count) * i + 1;
+      let ele = (height / count) * i + 1;
+
+      if (vMethod === 'rainbowCircle') {
+        ele = i + 1;
+      }
+
       arr.push(ele);
       addElement(i, ele);
     }
