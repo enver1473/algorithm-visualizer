@@ -127,7 +127,7 @@ const Controls = ({
           ],
         },
       ],
-    },/*
+    },
     {
       value: 'mergeSorts',
       label: 'Merge Sorts',
@@ -141,7 +141,7 @@ const Controls = ({
     {
       value: 'insertionSort',
       label: 'Insertion Sort',
-    },*/
+    },
     {
       value: 'combSort',
       label: 'Comb Sort',

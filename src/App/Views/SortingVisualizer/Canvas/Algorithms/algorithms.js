@@ -119,10 +119,7 @@ const partitionLR = (start, end) => {
   let leftIdx = start;
   let rightIdx = end - 1;
   while (leftIdx <= rightIdx) {
-    if (
-      elements[leftIdx].getValue() > pivotValue &&
-      elements[rightIdx].getValue() < pivotValue
-    ) {
+    if (elements[leftIdx].getValue() > pivotValue && elements[rightIdx].getValue() < pivotValue) {
       pushNewState([leftIdx, rightIdx]);
       swap(elements, leftIdx, rightIdx);
       pushNewState([leftIdx, rightIdx]);
@@ -184,7 +181,7 @@ const partitionDual = (start, end) => {
   }
 
   const leftValue = elements[start].getValue(),
-        rightValue = elements[end].getValue();
+    rightValue = elements[end].getValue();
   let [leftIdx, middleIdx, rightIdx] = [start + 1, start + 1, end - 1];
 
   while (middleIdx <= rightIdx) {
@@ -194,10 +191,7 @@ const partitionDual = (start, end) => {
       pushNewState([leftIdx, middleIdx]);
       leftIdx++;
     } else if (elements[middleIdx].getValue() >= rightValue) {
-      while (
-        elements[rightIdx].getValue() > rightValue &&
-        middleIdx < rightIdx
-      ) {
+      while (elements[rightIdx].getValue() > rightValue && middleIdx < rightIdx) {
         rightIdx--;
       }
       pushNewState([middleIdx, rightIdx]);
@@ -339,21 +333,65 @@ export const gnomeSort = () => {
 
 export const insertionSort = () => {
   for (let i = 1; i < count; i++) {
-    let { y, height } = elements[i];
+    let element = elements[i].copy();
     let j = i - 1;
-    while (j >= 0 && height < elements[j].getValue()) {
-      pushNewState([j, j + 1]);
-      elements[j + 1].y = elements[j].y;
-      elements[j + 1].height = elements[j].height;
-      pushNewState([j, j + 1]);
+    while (j >= 0 && element.getValue() < elements[j].getValue()) {
+      pushNewState([j + 1, j]);
+      setValuesAtIndexes(j + 1, j);
+      pushNewState([j + 1, j]);
       j--;
     }
     pushNewState([j + 1, i]);
-    elements[j + 1].y = y;
-    elements[j + 1].height = height;
+    setValuesAtIndex(j + 1, element);
     pushNewState([j + 1, i]);
   }
   pushLastState();
+};
+
+const setValuesAtIndexes = (i, j) => {
+  if (elements[i] instanceof ColoredBar) {
+
+    elements[i].hue = elements[j].hue;
+
+  } else if (elements[i] instanceof ColorHeightBar) {
+
+    elements[i].height = elements[j].height;
+    elements[i].hue = elements[j].hue;
+    elements[i].y = elements[j].y;
+
+  } else if (elements[i] instanceof ColoredTriangle) {
+
+    elements[i].hue = elements[j].hue;
+
+  } else {
+
+    elements[i].y = elements[j].y;
+    elements[i].height = elements[j].height;
+
+  }
+};
+
+const setValuesAtIndex = (i, element) => {
+  if (elements[i] instanceof ColoredBar) {
+
+    elements[i].hue = element.hue;
+
+  } else if (elements[i] instanceof ColorHeightBar) {
+
+    elements[i].height = element.height;
+    elements[i].hue = element.hue;
+    elements[i].y = element.y;
+
+  } else if (elements[i] instanceof ColoredTriangle) {
+
+    elements[i].hue = element.hue;
+
+  } else {
+
+    elements[i].y = element.y;
+    elements[i].height = element.height;
+
+  }
 };
 
 // ====== INSERTION SORT ======
@@ -386,94 +424,88 @@ export const combSort = () => {
 };
 
 // ====== COMB SORT ======
-/*
+
 // ====== MERGE SORT ======
 
 const mergeSortHelper = (start, end) => {
-  if ((start === end) || (start + 1 === end)) return;
-  
-	let mid = start + Math.floor((end - start) / 2);
-	mergeSort(start, mid);
-	mergeSort(mid, end);
+  if (start === end || start + 1 === end) return;
 
-	let i = start;
-	let j = mid;
+  let mid = start + Math.floor((end - start) / 2);
+  mergeSortHelper(start, mid);
+  mergeSortHelper(mid, end);
+
+  let i = start;
+  let j = mid;
   let list = [];
-  
-	while (i < mid && j < end) {
-		if (elements[i].getValue() < elements[j].getValue()) {
-      let element = new Bar(
-        elements[i].x,
-        elements[start + list.length].y,
-        elements[i].width,
-        elements[start + list.length].height,
-        elements[i].color,
-      );
-      list.push(element);
-			i++;
-		} else {
-      let element = new Bar(
-        elements[j].x,
-        elements[start + list.length].y,
-        elements[j].width,
-        elements[start + list.length].height,
-        elements[j].color,
-      );
-      list.push(element);
-			j++;
-		}
-	}
-	while (i < mid) {
-    let element = new Bar(
-      elements[i].x,
-      elements[start + list.length].y,
-      elements[i].width,
-      elements[start + list.length].height,
-      elements[i].color,
-    );
-    list.push(element);
-		i++;
-	}
-	while (j < end) {
-    let element = new Bar(
-      elements[j].x,
-      elements[start + list.length].y,
-      elements[j].width,
-      elements[start + list.length].height,
-      elements[j].color,
-    );
-    list.push(element);
-		j++;
+
+  while (i < mid && j < end) {
+    if (elements[i].getValue() < elements[j].getValue()) {
+      list.push(mergeAtIndexes(start + list.length, i));
+      i++;
+    } else {
+      list.push(mergeAtIndexes(start + list.length, j));
+      j++;
+    }
+  }
+  while (i < mid) {
+    list.push(mergeAtIndexes(start + list.length, i));
+    i++;
+  }
+  while (j < end) {
+    list.push(mergeAtIndexes(start + list.length, j));
+    j++;
   }
 
+  for (let l = 0; l < mid - start; l++) {
+    pushNewState([start + l, mid + l]);
+    pushNewState([start + l, mid + l]);
+  }
 
-
-  // TODOOOOOOOOO
-
-
-
-  
   for (let l = start; l < end; l++) {
     pushNewState([l]);
-    let element = new Bar(
-      elements[l-start].x,
-      elements[l].y,
-      elements[l-start].width,
-      elements[l].height,
-      elements[l-start].color,
-    );
-    elements[l] = element;
+    elements[l] = list[l - start].copy();
     pushNewState([l]);
   }
-}
+};
 
-export const mergeSort = (start = 0, end = count - 1) => {
+export const mergeSort = (start = 0, end = count) => {
   mergeSortHelper(start, end);
   pushLastState();
 };
 
+const mergeAtIndexes = (i, j) => {
+  if (elements[i] instanceof ColoredBar) {
+
+    const element = elements[i].copy();
+    element.hue = elements[j].hue;
+    return element;
+
+  } else if (elements[i] instanceof ColorHeightBar) {
+
+    const element = elements[i].copy();
+    element.height = elements[j].height;
+    element.hue = elements[j].hue;
+    element.y = elements[j].y;
+    return element;
+
+  } else if (elements[i] instanceof ColoredTriangle) {
+
+    const element = elements[i].copy();
+    element.hue = elements[j].hue;
+    return element;
+
+  } else {
+    
+    const element = elements[i].copy();
+    element.height = elements[j].height;
+    element.y = elements[j].y;
+    return element;
+
+  }
+};
+
 // ====== MERGE SORT ======
-*/
+
 // ====== COMB GNOME SORT ======
 
 export const combGnomeSort = () => {
@@ -530,29 +562,11 @@ const pushLastState = () => {
     let element;
 
     if (vMethod === 'barPlot') {
-      element = new Bar(
-        elements[k].x,
-        elements[k].y,
-        elements[k].width,
-        elements[k].height,
-        color
-      );
+      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
     } else if (vMethod === 'hrPyramid') {
-      element = new Bar(
-        elements[k].x,
-        elements[k].y,
-        elements[k].width,
-        elements[k].height,
-        color
-      );
+      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
     } else if (vMethod === 'scatterPlot') {
-      element = new Dot(
-        elements[k].x,
-        elements[k].y,
-        elements[k].width,
-        elements[k].height,
-        color
-      );
+      element = new Dot(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
     } else if (vMethod === 'rainbow') {
       element = elements[k].copy();
     } else if (vMethod === 'rainbowBarPlot') {
@@ -575,29 +589,11 @@ const pushNewState = (accentIdxs = []) => {
     let element;
 
     if (vMethod === 'barPlot') {
-      element = new Bar(
-        elements[k].x,
-        elements[k].y,
-        elements[k].width,
-        elements[k].height,
-        color
-      );
+      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
     } else if (vMethod === 'hrPyramid') {
-      element = new Bar(
-        elements[k].x,
-        elements[k].y,
-        elements[k].width,
-        elements[k].height,
-        color
-      );
+      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
     } else if (vMethod === 'scatterPlot') {
-      element = new Dot(
-        elements[k].x,
-        elements[k].y,
-        elements[k].width,
-        elements[k].height,
-        color
-      );
+      element = new Dot(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
     } else if (vMethod === 'rainbow') {
       element = elements[k].copy();
     } else if (vMethod === 'rainbowBarPlot') {
@@ -617,12 +613,11 @@ export const swap = (arr, i, j) => {
     const { hue } = arr[i];
 
     arr[i].hue = arr[j].hue;
-    
-    arr[j].hue = hue;
 
+    arr[j].hue = hue;
   } else if (arr[i] instanceof ColorHeightBar) {
     const { height, hue, y } = arr[i];
-  
+
     arr[i].height = arr[j].height;
     arr[i].hue = arr[j].hue;
     arr[i].y = arr[j].y;
@@ -630,20 +625,18 @@ export const swap = (arr, i, j) => {
     arr[j].height = height;
     arr[j].hue = hue;
     arr[j].y = y;
-
   } else if (arr[i] instanceof ColoredTriangle) {
     const { hue } = arr[i];
-    
-    arr[i].hue = arr[j].hue;
-    
-    arr[j].hue = hue;
 
+    arr[i].hue = arr[j].hue;
+
+    arr[j].hue = hue;
   } else {
     const { height, y } = arr[i];
-  
+
     arr[i].height = arr[j].height;
     arr[i].y = arr[j].y;
-  
+
     arr[j].height = height;
     arr[j].y = y;
   }
