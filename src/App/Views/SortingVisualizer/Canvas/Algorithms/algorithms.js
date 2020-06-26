@@ -247,11 +247,11 @@ export const selectionSort = () => {
   for (let i = 0; i < count - 1; i++) {
     let minIdx = i;
     for (let j = i + 1; j < count; j++) {
-      pushNewState([j, minIdx]);
+      pushNewState([i, j]);
       if (elements[j].getValue() < elements[minIdx].getValue()) {
         minIdx = j;
       }
-      pushNewState([j, minIdx]);
+      pushNewState([i, j]);
     }
     pushNewState([i, minIdx]);
     swap(elements, i, minIdx);
@@ -274,7 +274,7 @@ export const doubleSelectionSort = () => {
     let max = elements[i].getValue();
 
     for (let k = i; k <= j; k++) {
-      pushNewState([k, minIdx, maxIdx]);
+      pushNewState([i, j, k]);
       if (elements[k].getValue() < min) {
         minIdx = k;
         min = elements[k].getValue();
@@ -282,7 +282,7 @@ export const doubleSelectionSort = () => {
         maxIdx = k;
         max = elements[k].getValue();
       }
-      pushNewState([k, minIdx, maxIdx]);
+      pushNewState([i, j, k]);
     }
     pushNewState([i, minIdx]);
     swap(elements, i, minIdx);
