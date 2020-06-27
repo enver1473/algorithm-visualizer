@@ -59,6 +59,16 @@ const Controls = ({
 
   const options = [
     {
+      value: 'countingSorts',
+      label: 'Counting Sorts',
+      children: [
+        {
+          value: 'radixSortLSD',
+          label: 'Radix Sort LSD',
+        },
+      ],
+    },
+    {
       value: 'exchangeSorts',
       label: 'Exchange Sorts',
       children: [
@@ -138,7 +148,7 @@ const Controls = ({
         },
         {
           value: 'bottomUpMergeSort',
-          label: 'Bottom-up Merge Sort'
+          label: 'Bottom-up Merge Sort',
         },
       ],
     },

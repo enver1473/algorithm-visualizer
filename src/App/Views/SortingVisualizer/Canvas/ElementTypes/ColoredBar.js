@@ -48,6 +48,6 @@ export default class ColoredBar {
     return this;
   };
 
-  getValue = () => this.hue;
+  getValue = () => Math.floor(this.hue);
 }
 

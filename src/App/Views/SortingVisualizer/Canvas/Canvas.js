@@ -20,6 +20,7 @@ import {
   quickGnomeSort,
   mergeSort,
   bottomUpMergeSort,
+  radixSortLSD,
   swap,
 } from './Algorithms/algorithms';
 import Controls from './Controls';
@@ -202,6 +203,17 @@ const Canvas = () => {
       callSort(mergeSort);
     } else if (algorithm === 'bottomUpMergeSort') {
       callSort(bottomUpMergeSort);
+    } else if (algorithm === 'radixSortLSD') {
+      if (vMethod === 'rainbow') {
+        notification.warning({
+          message: 'Float numbers',
+          description: 'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers.',
+          duration: 10,
+          placement: 'bottomLeft',
+        });
+        return;
+      }
+      callSort(radixSortLSD);
     }
   };
 

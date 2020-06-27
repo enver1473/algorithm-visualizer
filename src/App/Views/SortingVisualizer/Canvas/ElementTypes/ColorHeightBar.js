@@ -50,6 +50,6 @@ export default class ColorHeightBar {
     return this;
   };
 
-  getValue = () => this.hue;
+  getValue = () => this.height;
 }
 

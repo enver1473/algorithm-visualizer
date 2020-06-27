@@ -570,6 +570,61 @@ export const bottomUpMergeSort = () => {
 
 // ====== BOTTOM-UP MERGE SORT ======
 
+// ====== RADIX SORT LSD ======
+
+const countingSort = (exp) => {
+  let counts = [];
+  let output = [];
+  
+  for (let i = 0; i < count; i++) {
+    output.push(null);
+    if (i < 10) {
+      counts.push(0);
+    }
+  }
+
+  for (let i = 0; i < count; i++) {
+    counts[Math.floor(elements[i].getValue() / exp) % 10] += 1;
+  }
+
+  for (let i = 1; i < counts.length; i++) {
+    counts[i] += counts[i - 1];
+  }
+
+  for (let i = count - 1; i >= 0; i--) {
+    let outputIdx = counts[Math.floor(elements[i].getValue() / exp) % 10] - 1;
+    output[outputIdx] = mergeAtIndexes(outputIdx, i);
+    counts[Math.floor(elements[i].getValue() / exp) % 10] -= 1;
+  }
+  
+  for (let i = 0; i < count; i++) {
+    elements[i] = output[i].copy();
+    pushNewState([i]);
+  }
+};
+
+export const radixSortLSD = () => {
+  let maxE = maxElement();
+  for (let e = 1; Math.floor(maxE / e) > 0; e*=10) {
+    countingSort(e);
+  }
+  pushLastState();
+}
+
+const maxElement = () => {
+  let maxE = elements[0].getValue();
+
+  for (let i = 0; i < elements.length; i++) {
+    if (elements[i].getValue() > maxE) {
+      maxE = elements[i].getValue();
+    }
+  }
+
+  return maxE;
+};
+
+// ====== RADIX SORT LSD ======
+
 // ====== COMB GNOME SORT ======
 
 export const combGnomeSort = () => {
@@ -733,121 +788,3 @@ const midValue = (i1, i2, i3) => {
     }
   }
 };
-
-/*
-
-//=================== RADIX SORT ===================//
-
-
-function getMax() { 
-    let mx = vektor[0];
-    for (let i = 1; i < vektor.length; i++) {
-        if (vektor[i] > mx) {
-            mx = vektor[i]; 
-        }
-    }
-    return mx;
-}
-function countSort(n, exp) { 
-    var output = [];
-    var count = [];
-    for (let j = 0; j < n; j++) {
-    	output.push(1);
-    	if (j < 10) {
-    		count.push(0);
-    	}
-    } 
-    for (let i = 0; i < n; i++) {
-        count[(Math.floor(vektor[i]/exp))%10] += 1;
-    }
-    for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1]; 
-    }
-    for (let i = n - 1; i >= 0; i--) {
-        output[count[(Math.floor(vektor[i]/exp))%10] - 1] = vektor[i];
-        count[(Math.floor(vektor[i]/exp))%10] -= 1;
-    }
-    for (let i = 0; i < n; i++) {
-        vektor[i] = output[i];
-        setTimeout(function() {
-	        document.getElementsByClassName('n' + i)[0].style.height = ((output[i] / brojBrojeva) * 600).toString() + "px";
-	        document.getElementsByClassName('n' + i)[0].style.marginTop = (600 - (output[i] / brojBrojeva) * 600).toString() + "px";
-	    }, k * fr);
-	    k++;
-    }
-}
-function radixsort(n) {
-    var m = getMax();
-    for (let exp = 1; Math.floor(m/exp) > 0; exp *= 10) {
-        countSort(n, exp);
-    }
-}
-function main() { 
-    radixsort(vektor.length);
-}
-
-
-function manji(a, b) {
-	return vektor[a] < vektor[b];
-}
-
-function mergeSort(start, end, x) {
-	if ((start == end) || (start + 1 == end)) return;
-	let mid = start + Math.floor((end - start) / 2);
-	mergeSort(start, mid, x+1);
-	setTimeout(function() {
-		var el3 = document.getElementsByClassName('n' + mid)[0];
-		el3.style.backgroundColor = "red";
-	}, k*fr / 4);
-	mergeSort(mid, end, x+1);
-
-	i = start;
-	j = mid;
-	let lista = [];
-	let el3, el4;
-	while (i < mid && j < end) {
-		if (manji(i, j)) {
-			lista.push(vektor[i]);
-			i++;
-		} else {
-			lista.push(vektor[j]);
-			j++;
-		}
-	}
-	while (i < mid) {
-		lista.push(vektor[i]);
-		i++;
-	}
-	while (j < end) {
-		lista.push(vektor[j]);
-		j++;
-	}
-	setTimeout(function() {
-		var el3 = document.getElementsByClassName('n' + mid)[0];
-		el3.style.backgroundColor = "rgb(200,200,200)";
-	}, k*fr / 4);
-	if (x % 2 == 0) {
-		for (let l = start; l < end; l++) {
-			vektor[l] = lista[l-start];
-			setTimeout(function() {
-				var el1 = document.getElementsByClassName('n' + l)[0];
-				el1.style.height = ((lista[l-start] / brojBrojeva) * 600).toString() + "px";
-				el1.style.marginTop = (600 - (lista[l-start] / brojBrojeva) * 600).toString() + "px";
-			}, k * fr / 4);
-			k++;
-		}
-	} else {
-		for (let l = end - 1; l >= start; l--) {
-			vektor[l] = lista[l-start];
-			setTimeout(function() {
-				var el1 = document.getElementsByClassName('n' + l)[0];
-				el1.style.height = ((lista[l-start] / brojBrojeva) * 600).toString() + "px";
-				el1.style.marginTop = (600 - (lista[l-start] / brojBrojeva) * 600).toString() + "px";
-			}, k * fr / 4);
-			k++;
-		}
-	}
-	
-}
-
-*/
