@@ -598,6 +598,7 @@ const countingSort = (exp) => {
   }
   
   for (let i = 0; i < count; i++) {
+    pushNewState([i]);
     elements[i] = output[i].copy();
     pushNewState([i]);
   }
