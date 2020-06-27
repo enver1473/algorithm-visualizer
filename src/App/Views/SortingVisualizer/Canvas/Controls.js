@@ -136,6 +136,10 @@ const Controls = ({
           value: 'mergeSort',
           label: 'Merge Sort',
         },
+        {
+          value: 'bottomUpMergeSort',
+          label: 'Bottom-up Merge Sort'
+        },
       ],
     },
     {

@@ -350,47 +350,31 @@ export const insertionSort = () => {
 
 const setValuesAtIndexes = (i, j) => {
   if (elements[i] instanceof ColoredBar) {
-
     elements[i].hue = elements[j].hue;
-
   } else if (elements[i] instanceof ColorHeightBar) {
-
     elements[i].height = elements[j].height;
     elements[i].hue = elements[j].hue;
     elements[i].y = elements[j].y;
-
   } else if (elements[i] instanceof ColoredTriangle) {
-
     elements[i].hue = elements[j].hue;
-
   } else {
-
     elements[i].y = elements[j].y;
     elements[i].height = elements[j].height;
-
   }
 };
 
 const setValuesAtIndex = (i, element) => {
   if (elements[i] instanceof ColoredBar) {
-
     elements[i].hue = element.hue;
-
   } else if (elements[i] instanceof ColorHeightBar) {
-
     elements[i].height = element.height;
     elements[i].hue = element.hue;
     elements[i].y = element.y;
-
   } else if (elements[i] instanceof ColoredTriangle) {
-
     elements[i].hue = element.hue;
-
   } else {
-
     elements[i].y = element.y;
     elements[i].height = element.height;
-
   }
 };
 
@@ -475,36 +459,116 @@ export const mergeSort = (start = 0, end = count) => {
 
 const mergeAtIndexes = (i, j) => {
   if (elements[i] instanceof ColoredBar) {
-
     const element = elements[i].copy();
     element.hue = elements[j].hue;
     return element;
-
   } else if (elements[i] instanceof ColorHeightBar) {
-
     const element = elements[i].copy();
     element.height = elements[j].height;
     element.hue = elements[j].hue;
     element.y = elements[j].y;
     return element;
-
   } else if (elements[i] instanceof ColoredTriangle) {
-
     const element = elements[i].copy();
     element.hue = elements[j].hue;
     return element;
-
   } else {
-    
     const element = elements[i].copy();
     element.height = elements[j].height;
     element.y = elements[j].y;
     return element;
-
   }
 };
 
 // ====== MERGE SORT ======
+
+// ====== BOTTOM-UP MERGE SORT ======
+
+export const bottomUpMergeSort = () => {
+  // Iterate log(n) times through the block merging process until the final block size is the original array size
+  for (let b = 1; b < count; b <<= 1) {
+
+    // this loop is purely for drawing to the canvas
+    for (let k = 0; k < Math.ceil(count / b); k += 2) {
+      let start = b * k; // First block starting index
+      let mid = b * (k + 1); // Middle index between blocks
+      let end = b * (k + 2); // Second block ending index
+
+      let i = start;
+      let j = mid;
+      if (start >= count) {
+        return;
+      }
+
+      while (i < count && i < mid && j < count && j < end) {
+        if (elements[i].getValue() < elements[j].getValue()) {
+          pushNewState([i, j]);
+          pushNewState([i, j]);
+          i++;
+        } else {
+          pushNewState([i, j]);
+          pushNewState([i, j]);
+          j++;
+        }
+      }
+
+      while (i < count && i < mid) {
+        pushNewState([i]);
+        i++;
+      }
+      while (j < count && j < mid) {
+        pushNewState([j]);
+        j++;
+      }
+    }
+
+    // Go through (count / b) blocks, skipping one block each iteration (because two are merged each iteration)
+    for (let k = 0; k < Math.ceil(count / b); k += 2) {
+      let newElements = [];
+
+      let start = b * k; // First block starting index
+      let mid = b * (k + 1); // Middle index between blocks
+      let end = b * (k + 2); // Second block ending index
+
+      let i = start;
+      let j = mid;
+      if (start >= count) {
+        return;
+      }
+
+      while (i < count && i < mid && j < count && j < end) {
+        if (elements[i].getValue() < elements[j].getValue()) {
+          newElements.push(mergeAtIndexes(start + newElements.length, i));
+          i++;
+        } else {
+          newElements.push(mergeAtIndexes(start + newElements.length, j));
+          j++;
+        }
+      }
+
+      while (i < count && i < mid) {
+        newElements.push(mergeAtIndexes(start + newElements.length, i));
+        i++;
+      }
+      while (j < count && j < mid) {
+        newElements.push(mergeAtIndexes(start + newElements.length, j));
+        j++;
+      }
+
+      for (let l = start; l < end; l++) {
+        if (l >= count) break;
+        if (l - start >= newElements.length) break;
+
+        pushNewState([l]);
+        elements[l] = newElements[l - start].copy();
+        pushNewState([l]);
+      }
+    }
+  }
+  pushLastState();
+};
+
+// ====== BOTTOM-UP MERGE SORT ======
 
 // ====== COMB GNOME SORT ======
 

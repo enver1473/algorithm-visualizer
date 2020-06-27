@@ -19,6 +19,7 @@ import {
   combGnomeSort,
   quickGnomeSort,
   mergeSort,
+  bottomUpMergeSort,
   swap,
 } from './Algorithms/algorithms';
 import Controls from './Controls';
@@ -199,6 +200,8 @@ const Canvas = () => {
       callSort(quickGnomeSort);
     } else if (algorithm === 'mergeSort') {
       callSort(mergeSort);
+    } else if (algorithm === 'bottomUpMergeSort') {
+      callSort(bottomUpMergeSort);
     }
   };
 
