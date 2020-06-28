@@ -249,7 +249,6 @@ const Controls = ({
               style={{ width: '100%', textAlign: 'left' }}
               placeholder='Randomization method'
               onSelect={handleInputSelect}
-              defaultValue={'default'}
             >
               <Option value='default'>Default (random)</Option>
               <Option value='reversed'>Reversed input</Option>
