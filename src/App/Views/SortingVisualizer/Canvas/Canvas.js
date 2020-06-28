@@ -131,7 +131,7 @@ const forwardOrReverse = () => {
 const Canvas = () => {
   let algorithm = '';
   let input = 'default';
-  let autoRebuild = false;
+  let autoRebuild = true;
 
   const handleCascaderChange = (value) => {
     algorithm = value[value.length - 1];
