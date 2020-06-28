@@ -294,7 +294,7 @@ const Controls = ({
         </Row>
         <Row align='middle' gutter={[8, 8]}>
           <Col span={24}>
-            <Checkbox style={{ width: '100%' }} onChange={handleCheckChange}>
+            <Checkbox style={{ width: '100%' }} onChange={handleCheckChange} defaultChecked={true}>
               Auto-(re)build
             </Checkbox>
           </Col>
