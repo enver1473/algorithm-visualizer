@@ -22,6 +22,7 @@ import {
   bottomUpMergeSort,
   radixSortLSD,
   swap,
+  shellSort,
 } from './Algorithms/algorithms';
 import Controls from './Controls';
 import ColoredBar from './ElementTypes/ColoredBar';
@@ -203,6 +204,8 @@ const Canvas = () => {
       callSort(mergeSort);
     } else if (algorithm === 'bottomUpMergeSort') {
       callSort(bottomUpMergeSort);
+    } else if (algorithm === 'shellSort') {
+      callSort(shellSort);
     } else if (algorithm === 'radixSortLSD') {
       if (vMethod === 'rainbow') {
         notification.warning({

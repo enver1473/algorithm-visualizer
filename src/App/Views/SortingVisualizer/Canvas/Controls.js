@@ -153,8 +153,18 @@ const Controls = ({
       ],
     },
     {
-      value: 'insertionSort',
-      label: 'Insertion Sort',
+      value: 'insertionSorts',
+      label: 'Insertion Sorts',
+      children: [
+        {
+          value: 'insertionSort',
+          label: 'Insertion Sort',
+        },
+        {
+          value: 'shellSort',
+          label: 'Shell Sort',
+        },
+      ],
     },
     {
       value: 'combSort',
