@@ -384,7 +384,7 @@ const setValuesAtIndex = (i, element) => {
 
 export const shellSort = () => {
   let shrinkFactor = 2;
-  for (let gap = Math.floor(count / shrinkFactor) - 1; gap > 0; gap = Math.floor(gap / shrinkFactor) - 1) {
+  for (let gap = Math.floor(count / shrinkFactor); gap > 0; gap = Math.floor(gap / shrinkFactor)) {
     console.log(gap);
     for (let i = gap; i < count; i++) {
       let current = elements[i].copy();
