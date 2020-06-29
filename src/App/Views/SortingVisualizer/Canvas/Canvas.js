@@ -5,6 +5,11 @@ import _ from 'underscore';
 
 import Bar from './ElementTypes/Bar';
 import Dot from './ElementTypes/Dot';
+import ColoredBar from './ElementTypes/ColoredBar';
+import ColorHeightBar from './ElementTypes/ColorHeightBar';
+import ColoredTriangle from './ElementTypes/ColoredTriangle';
+import Triangle from './ElementTypes/HelperClasses/Triangle';
+
 import {
   bubbleSort,
   coctailShakerSort,
@@ -19,16 +24,13 @@ import {
   combGnomeSort,
   quickGnomeSort,
   mergeSort,
+  mergeSortInPlace,
   bottomUpMergeSort,
   radixSortLSD,
   swap,
   shellSort,
 } from './Algorithms/algorithms';
 import Controls from './Controls';
-import ColoredBar from './ElementTypes/ColoredBar';
-import ColorHeightBar from './ElementTypes/ColorHeightBar';
-import ColoredTriangle from './ElementTypes/ColoredTriangle';
-import Triangle from './ElementTypes/HelperClasses/Triangle';
 
 // Array of random numbers
 export let arr = [];
@@ -99,7 +101,7 @@ const pauseOrPlay = () => {
     notification.warning({
       message: 'No animations!',
       description: 'You have to build the animations before trying to play them.',
-      duration: 4,
+      duration: 8,
       placement: 'bottomLeft',
     });
     return;
@@ -130,7 +132,7 @@ const forwardOrReverse = () => {
 
 const Canvas = () => {
   let algorithm = '';
-  let input = 'default';
+  let input = '';
   let autoRebuild = true;
 
   const handleCascaderChange = (value) => {
@@ -143,6 +145,14 @@ const Canvas = () => {
         placement: 'bottomLeft',
       });
     } else {
+      if (input === '') {
+        notification.warning({
+          message: 'Input type not selected!',
+          description: `Please select one of the given input array types.`,
+          duration: 8,
+          placement: 'bottomLeft',
+        });
+      }
       randomize(input);
       sort();
     }
@@ -154,7 +164,7 @@ const Canvas = () => {
       notification.warning({
         message: 'No array to sort!',
         description: `You have to generate an array using the 'Input' select.`,
-        duration: 4,
+        duration: 8,
         placement: 'bottomLeft',
       });
       return;
@@ -172,7 +182,7 @@ const Canvas = () => {
     if (!algorithm) {
       notification.warning({
         message: 'Please choose an algorithm!',
-        duration: 4,
+        duration: 8,
         placement: 'bottomLeft',
       });
       return;
@@ -204,13 +214,16 @@ const Canvas = () => {
       callSort(mergeSort);
     } else if (algorithm === 'bottomUpMergeSort') {
       callSort(bottomUpMergeSort);
+    } else if (algorithm === 'mergeSortInPlace') {
+      callSort(mergeSortInPlace);
     } else if (algorithm === 'shellSort') {
       callSort(shellSort);
     } else if (algorithm === 'radixSortLSD') {
       if (vMethod === 'rainbow') {
         notification.warning({
           message: 'Float numbers',
-          description: 'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers.',
+          description:
+            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers.',
           duration: 10,
           placement: 'bottomLeft',
         });
@@ -246,6 +259,15 @@ const Canvas = () => {
 
   const handleInputSelect = (value) => {
     input = value;
+
+    if (input === '') {
+      notification.warning({
+        message: 'Input type not selected!',
+        description: `Please select one of the given input array types.`,
+        duration: 8,
+        placement: 'bottomLeft',
+      });
+    }
     randomize(input);
     if (autoRebuild) {
       sort();
@@ -256,12 +278,30 @@ const Canvas = () => {
   const handleVMethodChange = (value) => {
     vMethod = value;
     if (autoRebuild) {
+      if (input === '') {
+        notification.warning({
+          message: 'Input type not selected!',
+          description: `Please select one of the given input array types.`,
+          duration: 8,
+          placement: 'bottomLeft',
+        });
+      }
+
       randomize(input);
       sort();
     }
   };
 
   const reShuffle = () => {
+    if (input === '') {
+      notification.warning({
+        message: 'Input type not selected!',
+        description: `Please select one of the given input array types.`,
+        duration: 8,
+        placement: 'bottomLeft',
+      });
+    }
+
     randomize(input);
     if (autoRebuild) {
       sort();
@@ -279,10 +319,19 @@ const Canvas = () => {
       5: 200,
       6: 500,
       7: 1000,
-    }
+    };
     count = values[value];
     barWidth = width / count;
     if (autoRebuild) {
+      if (input === '') {
+        notification.warning({
+          message: 'Input type not selected!',
+          description: `Please select one of the given input array types.`,
+          duration: 8,
+          placement: 'bottomLeft',
+        });
+      }
+
       randomize(input);
       sort();
     }

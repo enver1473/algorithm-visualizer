@@ -385,7 +385,6 @@ const setValuesAtIndex = (i, element) => {
 export const shellSort = () => {
   let shrinkFactor = 2;
   for (let gap = Math.floor(count / shrinkFactor); gap > 0; gap = Math.floor(gap / shrinkFactor)) {
-    console.log(gap);
     for (let i = gap; i < count; i++) {
       let current = elements[i].copy();
       let j;
@@ -506,12 +505,57 @@ const mergeAtIndexes = (i, j) => {
 
 // ====== MERGE SORT ======
 
+// ====== MERGE SORT IN-PLACE ======
+
+const mergeSortInPlaceHelper = (start, end) => {
+  if (start >= end) return;
+
+  let mid = start + Math.floor((end - start) / 2);
+  mergeSortInPlaceHelper(start, mid);
+  mergeSortInPlaceHelper(mid + 1, end);
+
+  let start2 = mid + 1;
+
+  if (elements[mid].getValue() <= elements[start2].getValue()) {
+    return;
+  }
+
+  while (start <= mid && start2 <= end) {
+    if (elements[start].getValue() <= elements[start2].getValue()) {
+      start++;
+    } else {
+      let temp = elements[start2].copy();
+      let index = start2;
+
+      while (index !== start) {
+        pushNewState([index, index - 1]);
+        setValuesAtIndexes(index, index - 1);
+        pushNewState([index, index - 1]);
+        index--;
+      }
+      pushNewState([start, start2]);
+      setValuesAtIndex(start, temp);
+      pushNewState([start, start2]);
+
+      start++;
+      mid++;
+      start2++;
+    }
+  }
+};
+
+export const mergeSortInPlace = (start = 0, end = count - 1) => {
+  mergeSortInPlaceHelper(start, end);
+  pushLastState();
+};
+
+// ====== MERGE SORT IN-PLACE ======
+
 // ====== BOTTOM-UP MERGE SORT ======
 
 export const bottomUpMergeSort = () => {
-  // Iterate log(n) times through the block merging process until the final block size is the original array size
+  // Iterate log(n) times through the block merging process until the final block size is in the interval [n / 2, n - 1]
   for (let b = 1; b < count; b <<= 1) {
-
     // this loop is purely for drawing to the canvas
     for (let k = 0; k < Math.ceil(count / b); k += 2) {
       let start = b * k; // First block starting index
@@ -599,7 +643,7 @@ export const bottomUpMergeSort = () => {
 const countingSort = (exp) => {
   let counts = [];
   let output = [];
-  
+
   for (let i = 0; i < count; i++) {
     output.push(null);
     if (i < 10) {
@@ -620,7 +664,7 @@ const countingSort = (exp) => {
     output[outputIdx] = mergeAtIndexes(outputIdx, i);
     counts[Math.floor(elements[i].getValue() / exp) % 10] -= 1;
   }
-  
+
   for (let i = 0; i < count; i++) {
     pushNewState([i]);
     elements[i] = output[i].copy();
@@ -630,11 +674,11 @@ const countingSort = (exp) => {
 
 export const radixSortLSD = () => {
   let maxE = maxElement();
-  for (let e = 1; Math.floor(maxE / e) > 0; e*=10) {
+  for (let e = 1; Math.floor(maxE / e) > 0; e *= 10) {
     countingSort(e);
   }
   pushLastState();
-}
+};
 
 const maxElement = () => {
   let maxE = elements[0].getValue();
