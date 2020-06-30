@@ -27,9 +27,10 @@ import {
   mergeSortInPlace,
   bottomUpMergeSort,
   radixSortLSD,
-  swap,
   shellSort,
-} from './Algorithms/algorithms';
+  swap,
+} from './Algorithms';
+
 import Controls from './Controls';
 
 // Array of random numbers
