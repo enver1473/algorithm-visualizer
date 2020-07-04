@@ -30,11 +30,11 @@ export default class ColoredBar {
     return newColoredBar;
   }
 
-  show = (color) => {
+  show = (colorType) => {
     globalP.fill(0, 0, globalP.map(backgroundColor, 0, 255, 0, 100));
     globalP.rect(this.x, 0, this.width, windowHeight);
 
-    if (color === 'red') {
+    if (colorType === 'accent') {
       if (this.hue >= 0 && this.hue <= 40) {
         globalP.fill(0, 0, 0);
       } else {

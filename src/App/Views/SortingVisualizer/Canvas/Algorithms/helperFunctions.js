@@ -1,6 +1,4 @@
-import { states, elements, count, vMethod } from '../Canvas';
-import Bar from '../ElementTypes/Bar';
-import Dot from '../ElementTypes/Dot';
+import { states, elements, count } from '../Canvas';
 import ColoredBar from '../ElementTypes/ColoredBar';
 import ColorHeightBar from '../ElementTypes/ColorHeightBar';
 import ColoredTriangle from '../ElementTypes/ColoredTriangle';
@@ -70,57 +68,30 @@ export const maxElement = () => {
   return maxE;
 };
 
-export const pushLastState = () => {
-  // Push last state with no accent colors
-  const newState = [];
-  for (let k = 0; k < count; k++) {
-    let color = '#f8efba';
-
-    let element;
-
-    if (vMethod === 'barPlot') {
-      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
-    } else if (vMethod === 'hrPyramid') {
-      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
-    } else if (vMethod === 'scatterPlot') {
-      element = new Dot(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
-    } else if (vMethod === 'rainbow') {
-      element = elements[k].copy();
-    } else if (vMethod === 'rainbowBarPlot') {
-      element = elements[k].copy();
-    } else if (vMethod === 'rainbowCircle') {
-      element = elements[k].copy();
-    }
-    newState.push(element);
-  }
-  states.push(newState);
-};
-
 export const pushNewState = (accentIdxs = []) => {
   const newState = [];
 
   for (let i = 0; i < accentIdxs.length; i++) {
-    let color = '#ff0000';
-    let k = accentIdxs[i];
-
     let element;
 
-    if (vMethod === 'barPlot') {
-      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
-    } else if (vMethod === 'hrPyramid') {
-      element = new Bar(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
-    } else if (vMethod === 'scatterPlot') {
-      element = new Dot(elements[k].x, elements[k].y, elements[k].width, elements[k].height, color);
-    } else if (vMethod === 'rainbow') {
-      element = elements[k].copy();
-    } else if (vMethod === 'rainbowBarPlot') {
-      element = elements[k].copy();
-    } else if (vMethod === 'rainbowCircle') {
-      element = elements[k].copy();
-    }
+    element = elements[accentIdxs[i]].copy();
+
     newState.push(element);
   }
 
+  states.push(newState);
+};
+
+export const pushLastState = () => {
+  // Push last state with no accent colors
+  const newState = [];
+  for (let k = 0; k < count; k++) {
+    let element;
+
+    element = elements[k].copy();
+
+    newState.push(element);
+  }
   states.push(newState);
 };
 
@@ -159,10 +130,10 @@ export const swap = (arr, i, j) => {
   }
 };
 
-export const midValue = (i1, i2, i3) => {
-  let v1 = elements[i1].getValue();
-  let v2 = elements[i2].getValue();
-  let v3 = elements[i3].getValue();
+export const midValue = (i1, i2, i3) => { // i1 => index1, i2 => index2, i3 => index3
+  let v1 = elements[i1].getValue(); // v1 => value1
+  let v2 = elements[i2].getValue(); // v2 => value2
+  let v3 = elements[i3].getValue(); // v3 => value3
 
   if (v1 > v2) {
     if (v1 > v3) {

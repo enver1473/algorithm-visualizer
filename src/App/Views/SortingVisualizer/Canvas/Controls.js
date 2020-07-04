@@ -84,6 +84,10 @@ const Controls = ({
           value: 'gnomeSort',
           label: 'Gnome Sort',
         },
+        {
+          value: 'combSort',
+          label: 'Comb Sort',
+        },
       ],
     },
     {
@@ -154,6 +158,10 @@ const Controls = ({
           value: 'mergeSortInPlace',
           label: 'Merge Sort (in-place)'
         },
+        {
+          value: 'weaveMergeSort',
+          label: 'Weave Merge Sort',
+        }
       ],
     },
     {
@@ -169,10 +177,6 @@ const Controls = ({
           label: 'Shell Sort',
         },
       ],
-    },
-    {
-      value: 'combSort',
-      label: 'Comb Sort',
     },
   ];
 

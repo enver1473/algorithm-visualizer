@@ -3,12 +3,12 @@ import P5Wrapper from 'react-p5-wrapper';
 import { Row, Col, notification } from 'antd';
 import _ from 'underscore';
 
-import Bar from './ElementTypes/Bar';
-import Dot from './ElementTypes/Dot';
-import ColoredBar from './ElementTypes/ColoredBar';
-import ColorHeightBar from './ElementTypes/ColorHeightBar';
-import ColoredTriangle from './ElementTypes/ColoredTriangle';
-import Triangle from './ElementTypes/HelperClasses/Triangle';
+import Bar from '../ElementTypes/Bar';
+import Dot from '../ElementTypes/Dot';
+import ColoredBar from '../ElementTypes/ColoredBar';
+import ColorHeightBar from '../ElementTypes/ColorHeightBar';
+import ColoredTriangle from '../ElementTypes/ColoredTriangle';
+import Triangle from '../ElementTypes/HelperClasses/Triangle';
 
 import {
   bubbleSort,
@@ -25,13 +25,14 @@ import {
   quickGnomeSort,
   mergeSort,
   mergeSortInPlace,
+  weaveMergeSort,
   bottomUpMergeSort,
   radixSortLSD,
   shellSort,
   swap,
-} from './Algorithms';
+} from '../Algorithms';
 
-import Controls from './Controls';
+import Controls from '../Controls';
 
 // Array of random numbers
 export let arr = [];
@@ -72,6 +73,12 @@ let dir = 1;
 
 // Background Color
 let backgroundColor;
+
+// Primary Color
+export let primaryColor = '#f8efba';
+
+// Accent Color
+export let accentColor = '#ff0000';
 
 // triangle pointer Distance from Center Multiplier
 let pDCM = (height / 21) * 10;
@@ -217,6 +224,8 @@ const Canvas = () => {
       callSort(bottomUpMergeSort);
     } else if (algorithm === 'mergeSortInPlace') {
       callSort(mergeSortInPlace);
+    } else if (algorithm === 'weaveMergeSort') {
+      callSort(weaveMergeSort);
     } else if (algorithm === 'shellSort') {
       callSort(shellSort);
     } else if (algorithm === 'radixSortLSD') {
@@ -365,13 +374,7 @@ const Canvas = () => {
       </Row>
       <Row justify='center' style={{ backgroundColor: 'white' }}>
         <Col span={24}>
-          <P5Wrapper
-            sketch={sketch}
-            style={{
-              boxShadow: '0 0 10px 10px rgba(0,0,0,0.1)',
-              border: '1px solid black',
-            }}
-          />
+          <P5Wrapper sketch={sketch} />
         </Col>
       </Row>
     </>
@@ -380,9 +383,9 @@ const Canvas = () => {
 
 export default Canvas;
 
-const showLastState = (index) => {
+const showFinalState = (index) => {
   for (let element of states[index]) {
-    element.show('lastShow');
+    element.show('original');
   }
 };
 
@@ -399,7 +402,7 @@ export const sketch = (p) => {
 
     p.noLoop();
     p.frameRate(fps);
-    p.fill('#f8efba');
+    p.fill(primaryColor);
     p.colorMode(p.HSB);
     p.noStroke();
   };
@@ -412,7 +415,7 @@ export const sketch = (p) => {
           for (let i = oldStateIdx; i < stateIdx; i++) {
             if (i >= states.length) break;
             for (let element of states[i]) {
-              element.show('#f8efba');
+              element.show(primaryColor);
             }
           }
         } else {
@@ -425,7 +428,7 @@ export const sketch = (p) => {
               }
 
               for (let element of states[i]) {
-                element.show('#f8efba');
+                element.show(primaryColor);
               }
             }
 
@@ -440,13 +443,13 @@ export const sketch = (p) => {
       }
 
       if (stateIdx >= states.length) {
-        showLastState(states.length - 1);
+        showFinalState(states.length - 1);
 
         p.noLoop();
         loop = false;
         return;
       } else if (stateIdx < 0) {
-        showLastState(0);
+        showFinalState(0);
 
         p.noLoop();
         loop = false;
@@ -454,7 +457,7 @@ export const sketch = (p) => {
       }
 
       for (let i = 0; i < states[stateIdx].length; i++) {
-        states[stateIdx][i].show('red');
+        states[stateIdx][i].show('accent');
       }
       oldStateIdx = stateIdx;
       stateIdx += dir * inc;
@@ -551,11 +554,11 @@ const addElement = (idx, rNumber) => {
   let element;
 
   if (vMethod === 'barPlot') {
-    element = new Bar(idx * barWidth, height - rNumber, barWidth, rNumber, '#f8efba');
+    element = new Bar(idx * barWidth, height - rNumber, barWidth, rNumber, primaryColor);
   } else if (vMethod === 'hrPyramid') {
-    element = new Bar(idx * barWidth, (height - rNumber) / 2, barWidth, rNumber, '#f8efba');
+    element = new Bar(idx * barWidth, (height - rNumber) / 2, barWidth, rNumber, primaryColor);
   } else if (vMethod === 'scatterPlot') {
-    element = new Dot(idx * barWidth, height - rNumber, barWidth, barWidth, '#f8efba');
+    element = new Dot(idx * barWidth, height - rNumber, barWidth, barWidth, primaryColor);
   } else if (vMethod === 'rainbow') {
     element = new ColoredBar(idx * barWidth, barWidth, rNumber);
   } else if (vMethod === 'rainbowBarPlot') {
@@ -617,7 +620,7 @@ const showAllElements = () => {
   }
 
   for (let element of elements) {
-    element.show('lastShow');
+    element.show('original');
   }
 };
 

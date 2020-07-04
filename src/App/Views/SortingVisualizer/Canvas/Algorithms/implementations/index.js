@@ -12,6 +12,7 @@ export { combGnomeSort } from './combGnomeSort';
 export { quickGnomeSort } from './quickGnomeSort';
 export { mergeSort } from './mergeSort';
 export { mergeSortInPlace } from './mergeSortInPlace';
+export { weaveMergeSort } from './weaveMergeSort';
 export { bottomUpMergeSort } from './bottomUpMergeSort';
 export { radixSortLSD } from './radixSortLSD';
 export { shellSort } from './shellSort';

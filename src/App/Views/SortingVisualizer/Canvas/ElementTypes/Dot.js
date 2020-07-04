@@ -1,4 +1,4 @@
-import { globalP, backgroundColor, height as windowHeight } from '../Canvas';
+import { globalP, backgroundColor, height as windowHeight, primaryColor, accentColor } from '../Canvas';
 
 export default class Dot {
   x;
@@ -19,26 +19,25 @@ export default class Dot {
     return new Dot(this.x, this.y, this.width, this.height, this.color);
   };
 
-  show = (newColor) => {
-    let color = this.color;
-    if (newColor !== 'red' && newColor !== 'lastShow') {
-      color = newColor ? newColor : this.color;
-    }
+  show = (colorType) => {
 
     globalP.fill(backgroundColor);
     globalP.rect(this.x, 0, this.width, windowHeight);
 
-    if (color === '#ff0000') {
-      globalP.fill(color);
+    if (colorType === 'accent') {
+      globalP.fill(accentColor);
       globalP.rect(this.x, 0, this.width, windowHeight);
-      globalP.fill('#F8EFBA');
+      globalP.fill(primaryColor);
+      globalP.rect(this.x, this.y, this.width, this.height);
+    } else if (colorType === 'original') {
+      globalP.fill(primaryColor);
       globalP.rect(this.x, this.y, this.width, this.height);
     } else {
-      globalP.fill(color);
+      globalP.fill(this.color);
       globalP.rect(this.x, this.y, this.width, this.height);
     }
 
-    globalP.fill('#F8EFBA');
+    globalP.fill(primaryColor);
 
     return this;
   };

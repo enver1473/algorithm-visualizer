@@ -39,11 +39,11 @@ export default class ColoredTriangle {
     return newColoredTriangle;
   }
 
-  show = (arg) => {
-    if (arg === 'red') {
+  show = (colorType) => {
+    if (colorType === 'accent') {
       this.pointer.show();
       globalP.fill(this.hue, 100, 100);
-    } else if (arg === 'lastShow') {
+    } else if (colorType === 'original') {
       globalP.fill(this.hue, 100, 100);
     } else {
       this.pointer.hide();

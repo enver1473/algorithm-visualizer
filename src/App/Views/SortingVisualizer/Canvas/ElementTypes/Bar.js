@@ -1,4 +1,4 @@
-import { globalP, backgroundColor, height as windowHeight } from '../Canvas';
+import { globalP, backgroundColor, height as windowHeight, primaryColor, accentColor } from '../Canvas';
 
 export default class Bar {
   x;
@@ -19,10 +19,10 @@ export default class Bar {
     return new Bar(this.x, this.y, this.width, this.height, this.color);
   };
 
-  show = (newColor) => {
-    let color = this.color;
-    if (newColor !== 'red' && newColor !== 'lastShow') {
-      color = newColor ? newColor : this.color;
+  show = (colorType) => {
+    let color = primaryColor;
+    if (colorType === 'accent') {
+      color = accentColor;
     }
     globalP.fill(backgroundColor);
     globalP.rect(this.x, 0, this.width, windowHeight);
@@ -30,7 +30,7 @@ export default class Bar {
     globalP.fill(color);
     globalP.rect(this.x, this.y, this.width, this.height);
 
-    globalP.fill('#F8EFBA');
+    globalP.fill(primaryColor);
 
     return this;
   };
