@@ -21,10 +21,12 @@ const mergeSortHelper = (start, end) => {
       j++;
     }
   }
+  
   while (i < mid) {
     list.push(mergeAtIndexes(start + list.length, i));
     i++;
   }
+  
   while (j < end) {
     list.push(mergeAtIndexes(start + list.length, j));
     j++;

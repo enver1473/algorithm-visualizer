@@ -33,6 +33,11 @@ const Controls = ({
 
   const speedMarks = {
     1: '1',
+    10: '10',
+    20: '20',
+    30: '30',
+    40: '40',
+    50: '50',
     60: '60',
   };
 
@@ -45,6 +50,8 @@ const Controls = ({
     6: '32',
     7: '64',
     8: '128',
+    9: '256',
+    10: '512',
   };
 
   const countMarks = {
@@ -116,6 +123,10 @@ const Controls = ({
           value: 'quickGnomeSort',
           label: 'Quick Gnome Sort',
         },
+        {
+          value: 'weaveMergeSort',
+          label: 'Weave Merge Sort',
+        }
       ],
     },
     {
@@ -123,22 +134,16 @@ const Controls = ({
       label: 'Distribution Sorts',
       children: [
         {
-          value: 'quickSort',
-          label: 'Quick Sort',
-          children: [
-            {
-              value: 'quickSortLL',
-              label: 'LL Pointers',
-            },
-            {
-              value: 'quickSortLR',
-              label: 'LR Pointers',
-            },
-            {
-              value: 'quickSortDualPivot',
-              label: 'Dual Pivot',
-            },
-          ],
+          value: 'quickSortLL',
+          label: 'Quick Sort LL Pointers',
+        },
+        {
+          value: 'quickSortLR',
+          label: 'Quick Sort LR Pointers',
+        },
+        {
+          value: 'quickSortDualPivot',
+          label: 'Quick Sort Dual Pivot',
         },
       ],
     },
@@ -158,10 +163,6 @@ const Controls = ({
           value: 'mergeSortInPlace',
           label: 'Merge Sort (in-place)'
         },
-        {
-          value: 'weaveMergeSort',
-          label: 'Weave Merge Sort',
-        }
       ],
     },
     {
@@ -332,7 +333,6 @@ const Controls = ({
           </Col>
           <Col span={16}>
             <Slider
-              tooltipVisible={false}
               marks={speedMarks}
               min={1}
               max={60}
@@ -355,7 +355,7 @@ const Controls = ({
               tooltipVisible={false}
               marks={incrementMarks}
               min={1}
-              max={8}
+              max={10}
               step={1}
               defaultValue={1}
               onChange={handleIncrementChange}
