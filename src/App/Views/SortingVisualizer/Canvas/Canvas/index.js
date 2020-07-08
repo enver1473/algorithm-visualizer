@@ -228,18 +228,54 @@ const Canvas = () => {
       callSort(weaveMergeSort);
     } else if (algorithm === 'shellSort') {
       callSort(shellSort);
-    } else if (algorithm === 'radixSortLSD') {
+    } else if (algorithm === 'radixSortLSDb10') {
       if (vMethod === 'rainbow') {
         notification.warning({
           message: 'Float numbers',
           description:
-            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers.',
-          duration: 10,
+            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
+          duration: 12,
           placement: 'bottomLeft',
         });
         return;
       }
-      callSort(radixSortLSD);
+      callSort(() => radixSortLSD(10));
+    } else if (algorithm === 'radixSortLSDb8') {
+      if (vMethod === 'rainbow') {
+        notification.warning({
+          message: 'Float numbers',
+          description:
+            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
+          duration: 12,
+          placement: 'bottomLeft',
+        });
+        return;
+      }
+      callSort(() => radixSortLSD(8));
+    } else if (algorithm === 'radixSortLSDb4') {
+      if (vMethod === 'rainbow') {
+        notification.warning({
+          message: 'Float numbers',
+          description:
+            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
+          duration: 12,
+          placement: 'bottomLeft',
+        });
+        return;
+      }
+      callSort(() => radixSortLSD(4));
+    } else if (algorithm === 'radixSortLSDb2') {
+      if (vMethod === 'rainbow') {
+        notification.warning({
+          message: 'Float numbers',
+          description:
+            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
+          duration: 12,
+          placement: 'bottomLeft',
+        });
+        return;
+      }
+      callSort(() => radixSortLSD(2));
     }
   };
 

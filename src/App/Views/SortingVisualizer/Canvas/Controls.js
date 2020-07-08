@@ -70,8 +70,20 @@ const Controls = ({
       label: 'Counting Sorts',
       children: [
         {
-          value: 'radixSortLSD',
-          label: 'Radix Sort LSD',
+          value: 'radixSortLSDb10',
+          label: 'Radix Sort LSD (base 10)',
+        },
+        {
+          value: 'radixSortLSDb8',
+          label: 'Radix Sort LSD (base 8)',
+        },
+        {
+          value: 'radixSortLSDb4',
+          label: 'Radix Sort LSD (base 4)',
+        },
+        {
+          value: 'radixSortLSDb2',
+          label: 'Radix Sort LSD (base 2)',
         },
       ],
     },
