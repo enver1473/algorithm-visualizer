@@ -11,6 +11,8 @@ The app features:
 - several interactive controls for as much control as possible
 - and of course the main component, which is the drawing canvas
 
+You can try the app [here](https://sorting-visualizer-e.netlify.app).
+
 # The core idea
 
 The core idea is the drawing technique. Originally the idea was to have an array of states where each state is an instance of the array after each array change. Now, the general idea is not bad for small arrays and for a relatively small number of swaps compared to the array size (up to a couple thousand). The issue arises with algorithms which do a lot of swaps while sorting, so even for small arrays, the number of swaps is substantial, so the memory used rises to Gigabytes, which is obviously a problem. A big improvement on this technique is to still keep an external array, but instead of saving an instance of the original array each time, we only save the elements at the indices which are being changed (most commonly, swapped). This is a massive improvement. Now instead of keeping an instance of the array for each state which would be up to 1000 elements per state, thus leading to huge memory usage, we only really keep a constant number of elements, usually one or two, sometimes three elements from the array per state. This cuts down the memory usage substantially.
