@@ -299,8 +299,9 @@ const Canvas = () => {
     }, 300);
   };
 
-  const handleCheckChange = (e) => {
+  const handleCheckChange = (e, setAutoRebuild) => {
     autoRebuild = e.target.checked;
+    setAutoRebuild(autoRebuild);
   };
 
   const handleInputSelect = (value) => {

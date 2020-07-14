@@ -23,6 +23,7 @@ const Controls = ({
   reShuffle,
 }) => {
   const [play, setPlay] = useState(true);
+  const [autoRebuild, setAutoRebuild] = useState(true);
   const { looping, setLooping } = useSortContext();
 
   const playClickedHandler = () => {
@@ -138,7 +139,7 @@ const Controls = ({
         {
           value: 'weaveMergeSort',
           label: 'Weave Merge Sort',
-        }
+        },
       ],
     },
     {
@@ -173,7 +174,7 @@ const Controls = ({
         },
         {
           value: 'mergeSortInPlace',
-          label: 'Merge Sort (in-place)'
+          label: 'Merge Sort (in-place)',
         },
       ],
     },
@@ -280,7 +281,12 @@ const Controls = ({
         <Row gutter={[8, 8]} align='middle'>
           <Col span={12}></Col>
           <Col span={12}>
-            <Button type='primary' style={{ width: '100%' }} onClick={buildAnimations}>
+            <Button
+              type='primary'
+              style={{ width: '100%' }}
+              onClick={buildAnimations}
+              disabled={autoRebuild}
+            >
               {'Build animations'}
             </Button>
           </Col>
@@ -315,7 +321,11 @@ const Controls = ({
         </Row>
         <Row align='middle' gutter={[8, 8]}>
           <Col span={24}>
-            <Checkbox style={{ width: '100%' }} onChange={handleCheckChange} defaultChecked={true}>
+            <Checkbox
+              style={{ width: '100%' }}
+              onChange={(e) => handleCheckChange(e, setAutoRebuild)}
+              defaultChecked={true}
+            >
               Auto-(re)build
             </Checkbox>
           </Col>
