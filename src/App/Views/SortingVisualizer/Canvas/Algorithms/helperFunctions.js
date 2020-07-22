@@ -2,6 +2,7 @@ import { states, elements, count } from '../Canvas';
 import ColoredBar from '../ElementTypes/ColoredBar';
 import ColorHeightBar from '../ElementTypes/ColorHeightBar';
 import ColoredTriangle from '../ElementTypes/ColoredTriangle';
+import VarColoredTriangle from '../ElementTypes/VarColoredTriangle';
 
 export const setValuesAtIndexes = (i, j) => {
   if (elements[i] instanceof ColoredBar) {
@@ -12,6 +13,17 @@ export const setValuesAtIndexes = (i, j) => {
     elements[i].y = elements[j].y;
   } else if (elements[i] instanceof ColoredTriangle) {
     elements[i].hue = elements[j].hue;
+  } else if (elements[i] instanceof VarColoredTriangle) {
+    elements[i].hue = elements[j].hue;
+    elements[i].x1 = elements[j].x1;
+    elements[i].x2 = elements[j].x2;
+    elements[i].y1 = elements[j].y1;
+    elements[i].y2 = elements[j].y2;
+    elements[i].bx1 = elements[j].bx1;
+    elements[i].bx2 = elements[j].bx2;
+    elements[i].by1 = elements[j].by1;
+    elements[i].by2 = elements[j].by2;
+    elements[i].setMag();
   } else {
     elements[i].y = elements[j].y;
     elements[i].height = elements[j].height;
@@ -27,6 +39,17 @@ export const setValuesAtIndex = (i, element) => {
     elements[i].y = element.y;
   } else if (elements[i] instanceof ColoredTriangle) {
     elements[i].hue = element.hue;
+  } else if (elements[i] instanceof VarColoredTriangle) {
+    elements[i].hue = element.hue;
+    elements[i].x1 = element.x1;
+    elements[i].x2 = element.x2;
+    elements[i].y1 = element.y1;
+    elements[i].y2 = element.y2;
+    elements[i].bx1 = element.bx1;
+    elements[i].bx2 = element.bx2;
+    elements[i].by1 = element.by1;
+    elements[i].by2 = element.by2;
+    elements[i].setMag();
   } else {
     elements[i].y = element.y;
     elements[i].height = element.height;
@@ -47,6 +70,20 @@ export const mergeAtIndexes = (i, j) => {
   } else if (elements[i] instanceof ColoredTriangle) {
     const element = elements[i].copy();
     element.hue = elements[j].hue;
+    return element;
+  } else if (elements[i] instanceof VarColoredTriangle) {
+    const element = elements[i].copy();
+
+    element.hue = elements[j].hue;
+    element.x1 = elements[j].x1;
+    element.x2 = elements[j].x2;
+    element.y1 = elements[j].y1;
+    element.y2 = elements[j].y2;
+    element.bx1 = elements[j].bx1;
+    element.bx2 = elements[j].bx2;
+    element.by1 = elements[j].by1;
+    element.by2 = elements[j].by2;
+    element.setMag();
     return element;
   } else {
     const element = elements[i].copy();
@@ -119,6 +156,28 @@ export const swap = (arr, i, j) => {
     arr[i].hue = arr[j].hue;
 
     arr[j].hue = hue;
+  } else if (arr[i] instanceof VarColoredTriangle) {
+    const { hue, x1, x2, y1, y2, bx1, by1, bx2, by2 } = arr[i];
+
+    arr[i].hue = arr[j].hue;
+    arr[i].x1 = arr[j].x1;
+    arr[i].x2 = arr[j].x2;
+    arr[i].y1 = arr[j].y1;
+    arr[i].y2 = arr[j].y2;
+    arr[i].bx1 = arr[j].bx1;
+    arr[i].bx2 = arr[j].bx2;
+    arr[i].by1 = arr[j].by1;
+    arr[i].by2 = arr[j].by2;
+
+    arr[j].hue = hue;
+    arr[j].x1 = x1;
+    arr[j].x2 = x2;
+    arr[j].y1 = y1;
+    arr[j].y2 = y2;
+    arr[j].bx1 = bx1;
+    arr[j].bx2 = bx2;
+    arr[j].by1 = by1;
+    arr[j].by2 = by2;
   } else {
     const { height, y } = arr[i];
 
@@ -130,7 +189,8 @@ export const swap = (arr, i, j) => {
   }
 };
 
-export const midValue = (i1, i2, i3) => { // i1 => index1, i2 => index2, i3 => index3
+export const midValue = (i1, i2, i3) => {
+  // i1 => index1, i2 => index2, i3 => index3
   let v1 = elements[i1].getValue(); // v1 => value1
   let v2 = elements[i2].getValue(); // v2 => value2
   let v3 = elements[i3].getValue(); // v3 => value3

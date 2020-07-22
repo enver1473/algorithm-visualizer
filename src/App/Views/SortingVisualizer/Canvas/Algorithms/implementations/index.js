@@ -16,4 +16,7 @@ export { weaveMergeSort } from './weaveMergeSort';
 export { bottomUpMergeSort } from './bottomUpMergeSort';
 export { radixSortLSD } from './radixSortLSD';
 export { shellSort } from './shellSort';
+export { maxHeapSort } from './maxHeapSort';
+export { minHeapSort } from './minHeapSort';
+export { minMaxHeapSort } from './minMaxHeapSort';
 

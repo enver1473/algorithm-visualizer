@@ -122,6 +122,18 @@ const Controls = ({
           value: 'doubleSelectionSort',
           label: 'Double Selection Sort',
         },
+        {
+          value: 'maxHeapSort',
+          label: 'Max Heap Sort',
+        },
+        {
+          value: 'minHeapSort',
+          label: 'Min Heap Sort',
+        },
+        {
+          value: 'minMaxHeapSort',
+          label: 'Min-Max Heap Sort',
+        },
       ],
     },
     {
@@ -218,7 +230,11 @@ const Controls = ({
     {
       value: 'rainbowCircle',
       text: 'Rainbow Circle',
-    },
+    } /*
+    {
+      value: 'disparityCircle',
+      text: 'Disparity Circle',
+    },*/,
   ];
 
   const selectOptions = visualizationOptions.map(({ value, text }) => (
@@ -275,6 +291,7 @@ const Controls = ({
               <Option value='default'>Default (random)</Option>
               <Option value='reversed'>Reversed input</Option>
               <Option value='almostSorted'>Almost sorted</Option>
+              <Option value='doubleSlope'>Double-slope</Option>
             </Select>
           </Col>
         </Row>

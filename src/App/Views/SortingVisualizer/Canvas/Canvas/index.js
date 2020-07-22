@@ -8,6 +8,7 @@ import Dot from '../ElementTypes/Dot';
 import ColoredBar from '../ElementTypes/ColoredBar';
 import ColorHeightBar from '../ElementTypes/ColorHeightBar';
 import ColoredTriangle from '../ElementTypes/ColoredTriangle';
+import VarColoredTriangle from '../ElementTypes/VarColoredTriangle';
 import Triangle from '../ElementTypes/HelperClasses/Triangle';
 
 import {
@@ -29,6 +30,9 @@ import {
   bottomUpMergeSort,
   radixSortLSD,
   shellSort,
+  maxHeapSort,
+  minHeapSort,
+  minMaxHeapSort,
   swap,
 } from '../Algorithms';
 
@@ -228,6 +232,12 @@ const Canvas = () => {
       callSort(weaveMergeSort);
     } else if (algorithm === 'shellSort') {
       callSort(shellSort);
+    } else if (algorithm === 'maxHeapSort') {
+      callSort(maxHeapSort);
+    } else if (algorithm === 'minHeapSort') {
+      callSort(minHeapSort);
+    } else if (algorithm === 'minMaxHeapSort') {
+      callSort(minMaxHeapSort);
     } else if (algorithm === 'radixSortLSDb10') {
       if (vMethod === 'rainbow') {
         notification.warning({
@@ -503,7 +513,12 @@ export const sketch = (p) => {
 };
 
 const randomize = (value) => {
-  if (vMethod === 'rainbow' || vMethod === 'rainbowBarPlot' || vMethod === 'rainbowCircle') {
+  if (
+    vMethod === 'rainbow' ||
+    vMethod === 'rainbowBarPlot' ||
+    vMethod === 'rainbowCircle' ||
+    vMethod === 'disparityCircle'
+  ) {
     globalP.colorMode(globalP.RGB);
     globalP.background(backgroundColor);
     globalP.colorMode(globalP.HSB);
@@ -540,7 +555,7 @@ const randomizeHelper = (value) => {
     for (let i = 0; i < count; i++) {
       let number = parseInt((i + 1) * (height / count));
 
-      if (vMethod === 'rainbowCircle') {
+      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
         number = i + 1;
       }
 
@@ -561,7 +576,7 @@ const randomizeHelper = (value) => {
     for (let i = 0; i < count; i++) {
       let ele = height - i * (height / count);
 
-      if (vMethod === 'rainbowCircle') {
+      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
         ele = count - i;
       }
 
@@ -572,17 +587,37 @@ const randomizeHelper = (value) => {
     for (let i = 0; i < count; i++) {
       let ele = (height / count) * i + 1;
 
-      if (vMethod === 'rainbowCircle') {
+      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
         ele = i + 1;
       }
 
       arr.push(ele);
       addElement(i, ele);
     }
-    for (let i = 0; i < count / 10; i++) {
+    for (let i = 0; i < count / 16; i++) {
       const random1 = Math.floor(Math.random() * count);
       const random2 = Math.floor(Math.random() * count);
       swap(elements, random1, random2);
+    }
+  } else if (value === 'doubleSlope') {
+    for (let i = 0; i < count; i++) {
+      let ele;
+      if (i % 2 === 0) {
+        ele = (height / count) * i + 1;
+
+        if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+          ele = i + 1;
+        }
+      } else {
+        ele = height - i * (height / count);
+
+        if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+          ele = count - i;
+        }
+      }
+      
+      arr.push(ele);
+      addElement(i, ele);
     }
   }
 };
@@ -643,6 +678,75 @@ const addElement = (idx, rNumber) => {
       cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * (height / 9) * 4,
       cx + globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
       cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
+      rNumber,
+      trianglePointer
+    );
+  } else if (vMethod === 'disparityCircle') {
+    let x1 = cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
+    let y1 = cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
+    let x2 = cx + globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
+    let y2 = cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
+    let x3 = cx + globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
+    let y3 = cy + globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
+
+    let px1 = cx + globalP.sin(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let py1 = cy + globalP.cos(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let px2 = cx + globalP.sin(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let py2 = cy + globalP.cos(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let px3 =
+      cx + globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * (height / 9) * 4;
+    let py3 =
+      cy + globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * (height / 9) * 4;
+
+    if (count < 100) {
+      px1 = cx + globalP.sin(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+      py1 = cy + globalP.cos(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+      px2 = cx + globalP.sin(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+      py2 = cy + globalP.cos(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+    }
+
+    if (count < 30) {
+      x1 = cx + globalP.sin(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) * (pDCM * 1.2);
+      y1 = cy + globalP.cos(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) * (pDCM * 1.2);
+      x2 = cx + globalP.sin(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) * (pDCM * 1.2);
+      y2 = cy + globalP.cos(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) * (pDCM * 1.2);
+      px1 = cx + globalP.sin(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+      py1 = cy + globalP.cos(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+      px2 = cx + globalP.sin(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+      py2 = cy + globalP.cos(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+    }
+
+    let pointerOverlay = new Triangle(px1, py1, px2, py2, px3, py3, null);
+    let trianglePointer = new Triangle(x1, y1, x2, y2, x3, y3, pointerOverlay);
+
+    let tx1 = globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * ((height / 9) * 4);
+    let ty1 = globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * ((height / 9) * 4);
+    let tx2 = globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * ((height / 9) * 4);
+    let ty2 = globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * ((height / 9) * 4);
+
+    // right location x and y
+    let rx = cx + globalP.sin(globalP.PI + (rNumber / count) * globalP.TWO_PI) * ((height / 9) * 4);
+    let ry = cy + globalP.cos(globalP.PI + (rNumber / count) * globalP.TWO_PI) * ((height / 9) * 4);
+
+    let magnitude = globalP.map(
+      globalP.dist(tx1 + cx, ty1 + cy, rx, ry),
+      0,
+      height * (4 / 9) * 2,
+      1,
+      0
+    );
+
+    element = new VarColoredTriangle(
+      cx + tx1 * magnitude,
+      cy + ty1 * magnitude,
+      cx + tx2 * magnitude,
+      cy + ty2 * magnitude,
+      cx + tx1,
+      cy + ty1,
+      cx + tx2,
+      cy + ty2,
+      rx,
+      ry,
       rNumber,
       trianglePointer
     );

@@ -19,7 +19,7 @@ export default class ColoredTriangle {
     this.y2 = y2;
     this.pointer = trianglePointer;
 
-    let newHue = rNumber * (360 / count);
+    let newHue = 360 * (rNumber / count);
     this.hue = newHue;
   };
 
