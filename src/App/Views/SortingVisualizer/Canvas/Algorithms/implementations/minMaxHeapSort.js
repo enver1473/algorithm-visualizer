@@ -1,28 +1,9 @@
 import { elements, count } from '../../Canvas';
 import { swap, pushNewState, pushLastState } from '../helperFunctions';
-/*
-const heapify = (n, i) => {
-  let min = i;
-  let l = 2 * i + 1;
-  let r = 2 * i + 2;
 
-  if (l < n && elements[l].getValue() < elements[min].getValue()) {
-    min = l;
-  }
 
-  if (r < n && elements[r].getValue() < elements[min].getValue()) {
-    min = r;
-  }
-
-  if (min !== i) {
-    pushNewState([i, min]);
-    swap(elements, i, min);
-    pushNewState([i, min]);
-
-    heapify(n, min);
-  }
-};
-*/
+let swaps = 0;
+let comparisons = 0;
 
 const parent = (idx) => Math.ceil(idx / 2) - 1;
 
@@ -55,26 +36,31 @@ const downHeapMin = (n, idx) => {
     minIdx = leftChild(idx);
   } else {
     minIdx = elements[leftChild(idx)].getValue() < elements[rightChild(idx)].getValue() ? leftChild(idx) : rightChild(idx);
+    comparisons++;
   }
 
   if (llGrandChild(idx) < n) {
     if (elements[llGrandChild(idx)].getValue() < elements[minIdx].getValue()) {
       minIdx = llGrandChild(idx);
+      comparisons++;
     }
   }
   if (lrGrandChild(idx) < n) {
     if (elements[lrGrandChild(idx)].getValue() < elements[minIdx].getValue()) {
       minIdx = lrGrandChild(idx);
+      comparisons++;
     }
   }
   if (rlGrandChild(idx) < n) {
     if (elements[rlGrandChild(idx)].getValue() < elements[minIdx].getValue()) {
       minIdx = rlGrandChild(idx);
+      comparisons++;
     }
   }
   if (rrGrandChild(idx) < n) {
     if (elements[rrGrandChild(idx)].getValue() < elements[minIdx].getValue()) {
       minIdx = rrGrandChild(idx);
+      comparisons++;
     }
   }
 
@@ -84,11 +70,15 @@ const downHeapMin = (n, idx) => {
       pushNewState([idx, minIdx]);
       swap(elements, idx, minIdx);
       pushNewState([idx, minIdx]);
+      swaps++;
+      comparisons++;
 
       if (elements[minIdx].getValue() > elements[parent(minIdx)].getValue()) {
         pushNewState([minIdx, parent(minIdx)]);
         swap(elements, minIdx, parent(minIdx));
         pushNewState([minIdx, parent(minIdx)]);
+        swaps++;
+        comparisons++;
       }
       downHeapMin(n, minIdx);
     }
@@ -98,6 +88,8 @@ const downHeapMin = (n, idx) => {
       pushNewState([idx, minIdx]);
       swap(elements, idx, minIdx);
       pushNewState([idx, minIdx]);
+      swaps++;
+      comparisons++;
 
       downHeapMax(n, minIdx);
     }
@@ -115,26 +107,31 @@ const downHeapMax = (n, idx) => {
     maxIdx = leftChild(idx);
   } else {
     maxIdx = elements[leftChild(idx)].getValue() > elements[rightChild(idx)].getValue() ? leftChild(idx) : rightChild(idx);
+    comparisons++;
   }
 
   if (llGrandChild(idx) < n) {
     if (elements[llGrandChild(idx)].getValue() > elements[maxIdx].getValue()) {
       maxIdx = llGrandChild(idx);
+      comparisons++;
     }
   }
   if (lrGrandChild(idx) < n) {
     if (elements[lrGrandChild(idx)].getValue() > elements[maxIdx].getValue()) {
       maxIdx = lrGrandChild(idx);
+      comparisons++;
     }
   }
   if (rlGrandChild(idx) < n) {
     if (elements[rlGrandChild(idx)].getValue() > elements[maxIdx].getValue()) {
       maxIdx = rlGrandChild(idx);
+      comparisons++;
     }
   }
   if (rrGrandChild(idx) < n) {
     if (elements[rrGrandChild(idx)].getValue() > elements[maxIdx].getValue()) {
       maxIdx = rrGrandChild(idx);
+      comparisons++;
     }
   }
 
@@ -144,11 +141,15 @@ const downHeapMax = (n, idx) => {
       pushNewState([idx, maxIdx]);
       swap(elements, idx, maxIdx);
       pushNewState([idx, maxIdx]);
+      swaps++;
+      comparisons++;
 
       if (elements[maxIdx].getValue() < elements[parent(maxIdx)].getValue()) {
         pushNewState([maxIdx, parent(maxIdx)]);
         swap(elements, maxIdx, parent(maxIdx));
         pushNewState([maxIdx, parent(maxIdx)]);
+        swaps++;
+        comparisons++;
       }
       downHeapMax(n, maxIdx);
     }
@@ -158,6 +159,8 @@ const downHeapMax = (n, idx) => {
       pushNewState([idx, maxIdx]);
       swap(elements, idx, maxIdx);
       pushNewState([idx, maxIdx]);
+      swaps++;
+      comparisons++;
       
       downHeapMin(n, maxIdx);
     }
@@ -165,6 +168,8 @@ const downHeapMax = (n, idx) => {
 };
 
 export const minMaxHeapSort = () => {
+  swaps = 0;
+  comparisons = 0;
   for (let i = parent(count - 1); i >= 0; i--) {
     downHeap(count, i);
   }
@@ -173,9 +178,13 @@ export const minMaxHeapSort = () => {
     pushNewState([0, i]);
     swap(elements, 0, i);
     pushNewState([0, i]);
+    swaps++;
 
     downHeap(i, 0);
   }
+  console.log(`MIN-MAX HEAP SORT:`);
+  console.log(`   SWAPS: ${swaps}`);
+  console.log(`   COMPARISONS: ${comparisons}`);
 
   pushLastState();
 };

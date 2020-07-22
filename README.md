@@ -113,6 +113,9 @@ Following is a list of the algorithms currently implemented:
 - Selection Sorts
   - Selection Sort
   - Double Selection Sort
+  - Max Heap Sort
+  - Min Heap Sort
+  - Min-Max Heap Sort
 - Hybrid Sorts
   - Comb-gnome Sort
   - Quick-gnome Sort
