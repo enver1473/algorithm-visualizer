@@ -1,0 +1,167 @@
+[33mcommit 30d6161767c4b56302aa93fc0bfed68edacf4415[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Wed Jul 22 17:01:44 2020 +0200
+
+    updated README.md
+
+[33mcommit 9a094ee80fa9e972286352c53bb6804954333d39[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Wed Jul 22 15:39:10 2020 +0200
+
+    Added 3 types of Heap Sorts
+
+[33mcommit 9b104fb8a40490f89b54f84ab7ff54058c1d41c6[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Tue Jul 14 23:13:22 2020 +0200
+
+    minor changes
+
+[33mcommit c8f3dbbbaa195ebee670ce7b1c2189b7f3b72caa[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Sat Jul 11 11:09:39 2020 +0200
+
+    Updated README.md
+
+[33mcommit 9e29d6e4126d9602cb0decac56cd9c95636580cd[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Sat Jul 11 01:02:10 2020 +0200
+
+    updated readme
+
+[33mcommit 1d50ca93e35acaa3dffd2c0772eaeccb64ad6b52[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Wed Jul 8 12:49:54 2020 +0200
+
+    Added radix sort for multiple bases
+
+[33mcommit b603de951d5caca5fd6c2d1275f9858b1f19954a[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Mon Jul 6 23:47:07 2020 +0200
+
+    minor changes
+
+[33mcommit 572a800016957109d121f18b814490428cd933d9[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Sat Jul 4 12:06:28 2020 +0200
+
+    Added weave merge sort & did minor refactor
+
+[33mcommit 0345ec82200593a55db5edf4c1b48aadeb4df2da[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Tue Jun 30 21:34:01 2020 +0200
+
+    refactor
+
+[33mcommit 35a63b7902d1b099e6cf33efd27542a07ca22477[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Mon Jun 29 15:52:33 2020 +0200
+
+    added in-place merge sort
+
+[33mcommit 45e386d16635c150d2dea5589640b5ad8831a65b[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Mon Jun 29 01:38:26 2020 +0200
+
+    minor change
+
+[33mcommit fb824dd06cc0128db77a9bbf495cb3da6976c637[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Mon Jun 29 01:23:23 2020 +0200
+
+    minor change
+
+[33mcommit 701c62439809a5675ac0d6a42a119c6712ef4b6f[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Mon Jun 29 01:09:12 2020 +0200
+
+    minor fix
+
+[33mcommit 9baf3612ecdb5258697c6f82936b0a3e1034842b[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Sun Jun 28 20:35:53 2020 +0200
+
+    Fixed gap in shell sort for small arrays
+
+[33mcommit 962a881b45936d9ebddf22dc42d95737316ea7ae[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Sun Jun 28 19:21:01 2020 +0200
+
+    Added shell sort
+
+[33mcommit dec4c67116e971cd50d43fd7601f14b6fe569832[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Sat Jun 27 21:25:44 2020 +0200
+
+    Minor fix on radix sort in reverse playback
+
+[33mcommit 097daf4d9e11bfa558d3edd8aa7c22df6f3f1fcb[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Sat Jun 27 15:49:00 2020 +0200
+
+    Added radix sort
+
+[33mcommit 8ff9853482b149601dfffc23a81652940b9a7917[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Sat Jun 27 11:57:53 2020 +0200
+
+    Added bottom-up merge sort
+
+[33mcommit ecced7df68e217c632a7bad5d7367ee8d69e1065[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Fri Jun 26 21:21:28 2020 +0200
+
+    Added merge sort, fixed insertion sort for some visualization methods
+
+[33mcommit 0f5d87858615287f734835bad6c68754f48f3d8a[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Fri Jun 26 18:19:20 2020 +0200
+
+    Fixed incorrect color distribution on rainbowCircle for almost sorted input array
+
+[33mcommit c9ac4077fd49d71034a58cf8232cd3b6c6381007[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Fri Jun 26 12:11:23 2020 +0200
+
+    updated selection sort and double selection sort
+
+[33mcommit e80a9cde5a2040a01dc4fcd9c75b7709da67ff3f[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Fri Jun 26 12:03:40 2020 +0200
+
+    Fixed selection and double selection sort
+
+[33mcommit 232423468579faa62163388cf496677194396adc[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Fri Jun 26 11:00:34 2020 +0200
+
+    Fixed incorrect color distribution on rainbow visualization methods
+
+[33mcommit 40372549ea2534d5dc8400da4df82bdd5fc406bb[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Thu Jun 25 20:21:56 2020 +0200
+
+    Added several visualization methods, improved interactivity and overall app design. Added a couple of functionalities such as auto-rebuild
+
+[33mcommit 9c114e51a9bd1b3e57d7f6b9634a3f4a27b591c0[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Wed Jun 24 00:57:28 2020 +0200
+
+    Added algorithms
+
+[33mcommit 3c2d9e5a7736d16421b14cfda4993d44e5e0eea5[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Mon Jun 22 22:20:25 2020 +0200
+
+    Added a number of algorithms and completely changed visualization logic
+
+[33mcommit c9eb50908f712fc902605e984b1cdcf58fc3c940[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Wed Jun 17 09:58:02 2020 +0200
+
+    Initial commit
+
+[33mcommit aa72cba356aee2ec8d345f56c010e093ef57f162[m
+Author: enver1473 <enverkovacevic@hotmail.com>
+Date:   Fri Jun 12 20:27:18 2020 +0200
+
+    Initialize project using Create React App

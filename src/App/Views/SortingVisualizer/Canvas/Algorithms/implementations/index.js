@@ -19,4 +19,5 @@ export { shellSort } from './shellSort';
 export { maxHeapSort } from './maxHeapSort';
 export { minHeapSort } from './minHeapSort';
 export { minMaxHeapSort } from './minMaxHeapSort';
+export { roomSort } from './roomSort';
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col, Button, Select, Slider, Cascader, Checkbox, Typography, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { useSortContext } from '../../../context/sortingContext';
 
 import './Controls.css';
 
@@ -24,11 +23,9 @@ const Controls = ({
 }) => {
   const [play, setPlay] = useState(true);
   const [autoRebuild, setAutoRebuild] = useState(true);
-  const { looping, setLooping } = useSortContext();
 
   const playClickedHandler = () => {
     setPlay(!play);
-    setLooping(!looping);
     pausePlayClicked();
   };
 
@@ -201,6 +198,10 @@ const Controls = ({
         {
           value: 'shellSort',
           label: 'Shell Sort',
+        },
+        {
+          value: 'roomSort',
+          label: 'Room Sort',
         },
       ],
     },

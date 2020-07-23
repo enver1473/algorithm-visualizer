@@ -3,6 +3,7 @@ import { Layout as AntLayout } from 'antd';
 import 'antd/dist/antd.css';
 import './Layout.css';
 import Canvas from './Views/SortingVisualizer/Canvas/Canvas';
+import { default as ChangeLog } from './Views/SortingVisualizer/Canvas/ChangeLog';
 
 const { Content } = AntLayout;
 
@@ -11,6 +12,7 @@ const Layout = () => {
     <div className='Layout'>
       <Content style={{ height: '100%' }}>
         <Canvas />
+        <ChangeLog />
       </Content>
     </div>
   );

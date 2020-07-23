@@ -33,6 +33,7 @@ import {
   maxHeapSort,
   minHeapSort,
   minMaxHeapSort,
+  roomSort,
   swap,
 } from '../Algorithms';
 
@@ -238,6 +239,8 @@ const Canvas = () => {
       callSort(minHeapSort);
     } else if (algorithm === 'minMaxHeapSort') {
       callSort(minMaxHeapSort);
+    } else if (algorithm === 'roomSort') {
+      callSort(roomSort);
     } else if (algorithm === 'radixSortLSDb10') {
       if (vMethod === 'rainbow') {
         notification.warning({

@@ -6,8 +6,8 @@ import SortingVisualizer from './Views/SortingVisualizer/SortingVisualizer';
 const Routes = () => {
   return (
     <Switch>
-      <Route exact path='/sorting' component={SortingVisualizer} />
-      <Route exact path='/pathfinding' component={PathfindingVisualizer} />
+{/*       <Route exact path='/sorting' component={SortingVisualizer} />
+      <Route exact path='/pathfinding' component={PathfindingVisualizer} /> */}
       <Redirect to={{ pathname: '/sorting' }} />
     </Switch>
   );
