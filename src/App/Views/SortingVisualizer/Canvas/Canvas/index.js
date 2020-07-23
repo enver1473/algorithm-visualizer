@@ -556,7 +556,7 @@ const randomizeHelper = (value) => {
     let numbers = [];
 
     for (let i = 0; i < count; i++) {
-      let number = parseInt((i + 1) * (height / count));
+      let number = Math.floor((i + 1) * (height / count));
 
       if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
         number = i + 1;
@@ -588,7 +588,7 @@ const randomizeHelper = (value) => {
     }
   } else if (value === 'almostSorted') {
     for (let i = 0; i < count; i++) {
-      let ele = (height / count) * i + 1;
+      let ele = Math.floor((height / count) * i) + 1;
 
       if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
         ele = i + 1;
@@ -619,6 +619,17 @@ const randomizeHelper = (value) => {
         }
       }
       
+      arr.push(ele);
+      addElement(i, ele);
+    }
+  } else if (value === 'alreadySorted') {
+    for (let i = 0; i < count; i++) {
+      let ele = Math.floor((i + 1) * (height / count));
+
+      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+        ele = i + 1;
+      }
+
       arr.push(ele);
       addElement(i, ele);
     }

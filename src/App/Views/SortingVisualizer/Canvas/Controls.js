@@ -237,8 +237,35 @@ const Controls = ({
       text: 'Disparity Circle',
     },*/,
   ];
+  
+  const inputArrayTypes = [
+    {
+      value: 'default',
+      text: 'Default (random)',
+    },
+    {
+      value: 'reversed',
+      text: 'Reversed input',
+    },
+    {
+      value: 'almostSorted',
+      text: 'Almost sorted',
+    },
+    {
+      value: 'doubleSlope',
+      text: 'Double-slope',
+    },
+    {
+      value: 'alreadySorted',
+      text: 'Already Sorted',
+    },
+  ];
 
-  const selectOptions = visualizationOptions.map(({ value, text }) => (
+  const inputArrayOptions = inputArrayTypes.map(({ value, text }) => (
+    <Option value={value}>{text}</Option>
+  ));
+
+  const vMethodOptions = visualizationOptions.map(({ value, text }) => (
     <Option value={value}>{text}</Option>
   ));
 
@@ -259,7 +286,7 @@ const Controls = ({
               onChange={handleVMethodChange}
               maxTagCount={10}
             >
-              {selectOptions}
+              {vMethodOptions}
             </Select>
           </Col>
         </Row>
@@ -286,13 +313,10 @@ const Controls = ({
             <Select
               allowClear={false}
               style={{ width: '100%', textAlign: 'left' }}
-              placeholder='Randomization method'
+              placeholder='Input array type'
               onSelect={handleInputSelect}
             >
-              <Option value='default'>Default (random)</Option>
-              <Option value='reversed'>Reversed input</Option>
-              <Option value='almostSorted'>Almost sorted</Option>
-              <Option value='doubleSlope'>Double-slope</Option>
+              {inputArrayOptions}
             </Select>
           </Col>
         </Row>

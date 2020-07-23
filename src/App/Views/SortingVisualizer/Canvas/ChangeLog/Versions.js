@@ -4,6 +4,12 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.1.13',
+    content: [
+      'Added already sorted input array type',
+    ],
+  },
+  {
     title: '1.1.12',
     content: [
       'Added room sort',
