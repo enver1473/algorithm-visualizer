@@ -4,6 +4,12 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2',
+    content: [
+      'Sound is here! You can now hear the sound of sorting.'
+    ],
+  },
+  {
     title: '1.1.13',
     content: [
       'Added already sorted input array type',

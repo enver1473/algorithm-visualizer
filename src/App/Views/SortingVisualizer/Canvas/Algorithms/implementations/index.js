@@ -20,4 +20,6 @@ export { maxHeapSort } from './maxHeapSort';
 export { minHeapSort } from './minHeapSort';
 export { minMaxHeapSort } from './minMaxHeapSort';
 export { roomSort } from './roomSort';
+export { proxmapSort } from './proxmapSort';
+export { unbalancedTreeSort } from './unbalancedTreeSort';
 

@@ -182,9 +182,6 @@ export const minMaxHeapSort = () => {
 
     downHeap(i, 0);
   }
-  console.log(`MIN-MAX HEAP SORT:`);
-  console.log(`   SWAPS: ${swaps}`);
-  console.log(`   COMPARISONS: ${comparisons}`);
 
   pushLastState();
 };

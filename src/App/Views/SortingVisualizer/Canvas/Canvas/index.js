@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
 import { Row, Col, notification } from 'antd';
 import _ from 'underscore';
+import 'p5/lib/addons/p5.sound.js';
+import P5 from 'p5';
 
 import Bar from '../ElementTypes/Bar';
 import Dot from '../ElementTypes/Dot';
@@ -10,7 +12,6 @@ import ColorHeightBar from '../ElementTypes/ColorHeightBar';
 import ColoredTriangle from '../ElementTypes/ColoredTriangle';
 import VarColoredTriangle from '../ElementTypes/VarColoredTriangle';
 import Triangle from '../ElementTypes/HelperClasses/Triangle';
-
 import {
   bubbleSort,
   coctailShakerSort,
@@ -34,6 +35,8 @@ import {
   minHeapSort,
   minMaxHeapSort,
   roomSort,
+  proxmapSort,
+  unbalancedTreeSort,
   swap,
 } from '../Algorithms';
 
@@ -51,6 +54,12 @@ export let states = [];
 let barWidth = 2;
 let width = 1000;
 let height = 600;
+
+// Oscillator array - holding the sound waves that are to be played
+let oscs = [];
+
+// minimum and maximum values for the oscillator frequency range mapping
+let min, max;
 
 // Array size
 export let count = parseInt(width / barWidth);
@@ -115,7 +124,7 @@ const pauseOrPlay = () => {
       message: 'No animations!',
       description: 'You have to build the animations before trying to play them.',
       duration: 8,
-      placement: 'bottomLeft',
+      placement: 'topLeft',
     });
     return;
   }
@@ -123,6 +132,9 @@ const pauseOrPlay = () => {
   if (loop) {
     globalP.noLoop();
     loop = false;
+    for (let i = 0; i < oscs.length; i++) {
+      oscs[i].stop();
+    }
   } else {
     if (!(stateIdx >= 0 && stateIdx < states.length)) {
       if (dir < 0) {
@@ -135,6 +147,9 @@ const pauseOrPlay = () => {
     }
     globalP.loop();
     loop = true;
+    for (let i = 0; i < oscs.length; i++) {
+      oscs[i].start();
+    }
   }
 };
 
@@ -155,7 +170,7 @@ const Canvas = () => {
         message: 'Rebuild animations!',
         description: `You have to rebuild the animations if you change the algorithm. If you wish the rebuild to happen automatically, check the 'Auto-(re)build' checkbox.`,
         duration: 8,
-        placement: 'bottomLeft',
+        placement: 'topLeft',
       });
     } else {
       if (input === '') {
@@ -163,7 +178,7 @@ const Canvas = () => {
           message: 'Input type not selected!',
           description: `Please select one of the given input array types.`,
           duration: 8,
-          placement: 'bottomLeft',
+          placement: 'topLeft',
         });
       }
       randomize(input);
@@ -178,7 +193,7 @@ const Canvas = () => {
         message: 'No array to sort!',
         description: `You have to generate an array using the 'Input' select.`,
         duration: 8,
-        placement: 'bottomLeft',
+        placement: 'topLeft',
       });
       return;
     }
@@ -196,7 +211,7 @@ const Canvas = () => {
       notification.warning({
         message: 'Please choose an algorithm!',
         duration: 8,
-        placement: 'bottomLeft',
+        placement: 'topLeft',
       });
       return;
     } else if (algorithm === 'bubbleSort') {
@@ -241,6 +256,10 @@ const Canvas = () => {
       callSort(minMaxHeapSort);
     } else if (algorithm === 'roomSort') {
       callSort(roomSort);
+    } else if (algorithm === 'proxmapSort') {
+      callSort(proxmapSort);
+    } else if (algorithm === 'unbalancedTreeSort') {
+      callSort(unbalancedTreeSort);
     } else if (algorithm === 'radixSortLSDb10') {
       if (vMethod === 'rainbow') {
         notification.warning({
@@ -248,7 +267,7 @@ const Canvas = () => {
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
           duration: 12,
-          placement: 'bottomLeft',
+          placement: 'topLeft',
         });
         return;
       }
@@ -260,7 +279,7 @@ const Canvas = () => {
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
           duration: 12,
-          placement: 'bottomLeft',
+          placement: 'topLeft',
         });
         return;
       }
@@ -272,7 +291,7 @@ const Canvas = () => {
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
           duration: 12,
-          placement: 'bottomLeft',
+          placement: 'topLeft',
         });
         return;
       }
@@ -284,7 +303,7 @@ const Canvas = () => {
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
           duration: 12,
-          placement: 'bottomLeft',
+          placement: 'topLeft',
         });
         return;
       }
@@ -297,7 +316,7 @@ const Canvas = () => {
       message: 'Building...',
       description: 'Please wait while the animations are being built.',
       duration: 4,
-      placement: 'bottomLeft',
+      placement: 'topLeft',
     });
 
     setTimeout(() => {
@@ -307,7 +326,7 @@ const Canvas = () => {
         message: 'Done!',
         description: 'You may now Play the visualization.',
         duration: 4,
-        placement: 'bottomLeft',
+        placement: 'topLeft',
       });
     }, 300);
   };
@@ -325,7 +344,7 @@ const Canvas = () => {
         message: 'Input type not selected!',
         description: `Please select one of the given input array types.`,
         duration: 8,
-        placement: 'bottomLeft',
+        placement: 'topLeft',
       });
     }
     randomize(input);
@@ -343,7 +362,7 @@ const Canvas = () => {
           message: 'Input type not selected!',
           description: `Please select one of the given input array types.`,
           duration: 8,
-          placement: 'bottomLeft',
+          placement: 'topLeft',
         });
       }
 
@@ -358,7 +377,7 @@ const Canvas = () => {
         message: 'Input type not selected!',
         description: `Please select one of the given input array types.`,
         duration: 8,
-        placement: 'bottomLeft',
+        placement: 'topLeft',
       });
     }
 
@@ -379,6 +398,7 @@ const Canvas = () => {
       5: 200,
       6: 500,
       7: 1000,
+      8: 1500,
     };
     count = values[value];
     barWidth = width / count;
@@ -388,7 +408,7 @@ const Canvas = () => {
           message: 'Input type not selected!',
           description: `Please select one of the given input array types.`,
           duration: 8,
-          placement: 'bottomLeft',
+          placement: 'topLeft',
         });
       }
 
@@ -424,6 +444,7 @@ const Canvas = () => {
       </Row>
       <Row justify='center' style={{ backgroundColor: 'white' }}>
         <Col span={24}>
+          <p style={{ zIndex: 23, position: 'relative', top: '50px', float: 'left' }}>Hi</p>
           <P5Wrapper sketch={sketch} />
         </Col>
       </Row>
@@ -436,13 +457,13 @@ export default Canvas;
 const showFinalState = (index) => {
   for (let element of states[index]) {
     element.show('original');
+    oscs[0].freq(globalP.map(element.getValue(), min, max, 120, 1000));
   }
 };
 
 export const sketch = (p) => {
   globalP = p;
   backgroundColor = 50;
-
   p.setup = () => {
     p.createCanvas(width, height);
 
@@ -455,6 +476,12 @@ export const sketch = (p) => {
     p.fill(primaryColor);
     p.colorMode(p.HSB);
     p.noStroke();
+    for (let i = 0; i < 5; i++) {
+      let osc = new P5.TriOsc();
+      osc.freq(0);
+      osc.amp(1);
+      oscs.push(osc);
+    }
   };
 
   // DRAW
@@ -464,8 +491,15 @@ export const sketch = (p) => {
         if (stateIdx > oldStateIdx) {
           for (let i = oldStateIdx; i < stateIdx; i++) {
             if (i >= states.length) break;
+            if (!loop) break;
+            let j = 0;
             for (let element of states[i]) {
               element.show(primaryColor);
+              if (states[i].length <= 5) {
+                let osc = oscs[j];
+                osc.freq(p.map(element.getValue(), min, max, 120, 1000));
+              }
+              j++;
             }
           }
         } else {
@@ -476,9 +510,14 @@ export const sketch = (p) => {
                 shouldStop = true;
                 break;
               }
-
+              let j = 0;
               for (let element of states[i]) {
                 element.show(primaryColor);
+                if (states[i].length <= 5) {
+                  let osc = oscs[j];
+                  osc.freq(p.map(element.getValue(), min, max, 120, 1000));
+                }
+                j++;
               }
             }
 
@@ -486,6 +525,9 @@ export const sketch = (p) => {
               p.noLoop();
               loop = false;
               stateIdx = -1;
+              for (let osc of oscs) {
+                osc.stop();
+              }
               return;
             }
           }
@@ -497,17 +539,27 @@ export const sketch = (p) => {
 
         p.noLoop();
         loop = false;
+        for (let osc of oscs) {
+          osc.stop();
+        }
         return;
       } else if (stateIdx < 0) {
         showFinalState(0);
-
         p.noLoop();
         loop = false;
+        for (let osc of oscs) {
+          osc.stop();
+        }
         return;
       }
 
       for (let i = 0; i < states[stateIdx].length; i++) {
         states[stateIdx][i].show('accent');
+        
+        if (states[stateIdx].length <= 5) {
+          let osc = oscs[i];
+          osc.freq(p.map(states[stateIdx][i].getValue(), min, max, 120, 1000));
+        }
       }
       oldStateIdx = stateIdx;
       stateIdx += dir * inc;
@@ -516,6 +568,14 @@ export const sketch = (p) => {
 };
 
 const randomize = (value) => {
+  min = 0;
+  max = (vMethod === 'barPlot' || vMethod === 'hrPyramid' || vMethod === 'scatterPlot' || vMethod === 'rainbowBarPlot') ? height : 360;
+
+  for (let osc of oscs) {
+    osc.stop();
+    osc.freq(0);
+  }
+
   if (
     vMethod === 'rainbow' ||
     vMethod === 'rainbowBarPlot' ||
@@ -618,7 +678,7 @@ const randomizeHelper = (value) => {
           ele = count - i;
         }
       }
-      
+
       arr.push(ele);
       addElement(i, ele);
     }
@@ -633,10 +693,35 @@ const randomizeHelper = (value) => {
       arr.push(ele);
       addElement(i, ele);
     }
+  } else if (value === 'similarInputs') {
+    for (let i = 0; i < count; i++) {
+      let rNumber = globalP.randomGaussian(5, 15);
+
+      let number = globalP.map(rNumber, -50, 50, 1, height);
+
+      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+        number = globalP.map(number, 1, height, 1, count);
+      }
+
+      arr.push(number);
+      addElement(i, number);
+    }
+  } else if (value === 'sinCosDistribution') {
+    for (let i = 0; i < count; i++) {
+      let angle = globalP.map(i, 0, count - 1, globalP.TWO_PI / count, globalP.TWO_PI);
+      let number = globalP.map(globalP.sin(angle), -1, 1, 1, height);
+
+      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+        number = globalP.map(number, 1, height, 1, count);
+      }
+
+      arr.push(number);
+      addElement(i, number);
+    }
   }
 };
 
-const addElement = (idx, rNumber) => {
+export const addElement = (idx, rNumber) => {
   let element;
 
   if (vMethod === 'barPlot') {
@@ -776,6 +861,7 @@ const showAllElements = () => {
 
   for (let element of elements) {
     element.show('original');
+    oscs[0].freq(globalP.map(element.getValue(), min, max, 120, 1000));
   }
 };
 

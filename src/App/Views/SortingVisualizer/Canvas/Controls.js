@@ -82,7 +82,11 @@ const Controls = ({
         {
           value: 'radixSortLSDb2',
           label: 'Radix Sort LSD (base 2)',
-        },
+        },/*
+        {
+          value: 'proxmapSort',
+          label: 'Proxmap Sort',
+        },*/
       ],
     },
     {
@@ -130,7 +134,11 @@ const Controls = ({
         {
           value: 'minMaxHeapSort',
           label: 'Min-Max Heap Sort',
-        },
+        },/*
+        {
+          value: 'unbalancedTreeSort',
+          label: 'UnbalancedTreeSort',
+        }*/
       ],
     },
     {
@@ -241,7 +249,7 @@ const Controls = ({
   const inputArrayTypes = [
     {
       value: 'default',
-      text: 'Default (random)',
+      text: 'Random (uniform distribution)',
     },
     {
       value: 'reversed',
@@ -259,14 +267,22 @@ const Controls = ({
       value: 'alreadySorted',
       text: 'Already Sorted',
     },
+    {
+      value: 'similarInputs',
+      text: 'Similar Inputs',
+    },
+    {
+      value: 'sinCosDistribution',
+      text: 'Sin-Cos Distribution',
+    },
   ];
 
-  const inputArrayOptions = inputArrayTypes.map(({ value, text }) => (
-    <Option value={value}>{text}</Option>
+  const inputArrayOptions = inputArrayTypes.map(({ value, text }, idx) => (
+    <Option key={idx} value={value}>{text}</Option>
   ));
 
-  const vMethodOptions = visualizationOptions.map(({ value, text }) => (
-    <Option value={value}>{text}</Option>
+  const vMethodOptions = visualizationOptions.map(({ value, text }, idx) => (
+    <Option key={idx} value={value}>{text}</Option>
   ));
 
   return (
@@ -329,7 +345,7 @@ const Controls = ({
               onClick={buildAnimations}
               disabled={autoRebuild}
             >
-              {'Build animations'}
+              Build animations
             </Button>
           </Col>
         </Row>

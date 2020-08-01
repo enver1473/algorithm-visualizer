@@ -44,9 +44,6 @@ export const maxHeapSort = () => {
 
     heapify(i, 0);
   }
-  console.log(`MAX HEAP SORT:`);
-  console.log(`   SWAPS: ${swaps}`);
-  console.log(`   COMPARISONS: ${comparisons}`);
 
   pushLastState();
 };
