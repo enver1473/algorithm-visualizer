@@ -124,7 +124,7 @@ const pauseOrPlay = () => {
       message: 'No animations!',
       description: 'You have to build the animations before trying to play them.',
       duration: 8,
-      placement: 'topLeft',
+      placement: 'bottomLeft',
     });
     return;
   }
@@ -170,7 +170,7 @@ const Canvas = () => {
         message: 'Rebuild animations!',
         description: `You have to rebuild the animations if you change the algorithm. If you wish the rebuild to happen automatically, check the 'Auto-(re)build' checkbox.`,
         duration: 8,
-        placement: 'topLeft',
+        placement: 'bottomLeft',
       });
     } else {
       if (input === '') {
@@ -178,7 +178,7 @@ const Canvas = () => {
           message: 'Input type not selected!',
           description: `Please select one of the given input array types.`,
           duration: 8,
-          placement: 'topLeft',
+          placement: 'bottomLeft',
         });
       }
       randomize(input);
@@ -193,7 +193,7 @@ const Canvas = () => {
         message: 'No array to sort!',
         description: `You have to generate an array using the 'Input' select.`,
         duration: 8,
-        placement: 'topLeft',
+        placement: 'bottomLeft',
       });
       return;
     }
@@ -211,7 +211,7 @@ const Canvas = () => {
       notification.warning({
         message: 'Please choose an algorithm!',
         duration: 8,
-        placement: 'topLeft',
+        placement: 'bottomLeft',
       });
       return;
     } else if (algorithm === 'bubbleSort') {
@@ -267,7 +267,7 @@ const Canvas = () => {
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
           duration: 12,
-          placement: 'topLeft',
+          placement: 'bottomLeft',
         });
         return;
       }
@@ -279,7 +279,7 @@ const Canvas = () => {
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
           duration: 12,
-          placement: 'topLeft',
+          placement: 'bottomLeft',
         });
         return;
       }
@@ -291,7 +291,7 @@ const Canvas = () => {
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
           duration: 12,
-          placement: 'topLeft',
+          placement: 'bottomLeft',
         });
         return;
       }
@@ -303,7 +303,7 @@ const Canvas = () => {
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
           duration: 12,
-          placement: 'topLeft',
+          placement: 'bottomLeft',
         });
         return;
       }
@@ -316,7 +316,7 @@ const Canvas = () => {
       message: 'Building...',
       description: 'Please wait while the animations are being built.',
       duration: 4,
-      placement: 'topLeft',
+      placement: 'bottomLeft',
     });
 
     setTimeout(() => {
@@ -326,7 +326,7 @@ const Canvas = () => {
         message: 'Done!',
         description: 'You may now Play the visualization.',
         duration: 4,
-        placement: 'topLeft',
+        placement: 'bottomLeft',
       });
     }, 300);
   };
@@ -344,7 +344,7 @@ const Canvas = () => {
         message: 'Input type not selected!',
         description: `Please select one of the given input array types.`,
         duration: 8,
-        placement: 'topLeft',
+        placement: 'bottomLeft',
       });
     }
     randomize(input);
@@ -362,7 +362,7 @@ const Canvas = () => {
           message: 'Input type not selected!',
           description: `Please select one of the given input array types.`,
           duration: 8,
-          placement: 'topLeft',
+          placement: 'bottomLeft',
         });
       }
 
@@ -377,7 +377,7 @@ const Canvas = () => {
         message: 'Input type not selected!',
         description: `Please select one of the given input array types.`,
         duration: 8,
-        placement: 'topLeft',
+        placement: 'bottomLeft',
       });
     }
 
@@ -408,7 +408,7 @@ const Canvas = () => {
           message: 'Input type not selected!',
           description: `Please select one of the given input array types.`,
           duration: 8,
-          placement: 'topLeft',
+          placement: 'bottomLeft',
         });
       }
 
@@ -444,7 +444,7 @@ const Canvas = () => {
       </Row>
       <Row justify='center' style={{ backgroundColor: 'white' }}>
         <Col span={24}>
-          <p style={{ zIndex: 23, position: 'relative', top: '50px', float: 'left' }}>Hi</p>
+          {/* <p style={{ zIndex: 23, position: 'relative', top: '50px', float: 'left' }}>Hi</p> */}
           <P5Wrapper sketch={sketch} />
         </Col>
       </Row>
