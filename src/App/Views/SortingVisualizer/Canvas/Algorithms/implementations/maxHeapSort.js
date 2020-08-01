@@ -8,27 +8,22 @@ const heapify = (n, i) => {
 
   if (l < n && elements[l].getValue() > elements[max].getValue()) {
     max = l;
-    comparisons++;
   }
 
   if (r < n && elements[r].getValue() > elements[max].getValue()) {
     max = r;
-    comparisons++;
   }
 
   if (max !== i) {
     pushNewState([i, max]);
     swap(elements, i, max);
     pushNewState([i, max]);
-    swaps++;
 
     heapify(n, max);
   }
 };
 
 export const maxHeapSort = () => {
-  swaps = 0;
-  comparisons = 0;
   for (let i = count / 2 - 1; i >= 0; i--) {
     heapify(count, i);
   }
@@ -37,7 +32,6 @@ export const maxHeapSort = () => {
     pushNewState([0, i]);
     swap(elements, 0, i);
     pushNewState([0, i]);
-    swaps++;
 
     heapify(i, 0);
   }
