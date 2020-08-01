@@ -1,5 +1,5 @@
 import { elements, count } from '../../Canvas';
-import { pushNewState, pushLastState, mergeAtIndexes } from '../helperFunctions';
+import { pushNewState, pushLastState } from '../helperFunctions';
 
 export const proxmapSort = () => {
   let start = 0;

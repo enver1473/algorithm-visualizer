@@ -1,9 +1,6 @@
 import { elements, count } from '../../Canvas';
 import { swap, pushNewState, pushLastState } from '../helperFunctions';
 
-let swaps = 0;
-let comparisons = 0;
-
 const heapify = (n, i) => {
   let max = i;
   let l = 2 * i + 1;

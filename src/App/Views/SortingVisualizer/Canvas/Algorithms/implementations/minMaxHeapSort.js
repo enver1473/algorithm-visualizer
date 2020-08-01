@@ -1,10 +1,6 @@
 import { elements, count } from '../../Canvas';
 import { swap, pushNewState, pushLastState } from '../helperFunctions';
 
-
-let swaps = 0;
-let comparisons = 0;
-
 const parent = (idx) => Math.ceil(idx / 2) - 1;
 
 const leftChild = (idx) => idx * 2 + 1;
