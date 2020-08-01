@@ -10,7 +10,7 @@
     "antd": "^4.2.0",
     "gibberish-dsp": "^3.2.2",
     "netlify-cli": "^2.54.0",
-    "p5": "^0.9.0",
+    "p5": "0.9.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-p5-wrapper": "^2.0.0",
