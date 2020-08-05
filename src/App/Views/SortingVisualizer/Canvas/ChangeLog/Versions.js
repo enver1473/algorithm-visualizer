@@ -4,23 +4,20 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.1',
+    content: ['Added binary insertion and optimized room sort.'],
+  },
+  {
     title: '1.2',
-    content: [
-      'Sound is here! You can now hear the sound of sorting.'
-    ],
+    content: ['Sound is here! You can now hear the sound of sorting.'],
   },
   {
     title: '1.1.13',
-    content: [
-      'Added already sorted input array type',
-    ],
+    content: ['Added already sorted input array type'],
   },
   {
     title: '1.1.12',
-    content: [
-      'Added room sort',
-      'Added change log',
-    ],
+    content: ['Added room sort', 'Added change log'],
   },
   {
     title: '1.1.11',
@@ -32,62 +29,39 @@ const versions = [
   },
   {
     title: '1.1.10',
-    content: [
-      'Added radix LSD for multiple bases',
-      'Minor changes',
-    ],
+    content: ['Added radix LSD for multiple bases', 'Minor changes'],
   },
   {
     title: '1.1.9',
-    content: [
-      'Added weave merge sort',
-      'Code refactor',
-    ],
+    content: ['Added weave merge sort', 'Code refactor'],
   },
   {
     title: '1.1.8',
-    content: [
-      'Added in-place merge sort',
-    ],
+    content: ['Added in-place merge sort'],
   },
   {
     title: '1.1.7',
-    content: [
-      'Fixed gap in shell sort for small arrays',
-      'Minor bug fixes and improvements',
-    ],
+    content: ['Fixed gap in shell sort for small arrays', 'Minor bug fixes and improvements'],
   },
   {
     title: '1.1.6',
-    content: [
-      'Added shell sort',
-      'Minor fix on radix sort in reverse playback',
-    ],
+    content: ['Added shell sort', 'Minor fix on radix sort in reverse playback'],
   },
   {
     title: '1.1.5',
-    content: [
-      'Added radix LSD sort',
-    ],
+    content: ['Added radix LSD sort'],
   },
   {
     title: '1.1.4',
-    content: [
-      'Added bottom-up merge sort',
-    ],
+    content: ['Added bottom-up merge sort'],
   },
   {
     title: '1.1.3',
-    content: [
-      'Added merge sort',
-      'Fixed insertion sort for some visualization methods',
-    ],
+    content: ['Added merge sort', 'Fixed insertion sort for some visualization methods'],
   },
   {
     title: '1.1.2',
-    content: [
-      'Fixed incorrect color distribution on rainbowCircle for almost sorted input array',
-    ],
+    content: ['Fixed incorrect color distribution on rainbowCircle for almost sorted input array'],
   },
   {
     title: '1.1.1',
@@ -106,9 +80,7 @@ const versions = [
   },
   {
     title: '1.0.2',
-    content: [
-      'Added several algorithms',
-    ],
+    content: ['Added several algorithms'],
   },
   {
     title: '1.0.1',

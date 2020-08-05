@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
 import { Row, Col, notification } from 'antd';
 import _ from 'underscore';
@@ -22,6 +22,7 @@ import {
   doubleSelectionSort,
   gnomeSort,
   insertionSort,
+  binaryInsertionSort,
   combSort,
   combGnomeSort,
   quickGnomeSort,
@@ -37,6 +38,7 @@ import {
   roomSort,
   proxmapSort,
   unbalancedTreeSort,
+  optimizedRoomSort,
   swap,
 } from '../Algorithms';
 
@@ -232,6 +234,8 @@ const Canvas = () => {
       callSort(doubleSelectionSort);
     } else if (algorithm === 'insertionSort') {
       callSort(insertionSort);
+    } else if (algorithm === 'binaryInsertionSort') {
+      callSort(binaryInsertionSort);
     } else if (algorithm === 'combSort') {
       callSort(combSort);
     } else if (algorithm === 'combGnomeSort') {
@@ -256,6 +260,8 @@ const Canvas = () => {
       callSort(minMaxHeapSort);
     } else if (algorithm === 'roomSort') {
       callSort(roomSort);
+    } else if (algorithm === 'optimizedRoomSort') {
+      callSort(optimizedRoomSort);
     } else if (algorithm === 'proxmapSort') {
       callSort(proxmapSort);
     } else if (algorithm === 'unbalancedTreeSort') {
@@ -315,7 +321,7 @@ const Canvas = () => {
     notification.warning({
       message: 'Building...',
       description: 'Please wait while the animations are being built.',
-      duration: 4,
+      duration: 1,
       placement: 'bottomLeft',
     });
 
@@ -325,7 +331,7 @@ const Canvas = () => {
       notification.success({
         message: 'Done!',
         description: 'You may now Play the visualization.',
-        duration: 4,
+        duration: 1,
         placement: 'bottomLeft',
       });
     }, 300);
@@ -352,6 +358,13 @@ const Canvas = () => {
       sort();
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      handleInputSelect('default');
+    }, 500);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Handle Visualization Method Change
   const handleVMethodChange = (value) => {
@@ -457,7 +470,6 @@ export default Canvas;
 const showFinalState = (index) => {
   for (let element of states[index]) {
     element.show('original');
-    oscs[0].freq(globalP.map(element.getValue(), min, max, 120, 1000));
   }
 };
 
@@ -493,6 +505,8 @@ export const sketch = (p) => {
             if (i >= states.length) break;
             if (!loop) break;
             let j = 0;
+
+            for (let osc of oscs) osc.freq(0);
             for (let element of states[i]) {
               element.show(primaryColor);
               if (states[i].length <= 5) {
@@ -511,6 +525,8 @@ export const sketch = (p) => {
                 break;
               }
               let j = 0;
+
+              for (let osc of oscs) osc.freq(0);
               for (let element of states[i]) {
                 element.show(primaryColor);
                 if (states[i].length <= 5) {
@@ -553,9 +569,10 @@ export const sketch = (p) => {
         return;
       }
 
+      for (let osc of oscs) osc.freq(0);
       for (let i = 0; i < states[stateIdx].length; i++) {
         states[stateIdx][i].show('accent');
-        
+
         if (states[stateIdx].length <= 5) {
           let osc = oscs[i];
           osc.freq(p.map(states[stateIdx][i].getValue(), min, max, 120, 1000));
@@ -569,7 +586,13 @@ export const sketch = (p) => {
 
 const randomize = (value) => {
   min = 0;
-  max = (vMethod === 'barPlot' || vMethod === 'hrPyramid' || vMethod === 'scatterPlot' || vMethod === 'rainbowBarPlot') ? height : 360;
+  max =
+    vMethod === 'barPlot' ||
+    vMethod === 'hrPyramid' ||
+    vMethod === 'scatterPlot' ||
+    vMethod === 'rainbowBarPlot'
+      ? height
+      : 360;
 
   for (let osc of oscs) {
     osc.stop();
@@ -861,7 +884,6 @@ const showAllElements = () => {
 
   for (let element of elements) {
     element.show('original');
-    oscs[0].freq(globalP.map(element.getValue(), min, max, 120, 1000));
   }
 };
 

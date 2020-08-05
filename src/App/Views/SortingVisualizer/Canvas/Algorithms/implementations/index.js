@@ -7,6 +7,7 @@ export { selectionSort } from './selectionSort';
 export { doubleSelectionSort } from './doubleSelectionSort';
 export { gnomeSort } from './gnomeSort';
 export { insertionSort } from './insertionSort';
+export { binaryInsertionSort } from './binaryInsertionSort';
 export { combSort } from './combSort';
 export { combGnomeSort } from './combGnomeSort';
 export { quickGnomeSort } from './quickGnomeSort';
@@ -22,4 +23,5 @@ export { minMaxHeapSort } from './minMaxHeapSort';
 export { roomSort } from './roomSort';
 export { proxmapSort } from './proxmapSort';
 export { unbalancedTreeSort } from './unbalancedTreeSort';
+export { optimizedRoomSort } from './optimizedRoomSort';
 

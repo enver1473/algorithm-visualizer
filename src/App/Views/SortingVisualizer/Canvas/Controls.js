@@ -204,12 +204,20 @@ const Controls = ({
           label: 'Insertion Sort',
         },
         {
+          value: 'binaryInsertionSort',
+          label: 'Binary Insertion Sort',
+        },
+        {
           value: 'shellSort',
           label: 'Shell Sort',
         },
         {
           value: 'roomSort',
           label: 'Room Sort',
+        },
+        {
+          value: 'optimizedRoomSort',
+          label: 'Optimized Room Sort',
         },
       ],
     },
@@ -327,6 +335,7 @@ const Controls = ({
           </Col>
           <Col span={12}>
             <Select
+              defaultValue={'default'}
               allowClear={false}
               style={{ width: '100%', textAlign: 'left' }}
               placeholder='Input array type'
