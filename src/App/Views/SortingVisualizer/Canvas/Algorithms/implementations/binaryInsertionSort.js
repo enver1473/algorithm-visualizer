@@ -8,7 +8,7 @@ export const binaryInsertionSortHelper = (lo = 1, hi = count) => {
     let start = lo - 1,
       end = i - 1,
       mid = calcMid(start, end),
-      idx = lo;
+      idx = i;
 
     let searchNeeded = true;
 
@@ -57,7 +57,7 @@ export const binaryInsertionSortHelper = (lo = 1, hi = count) => {
         pushNewState([mid]);
         pushNewState([mid]);
         pushNewState([mid]);
-        idx = start;
+        idx = mid;
         break;
       }
     }

@@ -4,6 +4,10 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.2',
+    content: ['Fixed bug in binary insertion and optimized room sort.'],
+  },
+  {
     title: '1.2.1',
     content: ['Added binary insertion and optimized room sort.'],
   },
