@@ -130,4 +130,7 @@ Following is a list of the algorithms currently implemented:
   - Bottom-up Merge Sort
 - Insertion Sorts
   - Insertion Sort
+  - Binary Insertion Sort
   - Shell Sort
+  - Room Sort
+  - Optimized Room Sort
