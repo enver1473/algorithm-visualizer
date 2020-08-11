@@ -4,6 +4,7 @@ import { Row, Col, notification } from 'antd';
 import _ from 'underscore';
 import 'p5/lib/addons/p5.sound.js';
 import P5 from 'p5';
+import { useWindowWidthContext } from '../../../../../Context/useWindowWidthContext';
 
 import Bar from '../ElementTypes/Bar';
 import Dot from '../ElementTypes/Dot';
@@ -52,6 +53,8 @@ export let elements = [];
 
 // Array of arrays of Bar objects = the mid-sorting states
 export let states = [];
+
+export let currentState = [];
 
 let barWidth = 2;
 let width = 1000;
@@ -125,39 +128,52 @@ const pauseOrPlay = () => {
     notification.warning({
       message: 'No animations!',
       description: 'You have to build the animations before trying to play them.',
-      duration: 8,
+      duration: 2,
       placement: 'bottomLeft',
     });
     return;
   }
 
   if (loop) {
-    globalP.noLoop();
     loop = false;
+    globalP.noLoop();
     for (let i = 0; i < oscs.length; i++) {
       oscs[i].stop();
     }
   } else {
     if (!(stateIdx >= 0 && stateIdx < states.length)) {
       if (dir < 0) {
-        dir = 1;
+        updateDir(1);
         stateIdx = 0;
+        oldStateIdx = undefined;
       } else {
-        dir = -1;
+        updateDir(-1);
         stateIdx = states.length - 1;
+        oldStateIdx = undefined;
       }
     }
-    globalP.loop();
     loop = true;
+    globalP.loop();
     for (let i = 0; i < oscs.length; i++) {
       oscs[i].start();
     }
   }
 };
 
+let setDir = (newDir) => {
+  dir = newDir;
+};
+
 // Switch playback direction
-const forwardOrReverse = () => {
+const forwardOrReverse = (func) => {
   dir *= -1;
+  func(dir);
+  setDir = func;
+};
+
+const updateDir = (newDir) => {
+  dir = newDir;
+  setDir(dir);
 };
 
 const Canvas = () => {
@@ -165,27 +181,37 @@ const Canvas = () => {
   let input = '';
   let autoRebuild = true;
 
+  const { width: windowWidth } = useWindowWidthContext();
+  width = windowWidth - (windowWidth % 100);
+  height = width * (windowWidth > 768 ? 2 / 5 : 3 / 5);
+  count = parseInt(width / barWidth);
+
+  // triangle pointer Distance from Center Multiplier
+  pDCM = (height / 21) * 10;
+
+  // triangle point Distance from Center Multiplier
+  pDCMp = (height / 22) * 10;
+
+  // screen center X
+  cx = width / 2;
+
+  // screen center Y
+  cy = height / 2;
+
   const handleCascaderChange = (value) => {
     algorithm = value[value.length - 1];
-    if (!autoRebuild) {
+    if (!autoRebuild) return;
+    if (input === '') {
       notification.warning({
-        message: 'Rebuild animations!',
-        description: `You have to rebuild the animations if you change the algorithm. If you wish the rebuild to happen automatically, check the 'Auto-(re)build' checkbox.`,
-        duration: 8,
+        message: 'Input type not selected!',
+        description: `Please select one of the given input array types.`,
+        duration: 2,
         placement: 'bottomLeft',
       });
-    } else {
-      if (input === '') {
-        notification.warning({
-          message: 'Input type not selected!',
-          description: `Please select one of the given input array types.`,
-          duration: 8,
-          placement: 'bottomLeft',
-        });
-      }
-      randomize(input);
-      sort();
+      return;
     }
+    randomize(input);
+    sort();
   };
 
   const sort = () => {
@@ -194,25 +220,28 @@ const Canvas = () => {
       notification.warning({
         message: 'No array to sort!',
         description: `You have to generate an array using the 'Input' select.`,
-        duration: 8,
+        duration: 2,
         placement: 'bottomLeft',
       });
       return;
     }
 
     if (states.length !== 0) {
-      globalP.noLoop();
-      states = [];
-      stateIdx = 0;
       loop = false;
-      showAllElements();
+      globalP.noLoop();
+      arr = [];
+      states = [];
+      elements = [];
+      stateIdx = 0;
+      oldStateIdx = undefined;
+      updateDir(1);
     }
 
     // If algorithm not chosen
     if (!algorithm) {
       notification.warning({
         message: 'Please choose an algorithm!',
-        duration: 8,
+        duration: 2,
         placement: 'bottomLeft',
       });
       return;
@@ -266,65 +295,29 @@ const Canvas = () => {
       callSort(proxmapSort);
     } else if (algorithm === 'unbalancedTreeSort') {
       callSort(unbalancedTreeSort);
-    } else if (algorithm === 'radixSortLSDb10') {
+    } else if (algorithm.split('LSD')[0] === 'radixSort') {
       if (vMethod === 'rainbow') {
         notification.warning({
           message: 'Float numbers',
           description:
             'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
-          duration: 12,
+          duration: 4,
           placement: 'bottomLeft',
         });
         return;
       }
-      callSort(() => radixSortLSD(10));
-    } else if (algorithm === 'radixSortLSDb8') {
-      if (vMethod === 'rainbow') {
-        notification.warning({
-          message: 'Float numbers',
-          description:
-            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
-          duration: 12,
-          placement: 'bottomLeft',
-        });
-        return;
-      }
-      callSort(() => radixSortLSD(8));
-    } else if (algorithm === 'radixSortLSDb4') {
-      if (vMethod === 'rainbow') {
-        notification.warning({
-          message: 'Float numbers',
-          description:
-            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
-          duration: 12,
-          placement: 'bottomLeft',
-        });
-        return;
-      }
-      callSort(() => radixSortLSD(4));
-    } else if (algorithm === 'radixSortLSDb2') {
-      if (vMethod === 'rainbow') {
-        notification.warning({
-          message: 'Float numbers',
-          description:
-            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
-          duration: 12,
-          placement: 'bottomLeft',
-        });
-        return;
-      }
-      callSort(() => radixSortLSD(2));
+      const base = parseInt(algorithm.replace('radixSortLSDb', ''));
+      callSort(() => radixSortLSD(base));
     }
   };
 
-  const callSort = (sortingFunction) => {
+  const callSort = async (sortingFunction) => {
     notification.warning({
       message: 'Building...',
       description: 'Please wait while the animations are being built.',
       duration: 1,
       placement: 'bottomLeft',
     });
-
     setTimeout(() => {
       sortingFunction();
 
@@ -334,7 +327,7 @@ const Canvas = () => {
         duration: 1,
         placement: 'bottomLeft',
       });
-    }, 300);
+    }, 350);
   };
 
   const handleCheckChange = (e, setAutoRebuild) => {
@@ -343,15 +336,16 @@ const Canvas = () => {
   };
 
   const handleInputSelect = (value) => {
-    input = value;
+    input = value[value.length - 1];
 
     if (input === '') {
       notification.warning({
         message: 'Input type not selected!',
         description: `Please select one of the given input array types.`,
-        duration: 8,
+        duration: 2,
         placement: 'bottomLeft',
       });
+      return;
     }
     randomize(input);
     if (autoRebuild) {
@@ -361,22 +355,23 @@ const Canvas = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      handleInputSelect('default');
-    }, 500);
+      handleInputSelect(['default']);
+    }, 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle Visualization Method Change
   const handleVMethodChange = (value) => {
-    vMethod = value;
+    vMethod = value[value.length - 1];
     if (autoRebuild) {
       if (input === '') {
         notification.warning({
           message: 'Input type not selected!',
           description: `Please select one of the given input array types.`,
-          duration: 8,
+          duration: 2,
           placement: 'bottomLeft',
         });
+        return;
       }
 
       randomize(input);
@@ -389,9 +384,10 @@ const Canvas = () => {
       notification.warning({
         message: 'Input type not selected!',
         description: `Please select one of the given input array types.`,
-        duration: 8,
+        duration: 2,
         placement: 'bottomLeft',
       });
+      return;
     }
 
     randomize(input);
@@ -402,17 +398,35 @@ const Canvas = () => {
 
   const debounceCountChange = useRef(_.debounce((value) => handleCountChange(value), 500)).current;
 
+  let divisors = [];
+  for (let div = 2; div <= width; div++) {
+    if (width % div === 0) {
+      divisors.push(div);
+    }
+  }
+
+  const values = {};
+  if (divisors.length > 26) {
+    let rem = divisors.length % 4;
+    divisors = divisors.filter((_, idx) => (idx + 1) % 4 === rem);
+  } else if (divisors.length > 18) {
+    let rem = divisors.length % 3;
+    divisors = divisors.filter((_, idx) => (idx + 1) % 3 === rem);
+  } else if (divisors.length > 10) {
+    let rem = divisors.length % 2;
+    divisors = divisors.filter((_, idx) => (idx + 1) % 2 === rem);
+  }
+  for (let i = 0; i < divisors.length; i++) {
+    values[(i + 1).toString()] = divisors[i];
+  }
+
+  const objKeys = Object.keys(values);
+  const min = parseInt(objKeys[0]);
+  const max = parseInt(objKeys[objKeys.length - 1]);
+  count = values[min + (max - min) / 2];
+  barWidth = width / count;
+
   const handleCountChange = (value) => {
-    const values = {
-      1: 10,
-      2: 20,
-      3: 50,
-      4: 100,
-      5: 200,
-      6: 500,
-      7: 1000,
-      8: 1500,
-    };
     count = values[value];
     barWidth = width / count;
     if (autoRebuild) {
@@ -420,9 +434,10 @@ const Canvas = () => {
         notification.warning({
           message: 'Input type not selected!',
           description: `Please select one of the given input array types.`,
-          duration: 8,
+          duration: 2,
           placement: 'bottomLeft',
         });
+        return;
       }
 
       randomize(input);
@@ -453,6 +468,8 @@ const Canvas = () => {
           buildAnimations={sort}
           handleCheckChange={handleCheckChange}
           reShuffle={reShuffle}
+          divisors={values}
+          dir={dir}
         />
       </Row>
       <Row justify='center' style={{ backgroundColor: 'white' }}>
@@ -491,13 +508,17 @@ export const sketch = (p) => {
     for (let i = 0; i < 5; i++) {
       let osc = new P5.TriOsc();
       osc.freq(0);
-      osc.amp(1);
+      osc.amp(0.5);
       oscs.push(osc);
     }
   };
 
   // DRAW
   p.draw = () => {
+    if (!loop) {
+      p.noLoop();
+      return;
+    }
     if (loop) {
       if (oldStateIdx !== undefined && oldStateIdx !== null) {
         if (stateIdx > oldStateIdx) {
@@ -510,8 +531,7 @@ export const sketch = (p) => {
             for (let element of states[i]) {
               element.show(primaryColor);
               if (states[i].length <= 5) {
-                let osc = oscs[j];
-                osc.freq(p.map(element.getValue(), min, max, 120, 1000));
+                oscs[j].freq(p.map(element.getValue(), min, max, 120, 1000));
               }
               j++;
             }
@@ -526,12 +546,13 @@ export const sketch = (p) => {
               }
               let j = 0;
 
-              for (let osc of oscs) osc.freq(0);
+              for (let i = 0; i < oscs.length; i++) {
+                oscs[i].freq(0);
+              }
               for (let element of states[i]) {
                 element.show(primaryColor);
                 if (states[i].length <= 5) {
-                  let osc = oscs[j];
-                  osc.freq(p.map(element.getValue(), min, max, 120, 1000));
+                  oscs[j].freq(p.map(element.getValue(), min, max, 120, 1000));
                 }
                 j++;
               }
@@ -541,8 +562,8 @@ export const sketch = (p) => {
               p.noLoop();
               loop = false;
               stateIdx = -1;
-              for (let osc of oscs) {
-                osc.stop();
+              for (let i = 0; i < oscs.length; i++) {
+                oscs[i].stop();
               }
               return;
             }
@@ -553,16 +574,16 @@ export const sketch = (p) => {
       if (stateIdx >= states.length) {
         showFinalState(states.length - 1);
 
-        p.noLoop();
         loop = false;
+        p.noLoop();
         for (let osc of oscs) {
           osc.stop();
         }
         return;
       } else if (stateIdx < 0) {
         showFinalState(0);
-        p.noLoop();
         loop = false;
+        p.noLoop();
         for (let osc of oscs) {
           osc.stop();
         }
@@ -599,6 +620,14 @@ const randomize = (value) => {
     osc.freq(0);
   }
 
+  oscs = [];
+  for (let i = 0; i < 5; i++) {
+    let osc = new P5.TriOsc();
+    osc.freq(0);
+    osc.amp(0.5);
+    oscs.push(osc);
+  }
+
   if (
     vMethod === 'rainbow' ||
     vMethod === 'rainbowBarPlot' ||
@@ -612,21 +641,19 @@ const randomize = (value) => {
     globalP.colorMode(globalP.RGB);
     globalP.background(backgroundColor);
   }
-  if (elements.length === 0) {
-    randomizeHelper(value);
-    showAllElements();
-  } else {
-    // Reset everything to the beginning state (as if the app was just started)
-    globalP.noLoop();
-    arr = [];
-    elements = [];
-    states = [];
-    stateIdx = 0;
-    loop = false;
 
-    randomizeHelper(value);
-    showAllElements();
-  }
+  // Reset everything to the beginning state (as if the app was just started)
+  loop = false;
+  globalP.noLoop();
+  arr = [];
+  states = [];
+  elements = [];
+  stateIdx = 0;
+  oldStateIdx = undefined;
+  updateDir(1);
+
+  randomizeHelper(value);
+  showAllElements();
 };
 
 // Generate 'count' random numbers
@@ -742,6 +769,7 @@ const randomizeHelper = (value) => {
       addElement(i, number);
     }
   }
+  currentState = [...elements];
 };
 
 export const addElement = (idx, rNumber) => {

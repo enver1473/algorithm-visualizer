@@ -217,3 +217,7 @@ export const midValue = (i1, i2, i3) => {
     }
   }
 };
+
+export const sleep = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

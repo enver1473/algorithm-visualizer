@@ -4,16 +4,20 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.3',
+    content: ['Responsiveness improved', 'Fixed major lag inducing bug'],
+  },
+  {
     title: '1.2.2',
-    content: ['Fixed bug in binary insertion and optimized room sort.'],
+    content: ['Fixed bug in binary insertion and optimized room sort'],
   },
   {
     title: '1.2.1',
-    content: ['Added binary insertion and optimized room sort.'],
+    content: ['Added binary insertion and optimized room sort'],
   },
   {
     title: '1.2',
-    content: ['Sound is here! You can now hear the sound of sorting.'],
+    content: ['Sound is here! You can now hear the sound of sorting'],
   },
   {
     title: '1.1.13',

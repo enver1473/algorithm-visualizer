@@ -1,10 +1,10 @@
 import { elements, count } from '../../Canvas';
 import { swap, pushNewState, pushLastState } from '../helperFunctions';
 
-const heapify = (n, i) => {
+const heapify = (start, end, n, i) => {
   let max = i;
-  let l = 2 * i + 1;
-  let r = 2 * i + 2;
+  let l = start + 2 * (i - start) + 1;
+  let r = start + 2 * (i - start) + 2;
 
   if (l < n && elements[l].getValue() > elements[max].getValue()) {
     max = l;
@@ -19,22 +19,25 @@ const heapify = (n, i) => {
     swap(elements, i, max);
     pushNewState([i, max]);
 
-    heapify(n, max);
+    heapify(start, end, n, max);
+  }
+};
+
+export const maxHeapSortHelper = (start = 0, end = count) => {
+  for (let i = parseInt(start + (end - start) / 2) - 1; i >= start; i--) {
+    heapify(start, end, end, i);
+  }
+
+  for (let i = end - 1; i > start; i--) {
+    pushNewState([start, i]);
+    swap(elements, start, i);
+    pushNewState([start, i]);
+
+    heapify(start, end, i, start);
   }
 };
 
 export const maxHeapSort = () => {
-  for (let i = count / 2 - 1; i >= 0; i--) {
-    heapify(count, i);
-  }
-
-  for (let i = count - 1; i > 0; i--) {
-    pushNewState([0, i]);
-    swap(elements, 0, i);
-    pushNewState([0, i]);
-
-    heapify(i, 0);
-  }
-
+  maxHeapSortHelper();
   pushLastState();
-};
+}

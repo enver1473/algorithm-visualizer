@@ -10,7 +10,11 @@ export const optimizedRoomSort = () => {
   let noInsertionsMade = true;
 
   // Sort initial room
-
+  if (count < 16) {
+    binaryInsertionSortHelper();
+    pushLastState();
+    return;
+  }
   noInsertionsMade = noInsertionsMade && binaryInsertionSortHelper(1, roomLength + 2);
 
   for (let i = roomLength, j = count - 2; j > roomLength; i++, endOfRoom++) {

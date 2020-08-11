@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Row, Col, Button, Select, Slider, Cascader, Checkbox, Typography, Tooltip } from 'antd';
+import { Row, Col, Button, Slider, Cascader, Checkbox, Typography, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
-import './Controls.css';
+import { useWindowWidthContext } from '../../../../Context/useWindowWidthContext';
 
-const { Option } = Select;
+import './Controls.css';
 
 const { Text } = Typography;
 
@@ -20,9 +20,18 @@ const Controls = ({
   buildAnimations,
   handleCheckChange,
   reShuffle,
+  divisors,
+  dir,
 }) => {
   const [play, setPlay] = useState(true);
   const [autoRebuild, setAutoRebuild] = useState(true);
+  const { width } = useWindowWidthContext();
+  const [expand, setExpand] = useState(false);
+  const [direction, setDir] = useState(dir);
+
+  const handleDirChange = () => {
+    forwardOrReverse(setDir);
+  };
 
   const playClickedHandler = () => {
     setPlay(!play);
@@ -49,18 +58,12 @@ const Controls = ({
     7: '64',
     8: '128',
     9: '256',
-    10: '512',
   };
 
-  const countMarks = {
-    1: '10',
-    2: '20',
-    3: '50',
-    4: '100',
-    5: '200',
-    6: '500',
-    7: '1000',
-  };
+  const countMarks = { ...divisors };
+  const objKeys = Object.keys(countMarks);
+  const min = parseInt(objKeys[0]);
+  const max = parseInt(objKeys[objKeys.length - 1]);
 
   const options = [
     {
@@ -82,11 +85,11 @@ const Controls = ({
         {
           value: 'radixSortLSDb2',
           label: 'Radix Sort LSD (base 2)',
-        },/*
+        } /*
         {
           value: 'proxmapSort',
           label: 'Proxmap Sort',
-        },*/
+        },*/,
       ],
     },
     {
@@ -134,11 +137,11 @@ const Controls = ({
         {
           value: 'minMaxHeapSort',
           label: 'Min-Max Heap Sort',
-        },/*
+        } /*
         {
           value: 'unbalancedTreeSort',
           label: 'UnbalancedTreeSort',
-        }*/
+        }*/,
       ],
     },
     {
@@ -226,129 +229,172 @@ const Controls = ({
   const visualizationOptions = [
     {
       value: 'barPlot',
-      text: 'Standard Bar Plot',
+      label: 'Standard Bar Plot',
     },
     {
       value: 'hrPyramid',
-      text: 'Horizontal Pyramid',
+      label: 'Horizontal Pyramid',
     },
     {
       value: 'scatterPlot',
-      text: 'Scatter Plot',
+      label: 'Scatter Plot',
     },
     {
       value: 'rainbow',
-      text: 'Rainbow',
+      label: 'Rainbow',
     },
     {
       value: 'rainbowBarPlot',
-      text: 'Rainbow Bar Plot',
+      label: 'Rainbow Bar Plot',
     },
     {
       value: 'rainbowCircle',
-      text: 'Rainbow Circle',
+      label: 'Rainbow Circle',
     } /*
     {
       value: 'disparityCircle',
-      text: 'Disparity Circle',
+      label: 'Disparity Circle',
     },*/,
   ];
-  
+
   const inputArrayTypes = [
     {
       value: 'default',
-      text: 'Random (uniform distribution)',
+      label: 'Random',
     },
     {
       value: 'reversed',
-      text: 'Reversed input',
+      label: 'Reversed input',
     },
     {
       value: 'almostSorted',
-      text: 'Almost sorted',
+      label: 'Almost sorted',
     },
     {
       value: 'doubleSlope',
-      text: 'Double-slope',
+      label: 'Double-slope',
     },
     {
       value: 'alreadySorted',
-      text: 'Already Sorted',
+      label: 'Already Sorted',
     },
     {
       value: 'similarInputs',
-      text: 'Similar Inputs',
+      label: 'Similar Inputs',
     },
     {
       value: 'sinCosDistribution',
-      text: 'Sin-Cos Distribution',
+      label: 'Sin-Cos Distribution',
     },
   ];
 
-  const inputArrayOptions = inputArrayTypes.map(({ value, text }, idx) => (
-    <Option key={idx} value={value}>{text}</Option>
+  const visualCascaderRenderer = (labels, _) => {
+    if (width > 768) {
+      return labels[labels.length - 1];
+    } else {
+      return labels.length ? 'Visuals: ' + labels[labels.length - 1] : '';
+    }
+  }
+
+  const algoCascaderRenderer = (labels, _) => {
+    if (width > 768) {
+      return labels[labels.length - 1];
+    } else {
+      return labels.length ? 'Algorithm: ' + labels[labels.length - 1] : '';
+    }
+  };
+  
+  const inputCascaderRenderer = (labels, _) => {
+    if (width > 768) {
+      return labels[labels.length - 1];
+    } else {
+      return labels.length ? 'Input: ' + labels[labels.length - 1] : '';
+    }
+  }
+/*
+  const inputArrayOptions = inputArrayTypes.map(({ value, label }, idx) => (
+    <Option key={idx} value={value}>
+      {label}
+    </Option>
   ));
 
-  const vMethodOptions = visualizationOptions.map(({ value, text }, idx) => (
-    <Option key={idx} value={value}>{text}</Option>
+  const vMethodOptions = visualizationOptions.map(({ value, label }, idx) => (
+    <Option key={idx} value={value}>
+      {label}
+    </Option>
   ));
+*/
+  const handleExpand = () => {
+    setExpand(!expand);
+  };
 
-  return (
+  const componentSize = width > 768 ? 'default' : 'small';
+
+  const leftColOffset = width > 768 ? 12 : 0;
+  const leftColSpan = width > 768 ? 12 : 24;
+
+  const midColOffset = width > 768 ? 0 : 6;
+  const midColSpan = width > 768 ? 24 : 18;
+
+  const rightColOffset = width > 768 ? 8 : 4;
+  const rightColSpan = width > 768 ? 16 : 20;
+
+  const firstCol = (
     <>
-      <Col span={3}></Col>
-
-      <Col span={6} style={{ marginRight: '20px' }}>
-        <Row align='middle' gutter={[8, 8]} justify='space-around'>
-          <Col span={12} style={{ textAlign: 'right' }}>
-            <Text strong>Visualization method: </Text>
-          </Col>
-          <Col span={12}>
-            <Select
-              allowClear={false}
-              style={{ width: '100%', textAlign: 'left' }}
-              defaultValue='barPlot'
-              onChange={handleVMethodChange}
-              maxTagCount={10}
-            >
-              {vMethodOptions}
-            </Select>
-          </Col>
-        </Row>
-        <Row align='middle' gutter={[8, 8]}>
-          <Col span={12} style={{ textAlign: 'right' }}>
-            <Text strong>Algorithm: </Text>
-          </Col>
-          <Col span={12}>
-            <Cascader
-              allowClear={false}
-              style={{ width: '100%', textAlign: 'left' }}
-              expandTrigger='hover'
-              options={options}
-              onChange={handleAlgorithmChange}
-              placeholder='Select an algorithm'
-            />
-          </Col>
-        </Row>
-        <Row align='middle' gutter={[8, 8]}>
-          <Col span={12} style={{ textAlign: 'right' }}>
-            <Text strong>Input array type: </Text>
-          </Col>
-          <Col span={12}>
-            <Select
-              defaultValue={'default'}
-              allowClear={false}
-              style={{ width: '100%', textAlign: 'left' }}
-              placeholder='Input array type'
-              onSelect={handleInputSelect}
-            >
-              {inputArrayOptions}
-            </Select>
-          </Col>
-        </Row>
+      <Row align='middle' gutter={[8, 8]} justify='space-around'>
+        <Col span={leftColOffset} style={{ textAlign: 'right' }}>
+          <Text strong>Visualization method: </Text>
+        </Col>
+        <Col span={leftColSpan}>
+          <Cascader
+            displayRender={visualCascaderRenderer}
+            allowClear={false}
+            style={{ width: '100%', textAlign: 'left' }}
+            defaultValue={['barPlot']}
+            onChange={handleVMethodChange}
+            options={visualizationOptions}
+            placeholder='Select visual method'
+          />
+        </Col>
+      </Row>
+      <Row align='middle' gutter={[8, 8]}>
+        <Col span={leftColOffset} style={{ textAlign: 'right' }}>
+          <Text strong>Algorithm: </Text>
+        </Col>
+        <Col span={leftColSpan}>
+          <Cascader
+            displayRender={algoCascaderRenderer}
+            allowClear={false}
+            style={{ width: '100%', textAlign: 'left' }}
+            expandTrigger='hover'
+            options={options}
+            onChange={handleAlgorithmChange}
+            placeholder='Select an algorithm'
+          />
+        </Col>
+      </Row>
+      <Row align='middle' gutter={[8, 8]}>
+        <Col span={leftColOffset} style={{ textAlign: 'right' }}>
+          <Text strong>Input array type: </Text>
+        </Col>
+        <Col span={leftColSpan}>
+          <Cascader
+            displayRender={inputCascaderRenderer}
+            defaultValue={['default']}
+            allowClear={false}
+            style={{ width: '100%', textAlign: 'left' }}
+            onChange={handleInputSelect}
+            options={inputArrayTypes}
+            placeholder='Select input type'
+          />
+        </Col>
+      </Row>
+      {width > 768 ? (
         <Row gutter={[8, 8]} align='middle'>
-          <Col span={12}></Col>
-          <Col span={12}>
+          <Col span={leftColOffset}></Col>
+          <Col span={leftColSpan}>
             <Button
+              size={componentSize}
               type='primary'
               style={{ width: '100%' }}
               onClick={buildAnimations}
@@ -358,12 +404,17 @@ const Controls = ({
             </Button>
           </Col>
         </Row>
-      </Col>
+      ) : null}
+    </>
+  );
 
-      <Col span={3}>
+  const secondCol =
+    width > 768 ? (
+      <>
         <Row gutter={[8, 8]} justify='start'>
-          <Col span={24}>
+          <Col offset={midColOffset} span={midColSpan}>
             <Button
+              size={componentSize}
               style={{ width: '100%', marginRight: '5px' }}
               type='primary'
               onClick={playClickedHandler}
@@ -373,22 +424,23 @@ const Controls = ({
           </Col>
         </Row>
         <Row gutter={[8, 8]}>
-          <Col span={24}>
-            <Button style={{ width: '100%' }} onClick={forwardOrReverse}>
-              {'Forward/Reverse'}
+          <Col offset={midColOffset} span={midColSpan}>
+            <Button size={componentSize} style={{ width: '100%' }} onClick={handleDirChange}>
+              {direction === 1 ? 'Reverse' : 'Forward'}
             </Button>
           </Col>
         </Row>
         <Row gutter={[8, 8]} align='middle'>
-          <Col span={24}>
-            <Button style={{ width: '100%' }} onClick={reShuffle}>
+          <Col offset={midColOffset} span={midColSpan}>
+            <Button size={componentSize} style={{ width: '100%' }} onClick={reShuffle}>
               {'Reshuffle'}
             </Button>
           </Col>
         </Row>
         <Row align='middle' gutter={[8, 8]}>
-          <Col span={24}>
+          <Col offset={midColOffset} span={midColSpan}>
             <Checkbox
+              size={componentSize}
               style={{ width: '100%' }}
               onChange={(e) => handleCheckChange(e, setAutoRebuild)}
               defaultChecked={true}
@@ -397,63 +449,166 @@ const Controls = ({
             </Checkbox>
           </Col>
         </Row>
-      </Col>
+      </>
+    ) : (
+      <>
+        <Row gutter={[8, 8]} justify='start'>
+          <Col span={8}>
+            <Button style={{ width: '100%' }} onClick={reShuffle}>
+              {'Reshuffle'}
+            </Button>
+          </Col>
+          <Col span={8}>
+            <Button style={{ width: '100%' }} onClick={handleDirChange}>
+              {direction === 1 ? 'Reverse' : 'Forward'}
+            </Button>
+          </Col>
+          <Col span={8}>
+            <Button
+              style={{ width: '100%', marginRight: '5px' }}
+              type='primary'
+              onClick={playClickedHandler}
+            >
+              {'Play/Pause'}
+            </Button>
+          </Col>
+        </Row>
+      </>
+    );
 
-      <Col span={6} style={{ marginRight: '40px' }}>
+  const thirdCol = (
+    <>
+      {width > 768 ? (
+        <>
+          <Row align='middle' gutter={[12, 8]}>
+            <Col span={rightColOffset} style={{ textAlign: 'right' }}>
+              <Text strong>Element count: </Text>
+            </Col>
+            <Col span={rightColSpan}>
+              <Slider
+                tipFormatter={(value) => (countMarks[value] !== '' ? countMarks[value] : null)}
+                min={min}
+                max={max}
+                marks={countMarks}
+                step={null}
+                defaultValue={min + Math.floor((max - min) / 2)}
+                onChange={handleCountChange}
+              />
+            </Col>
+          </Row>
+          <Row align='middle' gutter={[12, 8]} justify='start'>
+            <Col span={rightColOffset} style={{ textAlign: 'right' }}>
+              <Text strong>Frames per second: </Text>
+            </Col>
+            <Col span={rightColSpan}>
+              <Slider
+                marks={speedMarks}
+                min={1}
+                max={60}
+                defaultValue={60}
+                onChange={handleFpsChange}
+              />
+            </Col>
+          </Row>
+        </>
+      ) : expand ? (
+        <>
+          <Row align='middle' gutter={[12, 8]}>
+            <Col span={rightColOffset} style={{ textAlign: 'right' }}>
+              <Text strong>Element count: </Text>
+            </Col>
+            <Col span={rightColSpan}>
+              <Slider
+                tipFormatter={(value) => (countMarks[value] !== '' ? countMarks[value] : null)}
+                min={min}
+                max={max}
+                marks={countMarks}
+                step={null}
+                defaultValue={min + Math.floor((max - min) / 2)}
+                onChange={handleCountChange}
+              />
+            </Col>
+          </Row>
+          <Row align='middle' gutter={[12, 8]} justify='start'>
+            <Col span={rightColOffset} style={{ textAlign: 'right' }}>
+              <Text strong>FPS: </Text>
+            </Col>
+            <Col span={rightColSpan}>
+              <Slider
+                marks={speedMarks}
+                min={1}
+                max={60}
+                defaultValue={60}
+                onChange={handleFpsChange}
+              />
+            </Col>
+          </Row>
+        </>
+      ) : null}
+      <Row align='middle' gutter={[12, 8]}>
+        <Col span={rightColOffset} style={{ textAlign: 'right' }}>
+          <Text strong>
+            <Tooltip placement='top' title={'Swaps skipped per frame'}>
+              <QuestionCircleOutlined />
+            </Tooltip>
+            {' Step: '}
+          </Text>
+        </Col>
+        <Col span={rightColSpan}>
+          <Slider
+            tooltipVisible={false}
+            marks={incrementMarks}
+            min={1}
+            max={9}
+            step={1}
+            defaultValue={1}
+            onChange={handleIncrementChange}
+          />
+        </Col>
+      </Row>
+      {width > 768 ? null : (
         <Row align='middle' gutter={[12, 8]}>
-          <Col span={8} style={{ textAlign: 'right' }}>
-            <Text strong>Number of elements: </Text>
-          </Col>
-          <Col span={16}>
-            <Slider
-              tooltipVisible={false}
-              min={1}
-              max={7}
-              marks={countMarks}
-              step={null}
-              defaultValue={6}
-              onChange={handleCountChange}
-            />
+          <Col span={24}>
+            <Button onClick={handleExpand} type='link'>
+              {expand ? 'Fewer controls' : 'More controls'}
+            </Button>
           </Col>
         </Row>
-        <Row align='middle' gutter={[12, 8]} justify='start'>
-          <Col span={8} style={{ textAlign: 'right' }}>
-            <Text strong>Frames per second: </Text>
-          </Col>
-          <Col span={16}>
-            <Slider
-              marks={speedMarks}
-              min={1}
-              max={60}
-              defaultValue={60}
-              onChange={handleFpsChange}
-            />
-          </Col>
-        </Row>
-        <Row align='middle' gutter={[12, 8]}>
-          <Col span={8} style={{ textAlign: 'right' }}>
-            <Text strong>
-              <Tooltip placement='top' title={'Swaps skipped per frame'}>
-                <QuestionCircleOutlined />
-              </Tooltip>
-              {' Step: '}
-            </Text>
-          </Col>
-          <Col span={16}>
-            <Slider
-              tooltipVisible={false}
-              marks={incrementMarks}
-              min={1}
-              max={10}
-              step={1}
-              defaultValue={1}
-              onChange={handleIncrementChange}
-            />
-          </Col>
-        </Row>
-      </Col>
+      )}
+    </>
+  );
 
-      <Col span={6}></Col>
+  return (
+    <>
+      {width > 768 ? (
+        <>
+          <Col span={3}></Col>
+
+          <Col span={6} style={{ marginRight: '20px' }}>
+            {firstCol}
+          </Col>
+
+          <Col span={3}>{secondCol}</Col>
+
+          <Col span={6} style={{ marginRight: '40px' }}>
+            {thirdCol}
+          </Col>
+
+          <Col span={6}></Col>
+        </>
+      ) : (
+        <>
+          <Col span={1}></Col>
+
+          <Col span={22}>
+            {firstCol}
+            {secondCol}
+            {thirdCol}
+          </Col>
+
+          <Col span={1}></Col>
+        </>
+      )}
     </>
   );
 };
