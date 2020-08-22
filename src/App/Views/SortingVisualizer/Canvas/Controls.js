@@ -22,12 +22,16 @@ const Controls = ({
   reShuffle,
   divisors,
   dir,
+  setAmplitude,
 }) => {
   const [play, setPlay] = useState(true);
   const [autoRebuild, setAutoRebuild] = useState(true);
   const { width } = useWindowWidthContext();
   const [expand, setExpand] = useState(false);
   const [direction, setDir] = useState(dir);
+  const [algorithm, setAlgorithm] = useState([]);
+  const [vMethod, setVMethod] = useState(['barPlot']);
+  const [input, setInput] = useState(['default']);
 
   const handleDirChange = () => {
     forwardOrReverse(setDir);
@@ -222,6 +226,34 @@ const Controls = ({
           value: 'optimizedRoomSort',
           label: 'Optimized Room Sort',
         },
+        {
+          value: 'rotateRoomSort',
+          label: 'Rotate Room Sort',
+        },
+      ],
+    },
+    {
+      value: 'concurrentSorts',
+      label: 'Concurrent Sorts',
+      children: [
+        {
+          value: 'iterativePairwiseNetwork',
+          label: 'Iterative Pairwise Network',
+        },
+        {
+          value: 'recursivePairwiseNetwork',
+          label: 'Recursive Pairwise Network',
+        },
+      ],
+    },
+    {
+      value: 'impracticalSorts',
+      label: 'Impractical Sorts',
+      children: [
+        {
+          value: 'stoogeSort',
+          label: 'Stooge Sort',
+        },
       ],
     },
   ];
@@ -294,7 +326,7 @@ const Controls = ({
     } else {
       return labels.length ? 'Visuals: ' + labels[labels.length - 1] : '';
     }
-  }
+  };
 
   const algoCascaderRenderer = (labels, _) => {
     if (width > 768) {
@@ -303,15 +335,15 @@ const Controls = ({
       return labels.length ? 'Algorithm: ' + labels[labels.length - 1] : '';
     }
   };
-  
+
   const inputCascaderRenderer = (labels, _) => {
     if (width > 768) {
       return labels[labels.length - 1];
     } else {
       return labels.length ? 'Input: ' + labels[labels.length - 1] : '';
     }
-  }
-/*
+  };
+  /*
   const inputArrayOptions = inputArrayTypes.map(({ value, label }, idx) => (
     <Option key={idx} value={value}>
       {label}
@@ -350,8 +382,11 @@ const Controls = ({
             displayRender={visualCascaderRenderer}
             allowClear={false}
             style={{ width: '100%', textAlign: 'left' }}
-            defaultValue={['barPlot']}
-            onChange={handleVMethodChange}
+            defaultValue={vMethod}
+            onChange={(values) => {
+              handleVMethodChange(values);
+              setVMethod(values);
+            }}
             options={visualizationOptions}
             placeholder='Select visual method'
           />
@@ -368,7 +403,11 @@ const Controls = ({
             style={{ width: '100%', textAlign: 'left' }}
             expandTrigger='hover'
             options={options}
-            onChange={handleAlgorithmChange}
+            defaultValue={algorithm}
+            onChange={(values) => {
+              handleAlgorithmChange(values);
+              setAlgorithm(values);
+            }}
             placeholder='Select an algorithm'
           />
         </Col>
@@ -380,10 +419,13 @@ const Controls = ({
         <Col span={leftColSpan}>
           <Cascader
             displayRender={inputCascaderRenderer}
-            defaultValue={['default']}
+            defaultValue={input}
             allowClear={false}
             style={{ width: '100%', textAlign: 'left' }}
-            onChange={handleInputSelect}
+            onChange={(values) => {
+              handleInputSelect(values);
+              setInput(values);
+            }}
             options={inputArrayTypes}
             placeholder='Select input type'
           />
@@ -498,15 +540,20 @@ const Controls = ({
           </Row>
           <Row align='middle' gutter={[12, 8]} justify='start'>
             <Col span={rightColOffset} style={{ textAlign: 'right' }}>
-              <Text strong>Frames per second: </Text>
+              <Text strong>Volume: </Text>
             </Col>
             <Col span={rightColSpan}>
               <Slider
-                marks={speedMarks}
-                min={1}
-                max={60}
-                defaultValue={60}
-                onChange={handleFpsChange}
+                tooltipVisible={false}
+                marks={{
+                  0: '0%',
+                  50: '50%',
+                  100: '100%',
+                }}
+                min={0}
+                max={100}
+                defaultValue={50}
+                onChange={(value) => setAmplitude(value)}
               />
             </Col>
           </Row>
@@ -543,8 +590,77 @@ const Controls = ({
               />
             </Col>
           </Row>
+          <Row align='middle' gutter={[12, 8]} justify='start'>
+            <Col span={rightColOffset} style={{ textAlign: 'right' }}>
+              <Text strong>Volume: </Text>
+            </Col>
+            <Col span={rightColSpan}>
+              <Slider
+                marks={{
+                  0: '0%',
+                  50: '50%',
+                  100: '100%',
+                }}
+                min={0}
+                max={100}
+                defaultValue={50}
+                onChange={(value) => setAmplitude(value)}
+              />
+            </Col>
+          </Row>
         </>
       ) : null}
+      {width > 768 ? null : (
+        <>
+          <Row align='middle' gutter={[12, 8]}>
+            <Col span={rightColOffset} style={{ textAlign: 'right' }}>
+              <Text strong>
+                <Tooltip placement='top' title={'Swaps skipped per frame'}>
+                  <QuestionCircleOutlined />
+                </Tooltip>
+                {' Step: '}
+              </Text>
+            </Col>
+            <Col span={rightColSpan}>
+              <Slider
+                tooltipVisible={false}
+                marks={incrementMarks}
+                min={1}
+                max={9}
+                step={1}
+                defaultValue={1}
+                onChange={handleIncrementChange}
+              />
+            </Col>
+          </Row>
+          <Row align='middle' gutter={[12, 8]}>
+            <Col span={24}>
+              <Button onClick={handleExpand} type='link'>
+                {expand ? 'Fewer controls' : 'More controls'}
+              </Button>
+            </Col>
+          </Row>
+        </>
+      )}
+    </>
+  );
+
+  const fourthCol = (
+    <>
+      <Row align='middle' gutter={[12, 8]} justify='start'>
+        <Col span={rightColOffset} style={{ textAlign: 'right' }}>
+          <Text strong>Frames per second: </Text>
+        </Col>
+        <Col span={rightColSpan}>
+          <Slider
+            marks={speedMarks}
+            min={1}
+            max={60}
+            defaultValue={60}
+            onChange={handleFpsChange}
+          />
+        </Col>
+      </Row>
       <Row align='middle' gutter={[12, 8]}>
         <Col span={rightColOffset} style={{ textAlign: 'right' }}>
           <Text strong>
@@ -566,15 +682,6 @@ const Controls = ({
           />
         </Col>
       </Row>
-      {width > 768 ? null : (
-        <Row align='middle' gutter={[12, 8]}>
-          <Col span={24}>
-            <Button onClick={handleExpand} type='link'>
-              {expand ? 'Fewer controls' : 'More controls'}
-            </Button>
-          </Col>
-        </Row>
-      )}
     </>
   );
 
@@ -582,19 +689,23 @@ const Controls = ({
     <>
       {width > 768 ? (
         <>
-          <Col span={3}></Col>
+          <Col span={1}></Col>
 
           <Col span={6} style={{ marginRight: '20px' }}>
             {firstCol}
           </Col>
 
-          <Col span={3}>{secondCol}</Col>
+          <Col span={2}>{secondCol}</Col>
 
           <Col span={6} style={{ marginRight: '40px' }}>
             {thirdCol}
           </Col>
 
-          <Col span={6}></Col>
+          <Col span={6} style={{ marginRight: '40px' }}>
+            {fourthCol}
+          </Col>
+
+          <Col span={3}></Col>
         </>
       ) : (
         <>

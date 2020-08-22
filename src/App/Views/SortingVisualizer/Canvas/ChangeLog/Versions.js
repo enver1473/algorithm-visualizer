@@ -4,6 +4,15 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.4',
+    content: [
+      'Added recursive and iterative pairwise sorting network',
+      'Added stooge sort',
+      'Added brand new sort: Rotate room sort',
+      'Added a volume slider for sound',
+    ],
+  },
+  {
     title: '1.2.3',
     content: ['Responsiveness improved', 'Fixed major lag inducing bug'],
   },

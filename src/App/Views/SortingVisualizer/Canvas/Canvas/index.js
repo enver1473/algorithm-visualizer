@@ -40,6 +40,10 @@ import {
   proxmapSort,
   unbalancedTreeSort,
   optimizedRoomSort,
+  iterativePairwiseNetwork,
+  recursivePairwiseNetwork,
+  stoogeSort,
+  rotateRoomSort,
   swap,
 } from '../Algorithms';
 
@@ -65,6 +69,13 @@ let oscs = [];
 
 // minimum and maximum values for the oscillator frequency range mapping
 let min, max;
+
+// minimum frequency and maximum frequency values
+let minFreq = 40;
+let maxFreq = 1300;
+
+// oscillator amplitude
+let amplitude = 0.5;
 
 // Array size
 export let count = parseInt(width / barWidth);
@@ -182,7 +193,7 @@ const Canvas = () => {
   let autoRebuild = true;
 
   const { width: windowWidth } = useWindowWidthContext();
-  width = windowWidth - (windowWidth % 100);
+  width = (windowWidth * (0.9)) - ((windowWidth * (0.9)) % 64);
   height = width * (windowWidth > 768 ? 2 / 5 : 3 / 5);
   count = parseInt(width / barWidth);
 
@@ -291,8 +302,16 @@ const Canvas = () => {
       callSort(roomSort);
     } else if (algorithm === 'optimizedRoomSort') {
       callSort(optimizedRoomSort);
+    } else if (algorithm === 'rotateRoomSort') {
+      callSort(rotateRoomSort);
     } else if (algorithm === 'proxmapSort') {
       callSort(proxmapSort);
+    } else if (algorithm === 'iterativePairwiseNetwork') {
+      callSort(iterativePairwiseNetwork);
+    } else if (algorithm === 'recursivePairwiseNetwork') {
+      callSort(recursivePairwiseNetwork);
+    } else if (algorithm === 'stoogeSort') {
+      callSort(stoogeSort);
     } else if (algorithm === 'unbalancedTreeSort') {
       callSort(unbalancedTreeSort);
     } else if (algorithm.split('LSD')[0] === 'radixSort') {
@@ -405,6 +424,10 @@ const Canvas = () => {
     }
   }
 
+  const setAmplitude = (value) => {
+    amplitude = globalP.map(value, 0, 100, 0, 0.5);
+  };
+
   const values = {};
   if (divisors.length > 26) {
     let rem = divisors.length % 4;
@@ -470,6 +493,7 @@ const Canvas = () => {
           reShuffle={reShuffle}
           divisors={values}
           dir={dir}
+          setAmplitude={setAmplitude}
         />
       </Row>
       <Row justify='center' style={{ backgroundColor: 'white' }}>
@@ -495,7 +519,7 @@ export const sketch = (p) => {
   backgroundColor = 50;
   p.setup = () => {
     p.createCanvas(width, height);
-
+ 
     p.colorMode(p.RGB);
     p.background(backgroundColor);
     p.angleMode(p.RADIANS);
@@ -511,6 +535,7 @@ export const sketch = (p) => {
       osc.amp(0.5);
       oscs.push(osc);
     }
+    p.noSmooth();
   };
 
   // DRAW
@@ -520,6 +545,9 @@ export const sketch = (p) => {
       return;
     }
     if (loop) {
+      for (let i = 0; i < oscs.length; i++) {
+        oscs[i].amp(amplitude);
+      }
       if (oldStateIdx !== undefined && oldStateIdx !== null) {
         if (stateIdx > oldStateIdx) {
           for (let i = oldStateIdx; i < stateIdx; i++) {
@@ -531,7 +559,7 @@ export const sketch = (p) => {
             for (let element of states[i]) {
               element.show(primaryColor);
               if (states[i].length <= 5) {
-                oscs[j].freq(p.map(element.getValue(), min, max, 120, 1000));
+                oscs[j].freq(p.map(element.getValue(), min, max, minFreq, maxFreq));
               }
               j++;
             }
@@ -552,7 +580,7 @@ export const sketch = (p) => {
               for (let element of states[i]) {
                 element.show(primaryColor);
                 if (states[i].length <= 5) {
-                  oscs[j].freq(p.map(element.getValue(), min, max, 120, 1000));
+                  oscs[j].freq(p.map(element.getValue(), min, max, minFreq, maxFreq));
                 }
                 j++;
               }
@@ -596,7 +624,7 @@ export const sketch = (p) => {
 
         if (states[stateIdx].length <= 5) {
           let osc = oscs[i];
-          osc.freq(p.map(states[stateIdx][i].getValue(), min, max, 120, 1000));
+          osc.freq(p.map(states[stateIdx][i].getValue(), min, max, minFreq, maxFreq));
         }
       }
       oldStateIdx = stateIdx;

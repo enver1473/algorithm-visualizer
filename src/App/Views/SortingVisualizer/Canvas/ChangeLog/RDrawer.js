@@ -13,7 +13,7 @@ const FloatingButtonMobile = styled(Button)`
 
 const FloatingButtonDesktop = styled(Button)`
   position: fixed;
-  top: 2vh;
+  top: 15vh;
   right: 2vw;
 `;
 

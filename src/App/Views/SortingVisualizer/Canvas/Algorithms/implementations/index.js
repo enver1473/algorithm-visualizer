@@ -24,4 +24,8 @@ export { roomSort } from './roomSort';
 export { proxmapSort } from './proxmapSort';
 export { unbalancedTreeSort } from './unbalancedTreeSort';
 export { optimizedRoomSort } from './optimizedRoomSort';
+export { iterativePairwiseNetwork } from './iterativePairwiseNetwork';
+export { recursivePairwiseNetwork } from './recursivePairwiseNetwork';
+export { stoogeSort } from './stoogeSort';
+export { rotateRoomSort } from './rotateRoomSort';
 

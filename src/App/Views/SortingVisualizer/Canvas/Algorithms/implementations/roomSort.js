@@ -12,7 +12,6 @@ export const roomSort = () => {
       endOfRoom = i + roomLength;
 
       j -= roomLength - 1;
-      continue;
     } else {
       insertionSortHelper(i + 1, endOfRoom);
     }
