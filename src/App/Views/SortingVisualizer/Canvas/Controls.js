@@ -164,6 +164,10 @@ const Controls = ({
           value: 'weaveMergeSort',
           label: 'Weave Merge Sort',
         },
+        {
+          value: 'rotateRoomSort',
+          label: 'Rotate Room Sort',
+        },
       ],
     },
     {
@@ -225,10 +229,6 @@ const Controls = ({
         {
           value: 'optimizedRoomSort',
           label: 'Optimized Room Sort',
-        },
-        {
-          value: 'rotateRoomSort',
-          label: 'Rotate Room Sort',
         },
       ],
     },
