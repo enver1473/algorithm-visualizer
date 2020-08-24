@@ -773,20 +773,20 @@ export function chooseBuffer(choice) {
 }
 
 export function grailSort() {
-  if(bufferType === 0) grailCommonSort(elements, 0, count, null, 0, 0);
-  else if(bufferType === 1) {
+  if(bufferType === 0) {
+    grailCommonSort(elements, 0, count, null, 0, 0);
+    pushLastState();
+  } else if(bufferType === 1) {
     let ExtBuf = new Array(getStaticBuffer());
     grailCommonSort(elements, 0, count, ExtBuf, 0, getStaticBuffer());
     pushLastState();
-  }
-  else if(bufferType === 2) {
+  } else if(bufferType === 2) {
     let tempLen = 1;
     while(tempLen * tempLen < count) tempLen *= 2;
     let DynExtBuf = new Array(tempLen);
     grailCommonSort(elements, 0, count, DynExtBuf, 0, tempLen);
     pushLastState();
-  }
-  else {
+  } else {
     try {
       throw new Error("Invalid Grail buffer!!");
     } catch (e) {
