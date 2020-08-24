@@ -168,6 +168,14 @@ const Controls = ({
           value: 'rotateRoomSort',
           label: 'Rotate Room Sort',
         },
+        {
+          value: 'optimizedRotateRoomSort',
+          label: 'Optimized Rotate Room Sort',
+        },
+        {
+          value: 'grailSort',
+          label: 'Grail Sort',
+        },
       ],
     },
     {
@@ -317,6 +325,10 @@ const Controls = ({
     {
       value: 'sinCosDistribution',
       label: 'Sin-Cos Distribution',
+    },
+    {
+      value: 'sawTooth',
+      label: 'Saw Tooth',
     },
   ];
 

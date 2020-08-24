@@ -4,6 +4,12 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.5',
+    content: [
+      'Added grail sort and optimized rotate room sort',
+    ],
+  },
+  {
     title: '1.2.4',
     content: [
       'Added recursive and iterative pairwise sorting network',

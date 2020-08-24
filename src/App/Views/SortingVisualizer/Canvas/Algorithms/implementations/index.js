@@ -28,4 +28,6 @@ export { iterativePairwiseNetwork } from './iterativePairwiseNetwork';
 export { recursivePairwiseNetwork } from './recursivePairwiseNetwork';
 export { stoogeSort } from './stoogeSort';
 export { rotateRoomSort } from './rotateRoomSort';
+export { optimizedRotateRoomSort } from './optimizedRotateRoomSort';
+export { grailSort } from './grailSort';
 

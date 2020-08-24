@@ -44,6 +44,8 @@ import {
   recursivePairwiseNetwork,
   stoogeSort,
   rotateRoomSort,
+  optimizedRotateRoomSort,
+  grailSort,
   swap,
 } from '../Algorithms';
 
@@ -193,7 +195,7 @@ const Canvas = () => {
   let autoRebuild = true;
 
   const { width: windowWidth } = useWindowWidthContext();
-  width = (windowWidth * (0.9)) - ((windowWidth * (0.9)) % 64);
+  width = windowWidth * 0.9 - ((windowWidth * 0.9) % 64);
   height = width * (windowWidth > 768 ? 2 / 5 : 3 / 5);
   count = parseInt(width / barWidth);
 
@@ -304,6 +306,8 @@ const Canvas = () => {
       callSort(optimizedRoomSort);
     } else if (algorithm === 'rotateRoomSort') {
       callSort(rotateRoomSort);
+    } else if (algorithm === 'optimizedRotateRoomSort') {
+      callSort(optimizedRotateRoomSort);
     } else if (algorithm === 'proxmapSort') {
       callSort(proxmapSort);
     } else if (algorithm === 'iterativePairwiseNetwork') {
@@ -314,6 +318,8 @@ const Canvas = () => {
       callSort(stoogeSort);
     } else if (algorithm === 'unbalancedTreeSort') {
       callSort(unbalancedTreeSort);
+    } else if (algorithm === 'grailSort') {
+      callSort(grailSort);
     } else if (algorithm.split('LSD')[0] === 'radixSort') {
       if (vMethod === 'rainbow') {
         notification.warning({
@@ -519,7 +525,7 @@ export const sketch = (p) => {
   backgroundColor = 50;
   p.setup = () => {
     p.createCanvas(width, height);
- 
+
     p.colorMode(p.RGB);
     p.background(backgroundColor);
     p.angleMode(p.RADIANS);
@@ -795,6 +801,28 @@ const randomizeHelper = (value) => {
 
       arr.push(number);
       addElement(i, number);
+    }
+  } else if (value === 'sawTooth') {
+    let numbers = [];
+
+    for (let tCount = 0; tCount < 4; tCount++) {
+      for (let i = 0; i < count / 4; i++) {
+        let number = Math.floor((i + 1) * (height / (count / 4)));
+
+        if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+          number = Math.floor(i + 1);
+        }
+
+        numbers.push(number);
+      }
+    }
+
+    for (let i = 0; i < count; i++) {
+      let num = numbers[i];
+
+      arr.push(num);
+
+      addElement(i, num);
     }
   }
   currentState = [...elements];
