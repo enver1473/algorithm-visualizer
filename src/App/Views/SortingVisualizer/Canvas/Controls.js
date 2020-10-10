@@ -89,7 +89,11 @@ const Controls = ({
         {
           value: 'radixSortLSDb2',
           label: 'Radix Sort LSD (base 2)',
-        } /*
+        }/*
+        {
+          value: 'radixSortMSD',              // not working properly
+          label: 'Radix Sort MSD (base 4)',
+        } 
         {
           value: 'proxmapSort',
           label: 'Proxmap Sort',
@@ -175,6 +179,14 @@ const Controls = ({
         {
           value: 'grailSort',
           label: 'Grail Sort',
+        },
+        {
+          value: 'rotateRoomShakerSort',
+          label: 'Rotate Room Shaker Sort',
+        },
+        {
+          value: 'advancedRoomSort',
+          label: 'Advanced Room Sort',
         },
       ],
     },
@@ -300,31 +312,35 @@ const Controls = ({
   const inputArrayTypes = [
     {
       value: 'default',
-      label: 'Random',
+      label: 'Random (uniform distribution)',
     },
     {
-      value: 'reversed',
-      label: 'Reversed input',
-    },
-    {
-      value: 'almostSorted',
-      label: 'Almost sorted',
-    },
-    {
-      value: 'doubleSlope',
-      label: 'Double-slope',
+      value: 'randomGaussian',
+      label: 'Random (gaussian distribution)',
     },
     {
       value: 'alreadySorted',
       label: 'Already Sorted',
     },
     {
-      value: 'similarInputs',
-      label: 'Similar Inputs',
+      value: 'almostSorted',
+      label: 'Almost sorted',
     },
     {
-      value: 'sinCosDistribution',
-      label: 'Sin-Cos Distribution',
+      value: 'reversed',
+      label: 'Reversed input',
+    },
+    {
+      value: 'threeUnique',
+      label: '3 unique values',
+    },
+    {
+      value: 'doubleSlope',
+      label: 'Double-slope',
+    },
+    {
+      value: 'sinDistribution',
+      label: 'Sin Distribution',
     },
     {
       value: 'sawTooth',

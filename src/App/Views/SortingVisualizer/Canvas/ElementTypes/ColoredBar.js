@@ -1,17 +1,12 @@
 import { globalP, backgroundColor, height as windowHeight } from '../Canvas';
 
 export default class ColoredBar {
-  x;
-  y;
-  width;
-  height;
-  hue;
-
-  constructor(x, width, rNumber) {
+  constructor(x, width, rNumber, index) {
     this.x = x;
     this.y = 0;
     this.width = width;
     this.height = windowHeight;
+    this.index = index;
 
     let newHue = globalP.map(rNumber, 1, windowHeight, 0, 360);
     this.hue = newHue;
@@ -25,6 +20,7 @@ export default class ColoredBar {
       this.x,
       this.width,
       newRNumber,
+      this.index,
     );
 
     return newColoredBar;

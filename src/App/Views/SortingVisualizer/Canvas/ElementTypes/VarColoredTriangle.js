@@ -1,7 +1,7 @@
 import { globalP, backgroundColor, width as windowWidth, height as windowHeight, count} from '../Canvas';
 
 export default class VarColoredTriangle {
-  constructor(x1, y1, x2, y2, bx1, by1, bx2, by2, rx, ry, rNumber, trianglePointer) {
+  constructor(x1, y1, x2, y2, bx1, by1, bx2, by2, rx, ry, rNumber, trianglePointer, index) {
     this.ox = windowWidth / 2;
     this.oy = windowHeight / 2;
     this.x1 = x1;
@@ -15,6 +15,7 @@ export default class VarColoredTriangle {
     this.rx = rx;
     this.ry = ry;
     this.pointer = trianglePointer;
+    this.index = index;
 
     let newHue = 360 * (rNumber / count);
     this.hue = newHue;
@@ -37,6 +38,7 @@ export default class VarColoredTriangle {
       this.ry,
       newRNumber,
       this.pointer.copy(),
+      this.index,
     );
 
     return newColoredTriangle;

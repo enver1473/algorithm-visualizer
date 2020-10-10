@@ -1,22 +1,17 @@
 import { globalP, backgroundColor, height as windowHeight, primaryColor, accentColor } from '../Canvas';
 
 export default class Bar {
-  x;
-  y;
-  width;
-  height;
-  color;
-
-  constructor(x, y, width, height, color) {
+  constructor(x, y, width, height, color, index) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.color = color;
+    this.index = index;
   }
 
   copy = () => {
-    return new Bar(this.x, this.y, this.width, this.height, this.color);
+    return new Bar(this.x, this.y, this.width, this.height, this.color, this.index);
   };
 
   show = (colorType) => {

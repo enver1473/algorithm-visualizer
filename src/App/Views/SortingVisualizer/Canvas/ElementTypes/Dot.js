@@ -1,26 +1,26 @@
-import { globalP, backgroundColor, height as windowHeight, primaryColor, accentColor } from '../Canvas';
+import {
+  globalP,
+  backgroundColor,
+  height as windowHeight,
+  primaryColor,
+  accentColor,
+} from '../Canvas';
 
 export default class Dot {
-  x;
-  y;
-  width;
-  height;
-  color;
-
-  constructor(x, y, width, height, color) {
+  constructor(x, y, width, height, color, index) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.color = color;
+    this.index = index;
   }
 
   copy = () => {
-    return new Dot(this.x, this.y, this.width, this.height, this.color);
+    return new Dot(this.x, this.y, this.width, this.height, this.color, this.index);
   };
 
   show = (colorType) => {
-
     globalP.fill(backgroundColor);
     globalP.rect(this.x, 0, this.width, windowHeight);
 

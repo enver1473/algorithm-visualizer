@@ -7,13 +7,15 @@ const countingSort = (exp, b) => {
 
   for (let i = 0; i < count; i++) {
     output.push(null);
-    if (i < b) {
-      counts.push(0);
-    }
+  }
+
+  for (let i = 0; i < b; i++) {
+    counts.push(0);
   }
 
   for (let i = 0; i < count; i++) {
     counts[Math.floor(elements[i].getValue() / exp) % b] += 1;
+    pushNewState([i]);
   }
 
   for (let i = 1; i < counts.length; i++) {
@@ -26,10 +28,30 @@ const countingSort = (exp, b) => {
     counts[Math.floor(elements[i].getValue() / exp) % b] -= 1;
   }
 
-  for (let i = 0; i < count; i++) {
-    pushNewState([i]);
-    elements[i] = output[i].copy();
-    pushNewState([i]);
+  if (count > 10) {
+    let n = Math.floor(count / 4);
+    for (let i = 0; i < n; i++) {
+      pushNewState([i, i + n, i + 2 * n, i + 3 * n]);
+      pushNewState([i, i + n, i + 2 * n, i + 3 * n]);
+      elements[0 * n + i] = output[0 * n + i].copy();
+      elements[1 * n + i] = output[1 * n + i].copy();
+      elements[2 * n + i] = output[2 * n + i].copy();
+      elements[3 * n + i] = output[3 * n + i].copy();
+      pushNewState([i, i + n, i + 2 * n, i + 3 * n]);
+      pushNewState([i, i + n, i + 2 * n, i + 3 * n]);
+    }
+  
+    for (let i = n * 4; i < count; i++) {
+      pushNewState([i]);
+      elements[i] = output[i].copy();
+      pushNewState([i]);
+    }
+  } else {
+    for (let i = 0; i < count; i++) {
+      pushNewState([i]);
+      elements[i] = output[i].copy();
+      pushNewState([i]);
+    }
   }
 };
 

@@ -32,6 +32,7 @@ import {
   weaveMergeSort,
   bottomUpMergeSort,
   radixSortLSD,
+  radixSortMSD,
   shellSort,
   maxHeapSort,
   minHeapSort,
@@ -45,7 +46,9 @@ import {
   stoogeSort,
   rotateRoomSort,
   optimizedRotateRoomSort,
+  rotateRoomShakerSort,
   grailSort,
+  advancedRoomSort,
   swap,
 } from '../Algorithms';
 
@@ -74,7 +77,7 @@ let min, max;
 
 // minimum frequency and maximum frequency values
 let minFreq = 40;
-let maxFreq = 1300;
+let maxFreq = 1900;
 
 // oscillator amplitude
 let amplitude = 0.5;
@@ -308,6 +311,8 @@ const Canvas = () => {
       callSort(rotateRoomSort);
     } else if (algorithm === 'optimizedRotateRoomSort') {
       callSort(optimizedRotateRoomSort);
+    } else if (algorithm === 'rotateRoomShakerSort') {
+      callSort(rotateRoomShakerSort);
     } else if (algorithm === 'proxmapSort') {
       callSort(proxmapSort);
     } else if (algorithm === 'iterativePairwiseNetwork') {
@@ -320,6 +325,10 @@ const Canvas = () => {
       callSort(unbalancedTreeSort);
     } else if (algorithm === 'grailSort') {
       callSort(grailSort);
+    } else if (algorithm === 'advancedRoomSort') {
+      callSort(advancedRoomSort);
+    } else if (algorithm === 'radixSortMSD') {
+      callSort(radixSortMSD);
     } else if (algorithm.split('LSD')[0] === 'radixSort') {
       if (vMethod === 'rainbow') {
         notification.warning({
@@ -424,7 +433,7 @@ const Canvas = () => {
   const debounceCountChange = useRef(_.debounce((value) => handleCountChange(value), 500)).current;
 
   let divisors = [];
-  for (let div = 2; div <= width; div++) {
+  for (let div = 4; div <= width; div++) {
     if (width % div === 0) {
       divisors.push(div);
     }
@@ -777,7 +786,7 @@ const randomizeHelper = (value) => {
       arr.push(ele);
       addElement(i, ele);
     }
-  } else if (value === 'similarInputs') {
+  } else if (value === 'randomGaussian') {
     for (let i = 0; i < count; i++) {
       let rNumber = globalP.randomGaussian(5, 15);
 
@@ -790,7 +799,7 @@ const randomizeHelper = (value) => {
       arr.push(number);
       addElement(i, number);
     }
-  } else if (value === 'sinCosDistribution') {
+  } else if (value === 'sinDistribution') {
     for (let i = 0; i < count; i++) {
       let angle = globalP.map(i, 0, count - 1, globalP.TWO_PI / count, globalP.TWO_PI);
       let number = globalP.map(globalP.sin(angle), -1, 1, 1, height);
@@ -824,6 +833,18 @@ const randomizeHelper = (value) => {
 
       addElement(i, num);
     }
+  } else if (value === 'threeUnique') {
+    for (let i = 0; i < count; i++) {
+      let rNumber = Math.floor(Math.random() * 3 + 1) * (height / 3);
+
+      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+        rNumber = Math.floor(Math.random() * 3 + 1) * count / 3;
+      }
+
+      arr.push(rNumber);
+
+      addElement(i, rNumber);
+    }
   }
   currentState = [...elements];
 };
@@ -831,16 +852,18 @@ const randomizeHelper = (value) => {
 export const addElement = (idx, rNumber) => {
   let element;
 
+  let index = idx;
+
   if (vMethod === 'barPlot') {
-    element = new Bar(idx * barWidth, height - rNumber, barWidth, rNumber, primaryColor);
+    element = new Bar(idx * barWidth, height - rNumber, barWidth, rNumber, primaryColor, index);
   } else if (vMethod === 'hrPyramid') {
-    element = new Bar(idx * barWidth, (height - rNumber) / 2, barWidth, rNumber, primaryColor);
+    element = new Bar(idx * barWidth, (height - rNumber) / 2, barWidth, rNumber, primaryColor, index);
   } else if (vMethod === 'scatterPlot') {
-    element = new Dot(idx * barWidth, height - rNumber, barWidth, barWidth, primaryColor);
+    element = new Dot(idx * barWidth, height - rNumber, barWidth, barWidth, primaryColor, index);
   } else if (vMethod === 'rainbow') {
-    element = new ColoredBar(idx * barWidth, barWidth, rNumber);
+    element = new ColoredBar(idx * barWidth, barWidth, rNumber, index);
   } else if (vMethod === 'rainbowBarPlot') {
-    element = new ColorHeightBar(idx * barWidth, height - rNumber, barWidth, rNumber, rNumber);
+    element = new ColorHeightBar(idx * barWidth, height - rNumber, barWidth, rNumber, rNumber, index);
   } else if (vMethod === 'rainbowCircle') {
     let x1 = cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
     let y1 = cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
@@ -885,7 +908,8 @@ export const addElement = (idx, rNumber) => {
       cx + globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
       cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
       rNumber,
-      trianglePointer
+      trianglePointer,
+      index,
     );
   } else if (vMethod === 'disparityCircle') {
     let x1 = cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
@@ -954,7 +978,8 @@ export const addElement = (idx, rNumber) => {
       rx,
       ry,
       rNumber,
-      trianglePointer
+      trianglePointer,
+      index,
     );
   } else return;
 

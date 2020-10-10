@@ -4,6 +4,13 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.6',
+    content: [
+      'Added radix MSD (base 4) sort',
+      'Changed visualization style for radix LSD sorts',
+    ],
+  },
+  {
     title: '1.2.5',
     content: [
       'Added grail sort and optimized rotate room sort',

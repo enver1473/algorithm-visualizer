@@ -16,6 +16,7 @@ export { mergeSortInPlace } from './mergeSortInPlace';
 export { weaveMergeSort } from './weaveMergeSort';
 export { bottomUpMergeSort } from './bottomUpMergeSort';
 export { radixSortLSD } from './radixSortLSD';
+export { radixSortMSD } from './radixSortMSD';
 export { shellSort } from './shellSort';
 export { maxHeapSort } from './maxHeapSort';
 export { minHeapSort } from './minHeapSort';
@@ -30,4 +31,6 @@ export { stoogeSort } from './stoogeSort';
 export { rotateRoomSort } from './rotateRoomSort';
 export { optimizedRotateRoomSort } from './optimizedRotateRoomSort';
 export { grailSort } from './grailSort';
+export { rotateRoomShakerSort } from './rotateRoomShakerSort';
+export { advancedRoomSort } from './advancedRoomSort';
 

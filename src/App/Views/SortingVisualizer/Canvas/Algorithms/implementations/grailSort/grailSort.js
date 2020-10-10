@@ -81,7 +81,7 @@ function write(array, at, equals) {
 
 function arraycopy(src, srcPos, dest, destPos, length) {
   for(let i = 0; i < length; i++) {
-    write(dest, destPos + i, src[srcPos + i].copy());
+    write(dest, destPos + i, src[srcPos + i]);
   }
 }
 
@@ -139,7 +139,7 @@ function grailBinSearch(arr, pos, len, keyPos, isLeft) {
                 right = mid;
             } else left = mid;
         }
-        pushNewState([1, pos + mid]);
+        pushNewState([pos + mid]);
     }
     return right;
 }
@@ -279,8 +279,8 @@ function grailMergeLeft(arr, pos, leftLen, rightLen, dist) {
             grailSwap(arr, pos + (dist++), pos + (right++));
         } 
         else grailSwap(arr, pos + (dist++), pos + (left++));
-        pushNewState([3, pos + left - 1]);
-        pushNewState([4, pos + right - 1]);
+        pushNewState([pos + left - 1]);
+        pushNewState([pos + right - 1]);
     }
     
     if(dist !== left) grailMultiSwap(arr, pos + dist, pos + left, leftLen - left);
@@ -295,8 +295,8 @@ function grailMergeRight(arr, pos, leftLen, rightLen, dist) {
             grailSwap(arr, pos + (mergedPos--), pos + (left--));
         } 
         else grailSwap(arr, pos + (mergedPos--), pos + (right--));
-        pushNewState([3, pos + left]);
-        pushNewState([4, pos + right]);
+        pushNewState([pos + left - 1]);
+        pushNewState([pos + right - 1]);
     }
     
     if(right !== mergedPos) {
@@ -350,8 +350,8 @@ function grailSmartMergeWithBuffer(arr, pos, leftOverLen, leftOverFrag, blockLen
             grailSwap(arr, pos + (dist++), pos + (left++));
         }
         else grailSwap(arr, pos + (dist++), pos + (right++));
-        pushNewState([3, pos + left]);
-        pushNewState([4, pos + right]);
+        pushNewState([pos + left - 1]);
+        pushNewState([pos + right - 1]);
     }
     
     let length, fragment = leftOverFrag;
@@ -379,8 +379,8 @@ function grailSmartMergeWithXBuf(arr, pos, leftOverLen, leftOverFrag, blockLen) 
             write(arr, pos + dist++, arr[pos + left++].copy());
         }
         else write(arr, pos + dist++, arr[pos + right++].copy());
-        pushNewState([2, pos + left]);
-        pushNewState([3, pos + right]);
+        pushNewState([pos + left - 1]);
+        pushNewState([pos + right - 1]);
     }
     
     let length, fragment = leftOverFrag;
@@ -407,8 +407,8 @@ function grailMergeLeftWithXBuf(arr, pos, leftEnd, rightEnd, dist) {
             write(arr, pos + dist++, arr[pos + right++].copy());
         }
         else write(arr, pos + dist++, arr[pos + left++].copy());
-        pushNewState([2, pos + left]);
-        pushNewState([3, pos + right]);
+        pushNewState([pos + left - 1]);
+        pushNewState([pos + right - 1]);
     }
     
     if(dist !== left) {
@@ -628,8 +628,8 @@ function grailLazyStableSort(arr, pos, len) {
         if(compare(arr[pos + dist - 1], arr[pos + dist]) > 0) {
             grailSwap(arr, pos + (dist - 1), pos + dist);
         }
-        pushNewState([3, pos + dist - 1]);
-        pushNewState([4, pos + dist]);
+        pushNewState([pos + dist - 1]);
+        pushNewState([pos + dist]);
     }
 
     for(let part = 2; part < len; part *= 2) {
@@ -657,7 +657,7 @@ function grailCommonSort(arr, pos, len, buffer, bufferPos, bufferLen) {
     }
     
     let blockLen = 1;
-    while(blockLen * blockLen < len) blockLen *= 2;   
+    while(blockLen * blockLen < len) blockLen *= 2;
     
     let numKeys = Math.floor((len - 1) / blockLen + 1);
     let keysFound = grailFindKeys(arr, pos, len, numKeys + blockLen);

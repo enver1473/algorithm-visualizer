@@ -71,7 +71,7 @@ export const optimizedRotateRoomSortHelper = (start, end) => {
             minIdx = k;
           }
         }
-      } else {
+      } else if (elements[endOfRoom].getValue() < min.getValue()) {
         // else if the next element right of the room is smaller than or equal to the minimum
         // swap it with the first element of the room
 
@@ -81,6 +81,13 @@ export const optimizedRotateRoomSortHelper = (start, end) => {
         noSwaps = false;
         swap(elements, i, endOfRoom);
         pushNewState([i, endOfRoom]);
+      } else {
+        if (elements[i].getValue() > min.getValue()) {
+          noSwaps = false;
+          swap(elements, i, minIdx);
+          pushNewState([i, minIdx]);
+        }
+        minIdx = endOfRoom;
       }
     }
   }
