@@ -63,7 +63,6 @@ export const advancedRoomSortHelper = (start, end) => {
     changed = !binaryInsertion(roomStart, endOfRoom);
   
     let roomMin = elements[roomStart].copy();
-    let roomMinIdx = roomStart;
 
     while (endOfRoom < end) {
       let shiftAmount = 0;
@@ -81,7 +80,6 @@ export const advancedRoomSortHelper = (start, end) => {
         roomStart++;
         endOfRoom++;
         roomMin = elements[roomStart].copy();
-        roomMinIdx = roomStart;
         continue;
       }
   
@@ -89,7 +87,6 @@ export const advancedRoomSortHelper = (start, end) => {
       let nextBlockDestination = endOfRoom;
       let leftOverLen = roomLength;
       let leftOverStart = roomStart;
-      let leftOverEnd = endOfRoom;
   
       while (true) {
         if (nextBlockStart < roomStart) {
@@ -100,7 +97,6 @@ export const advancedRoomSortHelper = (start, end) => {
         nextBlockStart -= shiftAmount;
         nextBlockDestination -= shiftAmount;
         leftOverLen -= shiftAmount;
-        leftOverEnd -= shiftAmount;
       }
   
       // let odd = 0;
