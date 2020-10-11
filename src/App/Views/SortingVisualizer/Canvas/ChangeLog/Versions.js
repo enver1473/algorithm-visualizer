@@ -4,6 +4,14 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.7',
+    content: [
+      'Fixed visual bug in grail sort',
+      'Added new algorithm: advanced room sort',
+      'Added new algorithm: rotate room shaker sort',
+    ],
+  },
+  {
     title: '1.2.6',
     content: [
       'Added radix MSD (base 4) sort',

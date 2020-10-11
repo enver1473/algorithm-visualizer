@@ -32,7 +32,7 @@ export const optimizedRoomSort = () => {
       noInsertionsMade = binaryInsertionSortHelper(i - (roomLength - 1), i + 2) && noInsertionsMade;
     }
   }
-  if (noInsertionsMade) { // if insertions were made sort the last bit left
+  if (!noInsertionsMade) { // if insertions were made sort the last bit left
     binaryInsertionSortHelper(1, roomLength);
   }
 
