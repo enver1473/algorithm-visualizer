@@ -4,6 +4,12 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.8',
+    content: [
+      'Added new algorithm: buffered rotate room sort',
+    ]
+  },
+  {
     title: '1.2.7',
     content: [
       'Fixed visual bug in grail sort',

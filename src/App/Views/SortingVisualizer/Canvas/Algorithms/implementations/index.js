@@ -33,4 +33,6 @@ export { optimizedRotateRoomSort } from './optimizedRotateRoomSort';
 export { grailSort } from './grailSort';
 export { rotateRoomShakerSort } from './rotateRoomShakerSort';
 export { advancedRoomSort } from './advancedRoomSort';
-
+export { advancedRoomShaker } from './advancedRoomShaker';
+export { bufferedRoomSort } from './bufferedRoomSort';
+export { recursiveRotateMerge } from './recursiveRotateMerge';

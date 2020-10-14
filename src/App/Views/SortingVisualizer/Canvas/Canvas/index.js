@@ -49,6 +49,9 @@ import {
   rotateRoomShakerSort,
   grailSort,
   advancedRoomSort,
+  advancedRoomShaker,
+  bufferedRoomSort,
+  recursiveRotateMerge,
   swap,
 } from '../Algorithms';
 
@@ -80,7 +83,7 @@ let minFreq = 40;
 let maxFreq = 1900;
 
 // oscillator amplitude
-let amplitude = 0.5;
+let amplitude = 0.1;
 
 // Array size
 export let count = parseInt(width / barWidth);
@@ -327,6 +330,12 @@ const Canvas = () => {
       callSort(grailSort);
     } else if (algorithm === 'advancedRoomSort') {
       callSort(advancedRoomSort);
+    } else if (algorithm === 'advancedRoomShaker') {
+      callSort(advancedRoomShaker);
+    } else if (algorithm === 'bufferedRoomSort') {
+      callSort(bufferedRoomSort);
+    } else if (algorithm === 'recursiveRotateMerge') {
+      callSort(recursiveRotateMerge);
     } else if (algorithm === 'radixSortMSD') {
       callSort(radixSortMSD);
     } else if (algorithm.split('LSD')[0] === 'radixSort') {

@@ -188,6 +188,14 @@ const Controls = ({
           value: 'advancedRoomSort',
           label: 'Advanced Room Sort',
         },
+        {
+          value: 'advancedRoomShaker',
+          label: 'Advanced Room Shaker Sort',
+        },
+        {
+          value: 'bufferedRoomSort',
+          label: 'Buffered Room Sort',
+        },
       ],
     },
     {
@@ -223,6 +231,10 @@ const Controls = ({
         {
           value: 'mergeSortInPlace',
           label: 'Merge Sort (in-place)',
+        },
+        {
+          value: 'recursiveRotateMerge',
+          label: 'Recursive Rotate Merge Sort',
         },
       ],
     },
@@ -580,7 +592,7 @@ const Controls = ({
                 }}
                 min={0}
                 max={100}
-                defaultValue={50}
+                defaultValue={10}
                 onChange={(value) => setAmplitude(value)}
               />
             </Col>
@@ -631,7 +643,7 @@ const Controls = ({
                 }}
                 min={0}
                 max={100}
-                defaultValue={50}
+                defaultValue={10}
                 onChange={(value) => setAmplitude(value)}
               />
             </Col>
