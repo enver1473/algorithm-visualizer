@@ -52,6 +52,7 @@ import {
   advancedRoomShaker,
   bufferedRoomSort,
   recursiveRotateMerge,
+  rewrittenGrailSort,
   swap,
 } from '../Algorithms';
 
@@ -336,6 +337,8 @@ const Canvas = () => {
       callSort(bufferedRoomSort);
     } else if (algorithm === 'recursiveRotateMerge') {
       callSort(recursiveRotateMerge);
+    } else if (algorithm === 'rewrittenGrailSort') {
+      callSort(rewrittenGrailSort);
     } else if (algorithm === 'radixSortMSD') {
       callSort(radixSortMSD);
     } else if (algorithm.split('LSD')[0] === 'radixSort') {

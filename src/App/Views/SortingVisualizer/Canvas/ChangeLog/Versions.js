@@ -4,9 +4,16 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.9',
+    content: [
+      'Rotate merge sort nearly fixed: one edge case remaining',
+    ]
+  },
+  {
     title: '1.2.8',
     content: [
       'Added new algorithm: buffered rotate room sort',
+      'Added new algorithm: advanced room shaker sort',
     ]
   },
   {

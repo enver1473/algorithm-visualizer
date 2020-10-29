@@ -23,10 +23,10 @@ export const binaryInsertionSortHelper = (lo = 1, hi = count) => {
     }
 
     while (start <= end && searchNeeded) {
+      pushNewState([start, mid, end]);
+      pushNewState([start, mid, end]);
+      pushNewState([start, mid, end]);
       if (elements[i].getValue() < elements[mid].getValue()) {
-        pushNewState([mid]);
-        pushNewState([mid]);
-        pushNewState([mid]);
         if (end - start === 1) {
           if (
             elements[start].getValue() < elements[i].getValue() &&
@@ -39,9 +39,6 @@ export const binaryInsertionSortHelper = (lo = 1, hi = count) => {
         end = mid;
         mid = calcMid(start, end);
       } else if (elements[i].getValue() > elements[mid].getValue()) {
-        pushNewState([mid]);
-        pushNewState([mid]);
-        pushNewState([mid]);
         if (end - start === 1) {
           if (
             elements[start].getValue() < elements[i].getValue() &&

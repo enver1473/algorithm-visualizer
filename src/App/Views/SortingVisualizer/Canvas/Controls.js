@@ -179,7 +179,11 @@ const Controls = ({
         {
           value: 'grailSort',
           label: 'Grail Sort',
-        },
+        },/*
+        {
+          value: 'rewrittenGrailSort',
+          label: 'Rewritten Grail Sort',
+        },*/
         {
           value: 'rotateRoomShakerSort',
           label: 'Rotate Room Shaker Sort',

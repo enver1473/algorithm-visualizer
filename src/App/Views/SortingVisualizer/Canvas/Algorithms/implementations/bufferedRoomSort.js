@@ -143,8 +143,14 @@ export const bufferedRoomSortHelper = (start, end) => {
     // let inserted = 0;
     // let rotated = 0;
     // let skipped = 0;
-
     let roomLength = initialRoomLength;
+
+    if (buffer[nextFreeIndex] < end - roomLength) {
+      if (buffer[nextFreeIndex] >= 0) {
+        roomStart = buffer[nextFreeIndex];
+      }
+    }
+
     endOfRoom = roomStart + roomLength;
 
     changed = !binaryInsertion(roomStart, endOfRoom);
@@ -152,15 +158,11 @@ export const bufferedRoomSortHelper = (start, end) => {
 
     let roomMin = elements[roomStart].copy();
 
-    buffer[nextFreeIndex] = roomStart;
-    incBufferIndex();
-
     while (endOfRoom < end) {
       // first stage is to sort a room, count how many (if any) sorted (but greater or equal to the room's maximum) elements there are ahead of the room
       let foundSorted = 0;
       let i = endOfRoom;
       while (i < end && elements[i].getValue() >= elements[i - 1].getValue()) {
-        foundSorted++;
         pushNewState([i, i - 1]);
         i++;
 
@@ -168,6 +170,8 @@ export const bufferedRoomSortHelper = (start, end) => {
           buffer[nextFreeIndex] = roomStart + foundSorted;
           incBufferIndex();
         }
+
+        foundSorted++;
         // skipped++;
 
         if (i === end) {

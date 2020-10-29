@@ -628,8 +628,7 @@ function grailLazyStableSort(arr, pos, len) {
         if(compare(arr[pos + dist - 1], arr[pos + dist]) > 0) {
             grailSwap(arr, pos + (dist - 1), pos + dist);
         }
-        pushNewState([pos + dist - 1]);
-        pushNewState([pos + dist]);
+        pushNewState([pos + dist - 1, pos + dist]);
     }
 
     for(let part = 2; part < len; part *= 2) {

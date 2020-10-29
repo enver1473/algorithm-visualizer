@@ -123,7 +123,7 @@ export const rotate = (blockStart, to, blockLen) => {
 export const insertOneBackwards = (start, end) => {
   // console.log(start, end);
   let num = elements[end].copy();
-  let lo = end + 1;
+  let lo = end;
   let hi = start;
 
   while (lo < hi) {
@@ -256,7 +256,7 @@ export const advancedRoomShakerHelper = (start, end) => {
     } else {
       roomStart = reverseRoomStart;
       endOfRoom = roomStart - roomLength;
-      changed = !binaryInsertion(endOfRoom + 1, roomStart + 1);
+      changed = !binaryInsertion(endOfRoom + 1, roomStart + 2);
     }
 
     let roomMin = elements[roomStart].copy();
@@ -265,14 +265,14 @@ export const advancedRoomShakerHelper = (start, end) => {
     while (forward && endOfRoom <= end) {
       // first stage to sort a room, count how many (if any) sorted (but greater or equal to the room max) elements there are ahead of the room
       let foundSorted = 0;
-      let i = endOfRoom;
-      while (i <= end && elements[i].getValue() >= elements[i - 1].getValue()) {
+      let j = endOfRoom;
+      while (j <= end && elements[j].getValue() >= elements[j - 1].getValue()) {
         foundSorted++;
-        pushNewState([i, i - 1]);
-        i++;
+        pushNewState([j, j - 1]);
+        j++;
         // skipped++;
 
-        if (i === end + 1) {
+        if (j === end + 1) {
           end -= foundSorted;
         }
       }
@@ -334,9 +334,9 @@ export const advancedRoomShakerHelper = (start, end) => {
 
       let shiftAmount = 0;
 
-      for (let i = endOfRoom; i >= 0; i--) {
-        pushNewState([i]);
-        if (elements[i].getValue() > roomMax.getValue()) {
+      for (let j = endOfRoom; j >= 0; j--) {
+        pushNewState([j]);
+        if (elements[j].getValue() > roomMax.getValue()) {
           shiftAmount++;
         } else break;
       }
@@ -375,7 +375,7 @@ export const advancedRoomShakerHelper = (start, end) => {
     if (end < endOfRoom || start > endOfRoom || !changed) break;
   }
 
-  binaryInsertion(start, end);
+  binaryInsertion(start, end + 1);
 };
 
 export const advancedRoomShaker = () => {

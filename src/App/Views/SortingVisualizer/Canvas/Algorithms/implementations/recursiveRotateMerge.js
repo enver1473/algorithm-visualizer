@@ -85,8 +85,7 @@ export const rotate = (blockStart, to, blockLen) => {
 };
 
 const rotateMerge = (start, middle, end) => {
-  if (start + 1 >= end) return;
-
+  /*
   if (start + 2 === end) {
     if (elements[start].getValue() > elements[end - 1].getValue()) {
       pushNewState([start, end - 1]);
@@ -95,8 +94,8 @@ const rotateMerge = (start, middle, end) => {
     }
     return;
   }
-
-  if (start === middle) {
+*/
+  if (middle === start) {
     return;
   }
 
@@ -105,9 +104,12 @@ const rotateMerge = (start, middle, end) => {
 
   let lowerMid = start + parseInt((middle - start) / 2);
   let num = elements[lowerMid].copy();
-  
+
   let lo = middle; // 4
-  let hi = end - 1; // 7
+  let hi = end; // 7
+
+  let rotateTo;
+  let rotateLength;
 
   while (lo < hi) {
     let mid = lo + parseInt((hi - lo) / 2); // 5
@@ -121,36 +123,37 @@ const rotateMerge = (start, middle, end) => {
     }
   }
 
-  let rotateTo = lo;
+  rotateTo = lo;
+  rotateLength = middle - lowerMid;
 
-  rotate(lowerMid, rotateTo, middle - lowerMid); // 4 5 0
+  rotate(lowerMid, rotateTo, rotateLength); // 4 5 0
 
   if (rotateTo === end) {
     // console.log(start, lowerMid, middle);
-    rotateMerge(start, lowerMid, middle); // 4 4 4
+    rotateMerge(start, lowerMid, end); // 4 4 4
   } else {
     // console.log(middle, rotateTo, end);
-    rotateMerge(middle, rotateTo, end);
+    rotateMerge(rotateTo - rotateLength + 1, rotateTo, end);
     // console.log(start, lowerMid, middle);
-    rotateMerge(start, lowerMid, middle);
+    rotateMerge(start, lowerMid, rotateTo - 1);
   }
-}
+};
 
 const recursiveRotateMergeHelper = (start, end) => {
   if (start + 1 >= end) return;
   if (end - start < 17) {
-    binaryInsertion(start, end);
+    binaryInsertion(start, end + 1);
     return;
   }
 
   let mid = start + parseInt((end - start) / 2);
-  recursiveRotateMergeHelper(start, mid);
+  recursiveRotateMergeHelper(start, mid - 1);
   recursiveRotateMergeHelper(mid, end);
-  
+
   rotateMerge(start, mid, end);
 };
 
 export const recursiveRotateMerge = (start = 0, end = count) => {
-  recursiveRotateMergeHelper(start, end);
+  recursiveRotateMergeHelper(start, end - 1);
   pushLastState();
 };
