@@ -6,7 +6,7 @@ Main focus of the app was to make visualizing some of the most commonly used sor
 
 The app features:
 - several different visualization patterns
-- currently around 20 algorithms to choose from
+- currently around 35 algorithms to choose from
 - several array shuffle methods (e.g. almost sorted array)
 - several interactive controls for as much control as possible
 - and of course the main component, which is the drawing canvas
@@ -73,7 +73,7 @@ Primarily used in merge sorts.
 
 `export const maxElement = () => {` - returns the greatest element of the `elements` array.
 
-Primarily used in radix sorts.
+Primarily used in counting sorts.
 
 <br />
 
@@ -120,6 +120,13 @@ Following is a list of the algorithms currently implemented:
   - Comb-gnome Sort
   - Quick-gnome Sort
   - Weave Merge Sort (merge-insertion)
+  - Rotate Room Sort
+  - Optimized Rotate Room Sort
+  - Grail Sort
+  - Rotate Room Shaker Sort
+  - Advanced Room Sort
+  - Advanced Room Shaker Sort
+  - Buffered Room Sort
 - Distribution Sorts
   - Quick Sort LL Pointers
   - Quick Sort LR Pointers
@@ -128,9 +135,15 @@ Following is a list of the algorithms currently implemented:
   - Merge Sort (out-of-place)
   - Merge Sort (in-place)
   - Bottom-up Merge Sort
+  - Recursive Rotate Merge Sort
 - Insertion Sorts
   - Insertion Sort
   - Binary Insertion Sort
   - Shell Sort
   - Room Sort
   - Optimized Room Sort
+- Concurrent Sorts
+  - Iterative Pairwise Sorting Network
+  - Recursive Pairwise Sorting Network
+- Impractical Sorts
+  - Stooge Sort
