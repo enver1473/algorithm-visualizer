@@ -124,7 +124,7 @@ export const insertOneBackwards = (start, end) => {
   // console.log(start, end);
   let num = elements[end].copy();
   let lo = end;
-  let hi = start;
+  let hi = start + 1;
 
   while (lo < hi) {
     let mid = lo + Math.floor((hi - lo) / 2);
@@ -256,7 +256,7 @@ export const advancedRoomShakerHelper = (start, end) => {
     } else {
       roomStart = reverseRoomStart;
       endOfRoom = roomStart - roomLength;
-      changed = !binaryInsertion(endOfRoom + 1, roomStart + 2);
+      changed = !binaryInsertion(endOfRoom + 1, roomStart + 1);
     }
 
     let roomMin = elements[roomStart].copy();

@@ -84,36 +84,14 @@ export const rotate = (blockStart, to, blockLen) => {
   return changed;
 };
 
-const rotateMerge = (start, middle, end) => {
-  /*
-  if (start + 2 === end) {
-    if (elements[start].getValue() > elements[end - 1].getValue()) {
-      pushNewState([start, end - 1]);
-      swap(elements, start, end - 1);
-      pushNewState([start, end - 1]);
-    }
-    return;
-  }
-*/
-  if (middle === start) {
-    return;
-  }
+const initialRotataion = (start, middle, end) => {
+  let num = elements[start].copy();
 
-  // console.log("AFTER ROTATE MERGE CALL: ");
-  // console.log(start, middle, end); // 4 4 7
-
-  let lowerMid = start + parseInt((middle - start) / 2);
-  let num = elements[lowerMid].copy();
-
-  let lo = middle; // 4
-  let hi = end; // 7
-
-  let rotateTo;
-  let rotateLength;
+  let lo = middle;
+  let hi = end;
 
   while (lo < hi) {
-    let mid = lo + parseInt((hi - lo) / 2); // 5
-    // console.log(lo, mid, hi); // 4 4 5
+    let mid = lo + parseInt((hi - lo) / 2);
     pushNewState([lo, mid, hi]);
 
     if (num.getValue() < elements[mid].getValue()) {
@@ -123,20 +101,61 @@ const rotateMerge = (start, middle, end) => {
     }
   }
 
-  rotateTo = lo;
-  rotateLength = middle - lowerMid;
-
-  rotate(lowerMid, rotateTo, rotateLength); // 4 5 0
+  let rotateTo = hi;
+  let rotateLength = middle - start;
+  if (rotateTo - middle === 1) return middle;
 
   if (rotateTo === end) {
-    // console.log(start, lowerMid, middle);
-    rotateMerge(start, lowerMid, end); // 4 4 4
-  } else {
-    // console.log(middle, rotateTo, end);
-    rotateMerge(rotateTo - rotateLength + 1, rotateTo, end);
-    // console.log(start, lowerMid, middle);
-    rotateMerge(start, lowerMid, rotateTo - 1);
+    rotateTo = num.getValue() > elements[end].getValue() ? hi + 1 : hi;
+    pushNewState([start, end]);
   }
+  rotate(start, rotateTo, rotateLength);
+  return rotateTo;
+};
+
+const rotateMerge = (start, middle, end) => {
+  if (middle === start) {
+    return;
+  }
+
+  if (elements[middle - 1].getValue() <= elements[middle].getValue()) {
+    pushNewState([middle - 1, middle]);
+    return;
+  }
+
+  let destIndex = initialRotataion(start, middle, end);
+  if (destIndex === end + 1) return;
+  start += destIndex - middle;
+  middle += destIndex - middle;
+
+  let lowerMid = start + parseInt((middle - start) / 2);
+  let num = elements[lowerMid].copy();
+
+  let lo = middle;
+  let hi = end;
+
+  while (lo < hi) {
+    let mid = lo + parseInt((hi - lo) / 2);
+    pushNewState([lo, mid, hi]);
+
+    if (num.getValue() < elements[mid].getValue()) {
+      hi = mid;
+    } else {
+      lo = mid + 1;
+    }
+  }
+
+  let rotateTo = hi;
+  let rotateLength = middle - lowerMid;
+
+  if (rotateTo === end) {
+    rotateTo = num.getValue() > elements[end].getValue() ? hi + 1 : hi;
+    pushNewState([start, end]);
+  }
+  rotate(lowerMid, rotateTo, rotateLength);
+
+  rotateMerge(hi - rotateLength + 1, hi, end);
+  rotateMerge(start, lowerMid, hi);
 };
 
 const recursiveRotateMergeHelper = (start, end) => {

@@ -4,9 +4,15 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.10',
+    content: [
+      'Recursive rotate merge sort 100% working',
+    ]
+  },
+  {
     title: '1.2.9',
     content: [
-      'Rotate merge sort nearly fixed: one edge case remaining',
+      'Recursive rotate merge sort nearly fixed: one edge case remaining',
     ]
   },
   {
