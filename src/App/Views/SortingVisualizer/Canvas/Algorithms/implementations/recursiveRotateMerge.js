@@ -125,6 +125,7 @@ const rotateMerge = (start, middle, end) => {
 
   let destIndex;
   if (middle + 1 < count && elements[middle + 1].getValue() < elements[start].getValue()) {
+    pushNewState([middle + 1, start]);
     destIndex = initialRotation(start, middle, end);
 
     if (destIndex === end + 1) return;

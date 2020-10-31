@@ -4,60 +4,42 @@ import { pushNewState, pushLastState, setValuesAtIndex, setValuesAtIndexes } fro
 export const binaryInsertionSortHelper = (lo = 1, hi = count) => {
   let noInsertionsMade = true;
   for (let i = lo; i < hi; i++) {
-    const calcMid = (start, end) => Math.floor(start + (end - start) / 2);
     let start = lo - 1,
       end = i - 1,
-      mid = calcMid(start, end),
       idx = i;
 
     let searchNeeded = true;
 
+    pushNewState([i, end]);
     if (elements[i].getValue() >= elements[end].getValue()) {
       continue;
     }
     noInsertionsMade = false;
 
+    pushNewState([i, start]);
     if (elements[i].getValue() < elements[start].getValue()) {
       idx = start;
       searchNeeded = false;
     }
 
-    while (start <= end && searchNeeded) {
-      pushNewState([start, mid, end]);
-      pushNewState([start, mid, end]);
-      pushNewState([start, mid, end]);
-      if (elements[i].getValue() < elements[mid].getValue()) {
-        if (end - start === 1) {
-          if (
-            elements[start].getValue() < elements[i].getValue() &&
-            elements[i].getValue() < elements[end].getValue()
-          ) {
-            idx = end;
-            break;
-          }
-        }
-        end = mid;
-        mid = calcMid(start, end);
-      } else if (elements[i].getValue() > elements[mid].getValue()) {
-        if (end - start === 1) {
-          if (
-            elements[start].getValue() < elements[i].getValue() &&
-            elements[i].getValue() < elements[end].getValue()
-          ) {
-            idx = end;
-            break;
-          }
-        }
-        start = mid;
-        mid = calcMid(start, end);
+    let num = elements[i].copy();
+    let low = start;
+    let high = end;
+
+    while (low < high && searchNeeded) {
+      let mid = low + parseInt((high - low) / 2);
+      pushNewState([low, mid, high]);
+      pushNewState([low, mid, high]);
+      pushNewState([low, mid, high]);
+  
+      if (num.getValue() < elements[mid].getValue()) {
+        high = mid;
       } else {
-        pushNewState([mid]);
-        pushNewState([mid]);
-        pushNewState([mid]);
-        idx = mid;
-        break;
+        low = mid + 1;
       }
     }
+
+    idx = low;
 
     let element = elements[i].copy();
     let k;

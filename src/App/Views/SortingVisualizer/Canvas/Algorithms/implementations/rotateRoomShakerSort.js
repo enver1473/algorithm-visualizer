@@ -51,7 +51,6 @@ export const rotateRoomShakerSortHelper = (start, end) => {
         break;
       }
       // when at the final destination, the room then needs to be sorted
-      console.log(i, endOfRoom);
       rotateRoomShakerSortHelper(i - step, endOfRoom - step);
       ascendingRun = !ascendingRun;
       direction = -1;
@@ -77,7 +76,6 @@ export const rotateRoomShakerSortHelper = (start, end) => {
       if (noSwaps) {
         break;
       }
-      console.log(i, endOfRoom);
       rotateRoomShakerSortHelper(i + step, endOfRoom + step);
       ascendingRun = !ascendingRun;
       direction = 1;

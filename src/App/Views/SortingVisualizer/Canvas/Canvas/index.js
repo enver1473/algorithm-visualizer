@@ -237,6 +237,28 @@ const Canvas = () => {
     sort();
   };
 
+  const stateCheck = () => {
+    for (let i = 1; i < count; i++) {
+      if (elements[i].getValue() < elements[i - 1].getValue()) {
+        console.log(`Array NOT sorted! Failed at indices: ${i - 1} and ${i}`);
+        return;
+      }
+    }
+
+    console.log(`Array sorted!`);
+
+    for (let i = 1; i < count; i++) {
+      if (elements[i].getValue() === elements[i - 1].getValue()) {
+        if (elements[i].index < elements[i - 1].index) {
+          console.log(`Stability check NOT PASSED! Failed at indices: ${i - 1} and ${i}`);
+          return;
+        }
+      }
+    }
+  
+    console.log(`Stability check PASSED!`);
+  }
+
   const sort = () => {
     // If array is empty; Nothing to sort!
     if (arr.length === 0) {
@@ -370,6 +392,8 @@ const Canvas = () => {
     });
     setTimeout(() => {
       sortingFunction();
+
+      stateCheck();
 
       notification.success({
         message: 'Done!',

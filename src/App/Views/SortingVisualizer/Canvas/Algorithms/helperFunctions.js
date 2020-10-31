@@ -28,6 +28,7 @@ export const setValuesAtIndexes = (i, j) => {
     elements[i].y = elements[j].y;
     elements[i].height = elements[j].height;
   }
+  elements[i].index = elements[j].index;
 };
 
 export const setValuesAtIndex = (i, element) => {
@@ -54,6 +55,7 @@ export const setValuesAtIndex = (i, element) => {
     elements[i].y = element.y;
     elements[i].height = element.height;
   }
+  elements[i].index = element.index;
 };
 
 export const mergeAtIndexes = (i, j) => {
@@ -187,6 +189,9 @@ export const swap = (arr, i, j) => {
     arr[j].height = height;
     arr[j].y = y;
   }
+  const { index } = arr[i];
+  arr[i].index = arr[j].index;
+  arr[j].index = index;
 };
 
 export const midValue = (i1, i2, i3) => {

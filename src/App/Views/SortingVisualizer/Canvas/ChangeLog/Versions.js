@@ -4,6 +4,13 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.2.10',
+    content: [
+      'Added array state check (checks if array is sorted and if it is sorted stably)',
+      'Fixed stability of binary insertion sort',
+    ]
+  },
+  {
     title: '1.2.9.2',
     content: [
       'Fixed stability of recursive rotate merge sort, previously not stable',
