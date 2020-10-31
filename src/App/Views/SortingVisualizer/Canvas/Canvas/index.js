@@ -89,6 +89,9 @@ let amplitude = 0.1;
 // Array size
 export let count = parseInt(width / barWidth);
 
+// Number of swaps
+export let swaps = 0;
+
 // Number of swaps skipped per frame during visualization
 let inc = 1;
 
@@ -253,6 +256,7 @@ const Canvas = () => {
       states = [];
       elements = [];
       stateIdx = 0;
+      swaps = 0;
       oldStateIdx = undefined;
       updateDir(1);
     }
@@ -656,7 +660,8 @@ export const sketch = (p) => {
       }
       oldStateIdx = stateIdx;
       stateIdx += dir * inc;
-    }
+    }/*
+    p.text(swaps, 30, 30);*/
   };
 };
 
@@ -704,6 +709,7 @@ const randomize = (value) => {
   states = [];
   elements = [];
   stateIdx = 0;
+  swaps = 0;
   oldStateIdx = undefined;
   updateDir(1);
 

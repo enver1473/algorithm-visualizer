@@ -84,7 +84,7 @@ export const rotate = (blockStart, to, blockLen) => {
   return changed;
 };
 
-const initialRotataion = (start, middle, end) => {
+const initialRotation = (start, middle, end) => {
   let num = elements[start].copy();
 
   let lo = middle;
@@ -94,7 +94,7 @@ const initialRotataion = (start, middle, end) => {
     let mid = lo + parseInt((hi - lo) / 2);
     pushNewState([lo, mid, hi]);
 
-    if (num.getValue() < elements[mid].getValue()) {
+    if (num.getValue() <= elements[mid].getValue()) {
       hi = mid;
     } else {
       lo = mid + 1;
@@ -103,7 +103,7 @@ const initialRotataion = (start, middle, end) => {
 
   let rotateTo = hi;
   let rotateLength = middle - start;
-  if (rotateTo - middle === 1) return middle;
+  if (rotateTo - middle < 4 || rotateTo - middle < parseInt((end - start) / 20)) return middle;
 
   if (rotateTo === end) {
     rotateTo = num.getValue() > elements[end].getValue() ? hi + 1 : hi;
@@ -123,10 +123,14 @@ const rotateMerge = (start, middle, end) => {
     return;
   }
 
-  let destIndex = initialRotataion(start, middle, end);
-  if (destIndex === end + 1) return;
-  start += destIndex - middle;
-  middle += destIndex - middle;
+  let destIndex;
+  if (middle + 1 < count && elements[middle + 1].getValue() < elements[start].getValue()) {
+    destIndex = initialRotation(start, middle, end);
+
+    if (destIndex === end + 1) return;
+    start += destIndex - middle;
+    middle += destIndex - middle;
+  }
 
   let lowerMid = start + parseInt((middle - start) / 2);
   let num = elements[lowerMid].copy();
@@ -138,7 +142,7 @@ const rotateMerge = (start, middle, end) => {
     let mid = lo + parseInt((hi - lo) / 2);
     pushNewState([lo, mid, hi]);
 
-    if (num.getValue() < elements[mid].getValue()) {
+    if (num.getValue() <= elements[mid].getValue()) {
       hi = mid;
     } else {
       lo = mid + 1;
@@ -155,7 +159,7 @@ const rotateMerge = (start, middle, end) => {
   rotate(lowerMid, rotateTo, rotateLength);
 
   rotateMerge(hi - rotateLength + 1, hi, end);
-  rotateMerge(start, lowerMid, hi);
+  rotateMerge(start, lowerMid, hi - rotateLength);
 };
 
 const recursiveRotateMergeHelper = (start, end) => {
