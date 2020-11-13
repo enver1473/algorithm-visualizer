@@ -4,6 +4,14 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.3.0',
+    content: [
+      'Fixed bug where the user had to change the array size in order to generate an array. Should all now be automatic.',
+      'Added tree sort (unbalanced)',
+      'Removed buffered room sort (currently in-the-making)',
+    ]
+  },
+  {
     title: '1.2.10',
     content: [
       'Added array state check (checks if array is sorted and if it is sorted stably)',

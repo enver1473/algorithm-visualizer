@@ -73,6 +73,10 @@ let barWidth = 2;
 let width = 1000;
 let height = 600;
 
+let elCount = 1;
+let frameCount = 60;
+let volume = 10; // 10%
+
 // Oscillator array - holding the sound waves that are to be played
 let oscs = [];
 
@@ -138,6 +142,7 @@ let cy = height / 2;
 export let vMethod = 'barPlot';
 
 const handleSpeedChange = (value) => {
+  frameCount = value;
   fps = value;
   globalP.frameRate(fps);
 };
@@ -199,11 +204,11 @@ const updateDir = (newDir) => {
   setDir(dir);
 };
 
-const Canvas = () => {
   let algorithm = '';
   let input = '';
   let autoRebuild = true;
 
+const Canvas = () => {
   const { width: windowWidth } = useWindowWidthContext();
   width = windowWidth * 0.9 - ((windowWidth * 0.9) % 64);
   height = width * (windowWidth > 768 ? 2 / 5 : 3 / 5);
@@ -221,16 +226,37 @@ const Canvas = () => {
   // screen center Y
   cy = height / 2;
 
+  const noAlgorithmNotification = useRef(_.debounce(() => {
+    notification.warning({
+      message: 'Please choose an algorithm!',
+      duration: 2,
+      placement: 'bottomLeft',
+    });
+  }, 300)).current;
+
+  const noArrayNotification = useRef(_.debounce(() => {
+    notification.warning({
+      message: 'No array to sort!',
+      description: `You have to generate an array using the 'Input' select.`,
+      duration: 2,
+      placement: 'bottomLeft',
+    });
+  }, 300)).current;
+
+  const noInputTypeNotification = useRef(_.debounce(() => {
+    notification.warning({
+      message: 'Input type not selected!',
+      description: `Please select one of the given input array types.`,
+      duration: 2,
+      placement: 'bottomLeft',
+    });
+  }, 300)).current;
+
   const handleCascaderChange = (value) => {
     algorithm = value[value.length - 1];
     if (!autoRebuild) return;
     if (input === '') {
-      notification.warning({
-        message: 'Input type not selected!',
-        description: `Please select one of the given input array types.`,
-        duration: 2,
-        placement: 'bottomLeft',
-      });
+      noInputTypeNotification();
       return;
     }
     randomize(input);
@@ -262,12 +288,7 @@ const Canvas = () => {
   const sort = () => {
     // If array is empty; Nothing to sort!
     if (arr.length === 0) {
-      notification.warning({
-        message: 'No array to sort!',
-        description: `You have to generate an array using the 'Input' select.`,
-        duration: 2,
-        placement: 'bottomLeft',
-      });
+      noArrayNotification();
       return;
     }
 
@@ -285,11 +306,7 @@ const Canvas = () => {
 
     // If algorithm not chosen
     if (!algorithm) {
-      notification.warning({
-        message: 'Please choose an algorithm!',
-        duration: 2,
-        placement: 'bottomLeft',
-      });
+      noAlgorithmNotification();
       return;
     } else if (algorithm === 'bubbleSort') {
       callSort(bubbleSort);
@@ -413,12 +430,6 @@ const Canvas = () => {
     input = value[value.length - 1];
 
     if (input === '') {
-      notification.warning({
-        message: 'Input type not selected!',
-        description: `Please select one of the given input array types.`,
-        duration: 2,
-        placement: 'bottomLeft',
-      });
       return;
     }
     randomize(input);
@@ -432,19 +443,14 @@ const Canvas = () => {
       handleInputSelect(['default']);
     }, 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [width]);
 
   // Handle Visualization Method Change
   const handleVMethodChange = (value) => {
     vMethod = value[value.length - 1];
     if (autoRebuild) {
       if (input === '') {
-        notification.warning({
-          message: 'Input type not selected!',
-          description: `Please select one of the given input array types.`,
-          duration: 2,
-          placement: 'bottomLeft',
-        });
+        noInputTypeNotification();
         return;
       }
 
@@ -455,12 +461,7 @@ const Canvas = () => {
 
   const reShuffle = () => {
     if (input === '') {
-      notification.warning({
-        message: 'Input type not selected!',
-        description: `Please select one of the given input array types.`,
-        duration: 2,
-        placement: 'bottomLeft',
-      });
+      noInputTypeNotification();
       return;
     }
 
@@ -470,8 +471,6 @@ const Canvas = () => {
     }
   };
 
-  const debounceCountChange = useRef(_.debounce((value) => handleCountChange(value), 500)).current;
-
   let divisors = [];
   for (let div = 4; div <= width; div++) {
     if (width % div === 0) {
@@ -480,6 +479,7 @@ const Canvas = () => {
   }
 
   const setAmplitude = (value) => {
+    volume = value;
     amplitude = globalP.map(value, 0, 100, 0, 0.5);
   };
 
@@ -498,23 +498,21 @@ const Canvas = () => {
     values[(i + 1).toString()] = divisors[i];
   }
 
-  const objKeys = Object.keys(values);
-  const min = parseInt(objKeys[0]);
-  const max = parseInt(objKeys[objKeys.length - 1]);
-  count = values[min + (max - min) / 2];
+  // const objKeys = Object.keys(values);
+  // const min = parseInt(objKeys[0]);
+  // const max = parseInt(objKeys[objKeys.length - 1]);
+  count = values[0]; // values[min + (max - min) / 2];
   barWidth = width / count;
 
   const handleCountChange = (value) => {
+    if (!value) value = 1;
+    elCount = value;
+
     count = values[value];
     barWidth = width / count;
     if (autoRebuild) {
       if (input === '') {
-        notification.warning({
-          message: 'Input type not selected!',
-          description: `Please select one of the given input array types.`,
-          duration: 2,
-          placement: 'bottomLeft',
-        });
+        noInputTypeNotification();
         return;
       }
 
@@ -522,6 +520,33 @@ const Canvas = () => {
       sort();
     }
   };
+
+  const debounceCountChange = useRef(_.debounce((value) => handleCountChange(value), 500)).current;
+
+  handleCountChange();
+  if (globalP) {
+    globalP.createCanvas(width, height);
+
+    globalP.colorMode(globalP.RGB);
+    globalP.background(backgroundColor);
+    globalP.angleMode(globalP.RADIANS);
+
+    globalP.noLoop();
+    globalP.frameRate(fps);
+    globalP.fill(primaryColor);
+    globalP.colorMode(globalP.HSB);
+    globalP.noStroke();
+    for (let i = 0; i < 5; i++) {
+      let osc = new P5.TriOsc();
+      osc.freq(0);
+      osc.amp(0.5);
+      oscs.push(osc);
+    }
+    globalP.noSmooth();
+
+    randomize(input);
+    showAllElements();
+  }
 
   return (
     <>
@@ -549,6 +574,9 @@ const Canvas = () => {
           divisors={values}
           dir={dir}
           setAmplitude={setAmplitude}
+          elCount={elCount}
+          fps={frameCount}
+          amplitude={volume}
         />
       </Row>
       <Row justify='center' style={{ backgroundColor: 'white' }}>
