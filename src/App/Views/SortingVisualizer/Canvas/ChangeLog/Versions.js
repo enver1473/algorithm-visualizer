@@ -4,6 +4,12 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.3.1',
+    content: [
+      'Fixed unexpected bug in grail sort',
+    ]
+  },
+  {
     title: '1.3.0',
     content: [
       'Fixed bug where the user had to change the array size in order to generate an array. Should all now be automatic.',

@@ -159,7 +159,7 @@ export const algoCascaderOptions = [
         label: 'Optimized Rotate Room Sort',
       },
       {
-        value: 'grailSort',
+        value: 'rewrittenGrailSort',
         label: 'Grail Sort',
       },/*
       {
