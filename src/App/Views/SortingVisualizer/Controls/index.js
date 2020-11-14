@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col, Button, Slider, Cascader, Checkbox, Typography, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
-import { useWindowWidthContext } from '../../../../../Context/useWindowWidthContext';
+import { useWindowWidthContext } from '../../../../Context/useWindowWidthContext';
 import {
   visualizationOptions,
   algoCascaderOptions,

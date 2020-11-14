@@ -4,7 +4,7 @@ import { Row, Col, notification } from 'antd';
 import _ from 'underscore';
 import 'p5/lib/addons/p5.sound.js';
 import P5 from 'p5';
-import { useWindowWidthContext } from '../../../../../Context/useWindowWidthContext';
+import { useWindowWidthContext } from '../../../../Context/useWindowWidthContext';
 
 import Bar from '../ElementTypes/Bar';
 import Dot from '../ElementTypes/Dot';
@@ -55,7 +55,7 @@ import {
   rewrittenGrailSort,
   swap,
   setValuesAtIndex,
-} from '../Algorithms';
+} from '../Utilities';
 
 import Controls from '../Controls';
 
@@ -225,7 +225,7 @@ const Canvas = () => {
   cx = width / 2;
 
   // screen center Y
-  cy = width / 2;
+  cy = height / 2;
 
   const noAlgorithmNotification = useRef(_.debounce(() => {
     notification.warning({

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Layout as AntLayout } from 'antd';
 import 'antd/dist/antd.css';
-import './Layout.css';
-import Canvas from './Views/SortingVisualizer/Canvas/Canvas';
-import { default as ChangeLog } from './Views/SortingVisualizer/Canvas/ChangeLog';
+import './style.css';
+import Canvas from '../Views/SortingVisualizer/Canvas';
+import { default as ChangeLog } from '../Views/SortingVisualizer/ChangeLog';
 
 const { Content } = AntLayout;
 
