@@ -4,6 +4,12 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.3.2',
+    content: [
+      'Fixed tree sort',
+    ]
+  },
+  {
     title: '1.3.1',
     content: [
       'Fixed unexpected bug in grail sort',

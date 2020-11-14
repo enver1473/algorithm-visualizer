@@ -1,12 +1,12 @@
-import { elements } from '../../Canvas';
+import { elements, count } from '../../Canvas';
 import { pushNewState, pushLastState } from '../helperFunctions';
-import { addElement } from '../../Canvas';
+import { addElement, setMainArray } from '../../Canvas';
 
 const traverse = (tree, newArr) => {
   if (!tree || tree.empty()) return;
 
   traverse(tree.leftTree, newArr);
-
+  
   pushNewState([newArr.length === 0 ? 0 : newArr.length - 1]);
 
   newArr.push(tree.root);
@@ -19,7 +19,12 @@ export const unbalancedTreeSort = () => {
   let tree = new BST(elements);
   let newArr = [];
   traverse(tree, newArr);
-  elements.push(2);
+  setMainArray(newArr);
+
+  for (let i = 0; i < count; i++) {
+    pushNewState([i]);
+  }
+
   pushLastState();
 };
 
@@ -34,6 +39,7 @@ class BST {
 
     for (let i = 0; i < arr.length; i++) {
       this.insert(arr[i].copy());
+      pushNewState([i]);
     }
   }
 

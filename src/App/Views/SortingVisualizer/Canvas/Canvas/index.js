@@ -54,6 +54,7 @@ import {
   recursiveRotateMerge,
   rewrittenGrailSort,
   swap,
+  setValuesAtIndex,
 } from '../Algorithms';
 
 import Controls from '../Controls';
@@ -204,9 +205,9 @@ const updateDir = (newDir) => {
   setDir(dir);
 };
 
-  let algorithm = '';
-  let input = '';
-  let autoRebuild = true;
+let algorithm = '';
+let input = '';
+let autoRebuild = true;
 
 const Canvas = () => {
   const { width: windowWidth } = useWindowWidthContext();
@@ -224,7 +225,7 @@ const Canvas = () => {
   cx = width / 2;
 
   // screen center Y
-  cy = height / 2;
+  cy = width / 2;
 
   const noAlgorithmNotification = useRef(_.debounce(() => {
     notification.warning({
@@ -582,7 +583,7 @@ const Canvas = () => {
       <Row justify='center' style={{ backgroundColor: 'white' }}>
         <Col span={24}>
           {/* <p style={{ zIndex: 23, position: 'relative', top: '50px', float: 'left' }}>Hi</p> */}
-          <P5Wrapper sketch={sketch} />
+          <P5Wrapper sketch={sketch} style={{ width: `${width}px` }} />
         </Col>
       </Row>
     </>
@@ -768,6 +769,12 @@ const randomize = (value) => {
   randomizeHelper(value);
   showAllElements();
 };
+
+export const setMainArray = (array) => {
+  for (let i = 0; i < count; i++) {
+    setValuesAtIndex(i, array[i].copy());
+  }
+}
 
 // Generate 'count' random numbers
 const randomizeHelper = (value) => {
