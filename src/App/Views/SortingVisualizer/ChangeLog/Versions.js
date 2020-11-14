@@ -6,6 +6,12 @@ const versions = [
   {
     title: '1.3.2',
     content: [
+      'Fixed rainbow circle',
+    ]
+  },
+  {
+    title: '1.3.2',
+    content: [
       'Fixed tree sort',
     ]
   },
