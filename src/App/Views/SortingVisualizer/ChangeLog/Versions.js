@@ -4,7 +4,7 @@ import Version from './Version';
 
 const versions = [
   {
-    title: '1.3.2',
+    title: '1.3.3',
     content: [
       'Fixed rainbow circle',
     ]
