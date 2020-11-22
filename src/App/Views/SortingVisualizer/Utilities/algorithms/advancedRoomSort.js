@@ -5,6 +5,7 @@ import {
   pushNewState,
   setValuesAtIndex,
   setValuesAtIndexes,
+  reverse,
 } from '../helperFunctions';
 import { binaryInsertionSortHelper } from './binaryInsertionSort';
 
@@ -51,6 +52,17 @@ export const rotateBlock = (blockStart, destination, length) => {
 };
 
 export const rotate = (blockStart, to, blockLen) => {
+  griesMillsRotate(blockStart, to, blockLen);
+  // reversalRotate(blockStart, blockLen, to - (blockStart + blockLen));
+};
+
+export const reversalRotate = (start, leftLen, rightLen) => {
+  reverse(elements, start, leftLen);            // reverse left part of subarray
+  reverse(elements, start + leftLen, rightLen); // reverse right part of subarray
+  reverse(elements, start, leftLen + rightLen); // reverse entire subarray
+};
+
+export const griesMillsRotate = (blockStart, to, blockLen) => {
   let distance = to - (blockStart + blockLen);
   let rotations;
   let leftOverStart;

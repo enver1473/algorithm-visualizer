@@ -124,6 +124,25 @@ class GrailSort {
             }
         }
     }
+
+    reverse(array, start, reverseLen) {
+        if (reverseLen <= 1) return;
+      
+        let left = start;
+        let right = start + reverseLen - 1;
+      
+        while (left < right) {
+            this.grailSwap(array, left, right);
+            left++;
+            right--;
+        }
+    }
+
+    reversalRotate(array, start, leftLen, rightLen) {
+        this.reverse(array, start, leftLen);            // reverse left part of subarray
+        this.reverse(array, start + leftLen, rightLen); // reverse right part of subarray
+        this.reverse(array, start, leftLen + rightLen); // reverse entire subarray
+    };
     
     // Variant of Insertion Sort that utilizes swaps instead of overwrites.
     // Also known as "Optimized Gnomesort".

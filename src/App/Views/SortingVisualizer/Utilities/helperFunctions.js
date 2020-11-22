@@ -4,6 +4,21 @@ import ColorHeightBar from '../ElementTypes/ColorHeightBar';
 import ColoredTriangle from '../ElementTypes/ColoredTriangle';
 import VarColoredTriangle from '../ElementTypes/VarColoredTriangle';
 
+export const reverse = (array, start, reverseLen) => {
+  if (reverseLen <= 1) return;
+
+  let left = start;
+  let right = start + reverseLen - 1;
+
+  while (left < right) {
+    pushNewState([left, right]);
+    swap(array, left, right);
+    pushNewState([left, right]);
+    left++;
+    right--;
+  }
+};
+
 export const setValuesAtIndexes = (i, j) => {
   if (elements[i] instanceof ColoredBar) {
     elements[i].hue = elements[j].hue;
