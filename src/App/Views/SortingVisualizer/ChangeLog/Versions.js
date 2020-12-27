@@ -4,6 +4,14 @@ import Version from './Version';
 
 const versions = [
   {
+    title: '1.3.4',
+    content: [
+      'Added cycle Sort',
+      'Added lazy merge Sort',
+      'Slight refactorization',
+    ]
+  },
+  {
     title: '1.3.3',
     content: [
       'Fixed rainbow circle',

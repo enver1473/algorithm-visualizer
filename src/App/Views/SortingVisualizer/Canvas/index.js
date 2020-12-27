@@ -6,13 +6,15 @@ import 'p5/lib/addons/p5.sound.js';
 import P5 from 'p5';
 import { useWindowWidthContext } from '../../../../Context/useWindowWidthContext';
 
-import Bar from '../ElementTypes/Bar';
-import Dot from '../ElementTypes/Dot';
-import ColoredBar from '../ElementTypes/ColoredBar';
-import ColorHeightBar from '../ElementTypes/ColorHeightBar';
-import ColoredTriangle from '../ElementTypes/ColoredTriangle';
-import VarColoredTriangle from '../ElementTypes/VarColoredTriangle';
-import Triangle from '../ElementTypes/HelperClasses/Triangle';
+import {
+  Bar,
+  Dot,
+  ColoredBar,
+  ColorHeightBar,
+  Triangle,
+  ColoredTriangle,
+  VarColoredTriangle,
+} from '../ElementTypes';
 import {
   bubbleSort,
   coctailShakerSort,
@@ -53,6 +55,8 @@ import {
   bufferedRoomSort,
   recursiveRotateMerge,
   rewrittenGrailSort,
+  lazyMergeSort,
+  cycleSort,
   swap,
   setValuesAtIndex,
 } from '../Utilities';
@@ -227,31 +231,37 @@ const Canvas = () => {
   // screen center Y
   cy = height / 2;
 
-  const noAlgorithmNotification = useRef(_.debounce(() => {
-    notification.warning({
-      message: 'Please choose an algorithm!',
-      duration: 2,
-      placement: 'bottomLeft',
-    });
-  }, 300)).current;
+  const noAlgorithmNotification = useRef(
+    _.debounce(() => {
+      notification.warning({
+        message: 'Please choose an algorithm!',
+        duration: 2,
+        placement: 'bottomLeft',
+      });
+    }, 300)
+  ).current;
 
-  const noArrayNotification = useRef(_.debounce(() => {
-    notification.warning({
-      message: 'No array to sort!',
-      description: `You have to generate an array using the 'Input' select.`,
-      duration: 2,
-      placement: 'bottomLeft',
-    });
-  }, 300)).current;
+  const noArrayNotification = useRef(
+    _.debounce(() => {
+      notification.warning({
+        message: 'No array to sort!',
+        description: `You have to generate an array using the 'Input' select.`,
+        duration: 2,
+        placement: 'bottomLeft',
+      });
+    }, 300)
+  ).current;
 
-  const noInputTypeNotification = useRef(_.debounce(() => {
-    notification.warning({
-      message: 'Input type not selected!',
-      description: `Please select one of the given input array types.`,
-      duration: 2,
-      placement: 'bottomLeft',
-    });
-  }, 300)).current;
+  const noInputTypeNotification = useRef(
+    _.debounce(() => {
+      notification.warning({
+        message: 'Input type not selected!',
+        description: `Please select one of the given input array types.`,
+        duration: 2,
+        placement: 'bottomLeft',
+      });
+    }, 300)
+  ).current;
 
   const handleCascaderChange = (value) => {
     algorithm = value[value.length - 1];
@@ -282,9 +292,9 @@ const Canvas = () => {
         }
       }
     }
-  
+
     console.log(`Stability check PASSED!`);
-  }
+  };
 
   const sort = () => {
     // If array is empty; Nothing to sort!
@@ -385,6 +395,10 @@ const Canvas = () => {
       callSort(rewrittenGrailSort);
     } else if (algorithm === 'radixSortMSD') {
       callSort(radixSortMSD);
+    } else if (algorithm === 'cycleSort') {
+      callSort(cycleSort);
+    } else if (algorithm === 'lazyMergeSort') {
+      callSort(lazyMergeSort);
     } else if (algorithm.split('LSD')[0] === 'radixSort') {
       if (vMethod === 'rainbow') {
         notification.warning({
@@ -402,6 +416,15 @@ const Canvas = () => {
   };
 
   const callSort = async (sortingFunction) => {
+    if (sortingFunction === cycleSort && count > 512) {
+      notification.warning({
+        message: 'Insufficient memory!',
+        description: 'This sort is capped at 512 elements because of memory issues.',
+        duration: 4,
+        placement: 'bottomLeft',
+      });
+      return;
+    }
     notification.warning({
       message: 'Building...',
       description: 'Please wait while the animations are being built.',
@@ -713,7 +736,7 @@ export const sketch = (p) => {
       }
       oldStateIdx = stateIdx;
       stateIdx += dir * inc;
-    }/*
+    } /*
     p.text(swaps, 30, 30);*/
   };
 };
@@ -774,7 +797,7 @@ export const setMainArray = (array) => {
   for (let i = 0; i < count; i++) {
     setValuesAtIndex(i, array[i].copy());
   }
-}
+};
 
 // Generate 'count' random numbers
 const randomizeHelper = (value) => {
@@ -915,7 +938,7 @@ const randomizeHelper = (value) => {
       let rNumber = Math.floor(Math.random() * 3 + 1) * (height / 3);
 
       if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
-        rNumber = Math.floor(Math.random() * 3 + 1) * count / 3;
+        rNumber = (Math.floor(Math.random() * 3 + 1) * count) / 3;
       }
 
       arr.push(rNumber);
@@ -934,13 +957,27 @@ export const addElement = (idx, rNumber) => {
   if (vMethod === 'barPlot') {
     element = new Bar(idx * barWidth, height - rNumber, barWidth, rNumber, primaryColor, index);
   } else if (vMethod === 'hrPyramid') {
-    element = new Bar(idx * barWidth, (height - rNumber) / 2, barWidth, rNumber, primaryColor, index);
+    element = new Bar(
+      idx * barWidth,
+      (height - rNumber) / 2,
+      barWidth,
+      rNumber,
+      primaryColor,
+      index
+    );
   } else if (vMethod === 'scatterPlot') {
     element = new Dot(idx * barWidth, height - rNumber, barWidth, barWidth, primaryColor, index);
   } else if (vMethod === 'rainbow') {
     element = new ColoredBar(idx * barWidth, barWidth, rNumber, index);
   } else if (vMethod === 'rainbowBarPlot') {
-    element = new ColorHeightBar(idx * barWidth, height - rNumber, barWidth, rNumber, rNumber, index);
+    element = new ColorHeightBar(
+      idx * barWidth,
+      height - rNumber,
+      barWidth,
+      rNumber,
+      rNumber,
+      index
+    );
   } else if (vMethod === 'rainbowCircle') {
     let x1 = cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
     let y1 = cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
@@ -986,7 +1023,7 @@ export const addElement = (idx, rNumber) => {
       cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
       rNumber,
       trianglePointer,
-      index,
+      index
     );
   } else if (vMethod === 'disparityCircle') {
     let x1 = cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
@@ -1056,7 +1093,7 @@ export const addElement = (idx, rNumber) => {
       ry,
       rNumber,
       trianglePointer,
-      index,
+      index
     );
   } else return;
 

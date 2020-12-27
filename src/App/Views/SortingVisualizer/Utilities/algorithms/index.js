@@ -37,3 +37,5 @@ export { advancedRoomShaker } from './advancedRoomShaker';
 export { bufferedRoomSort } from './bufferedRoomSort';
 export { recursiveRotateMerge } from './recursiveRotateMerge';
 export { rewrittenGrailSort } from './rewrittenGrailSort';
+export { lazyMergeSort } from './lazyMergeSort';
+export { cycleSort } from './cycleSort';

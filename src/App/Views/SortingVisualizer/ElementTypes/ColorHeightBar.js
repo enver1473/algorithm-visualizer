@@ -33,10 +33,13 @@ export default class ColorHeightBar {
     globalP.rect(this.x, 0, this.width, windowHeight);
 
     if (colorType === 'accent') {
-      if (this.hue >= 0 && this.hue <= 40) {
+      if (
+        (this.hue >= 45 && this.hue <= 195) ||
+        (this.hue >= 285)
+      ) {
         globalP.fill(0, 0, 0);
       } else {
-        globalP.fill(0, 100, 0);
+        globalP.fill(0, 0, 100);
       }
     } else {
       globalP.fill(this.hue, 100, 100);

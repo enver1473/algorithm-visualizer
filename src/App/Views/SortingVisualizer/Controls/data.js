@@ -71,7 +71,7 @@ export const algoCascaderOptions = [
       {
         value: 'radixSortLSDb2',
         label: 'Radix Sort LSD (base 2)',
-      }/*
+      } /*
       {
         value: 'radixSortMSD',              // not working properly
         label: 'Radix Sort MSD (base 4)',
@@ -115,6 +115,10 @@ export const algoCascaderOptions = [
       {
         value: 'doubleSelectionSort',
         label: 'Double Selection Sort',
+      },
+      {
+        value: 'cycleSort',
+        label: 'Cycle Sort',
       },
       {
         value: 'maxHeapSort',
@@ -161,11 +165,11 @@ export const algoCascaderOptions = [
       {
         value: 'rewrittenGrailSort',
         label: 'Grail Sort',
-      },/*
+      } /*
       {
         value: 'rewrittenGrailSort',
         label: 'Rewritten Grail Sort',
-      },*/
+      },*/,
       {
         value: 'rotateRoomShakerSort',
         label: 'Rotate Room Shaker Sort',
@@ -177,11 +181,11 @@ export const algoCascaderOptions = [
       {
         value: 'advancedRoomShaker',
         label: 'Advanced Room Shaker Sort',
-      },/*
+      } /*
       {
         value: 'bufferedRoomSort',
         label: 'Buffered Room Sort',
-      },*/
+      },*/,
     ],
   },
   {
@@ -221,6 +225,10 @@ export const algoCascaderOptions = [
       {
         value: 'recursiveRotateMerge',
         label: 'Recursive Rotate Merge Sort',
+      },
+      {
+        value: 'lazyMergeSort',
+        label: 'Lazy Merge Sort',
       },
     ],
   },
