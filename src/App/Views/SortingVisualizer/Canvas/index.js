@@ -1,11 +1,11 @@
-import React, { useRef, useEffect } from 'react';
-import P5Wrapper from 'react-p5-wrapper';
-import { Row, Col, notification } from 'antd';
-import _ from 'underscore';
-import 'p5/lib/addons/p5.sound.js';
-import P5 from 'p5';
-import { useWindowWidthContext } from '../../../../Context/useWindowWidthContext';
+import React, { useRef, useEffect } from "react";
+import { Row, Col, notification } from "antd";
+import P5Wrapper from "react-p5-wrapper";
+import styled from "styled-components";
+import _ from "underscore";
+import P5 from "p5";
 
+import { useWindowWidthContext } from "../../../../Context/useWindowWidthContext";
 import {
   Bar,
   Dot,
@@ -14,7 +14,8 @@ import {
   Triangle,
   ColoredTriangle,
   VarColoredTriangle,
-} from '../ElementTypes';
+} from "../ElementTypes";
+
 import {
   bubbleSort,
   coctailShakerSort,
@@ -59,9 +60,36 @@ import {
   cycleSort,
   swap,
   setValuesAtIndex,
-} from '../Utilities';
+  pushFullState,
+} from "../Utilities";
 
-import Controls from '../Controls';
+import Controls from "../Controls";
+
+import "p5/lib/addons/p5.sound.js";
+
+const CanvasWrapper = styled(Row)`
+  background-color: transparent;
+  height: 100%;
+  padding-top: 10vh;
+
+  canvas {
+    box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+`;
+
+const ControlsWrapper = styled(Row)`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: white;
+  padding: 8px;
+  padding-top: 1.5rem;
+  margin-top: 30px;
+  box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.2);
+`;
 
 // Array of random numbers
 export let arr = [];
@@ -126,10 +154,10 @@ let dir = 1;
 let backgroundColor;
 
 // Primary Color
-export let primaryColor = '#f8efba';
+export let primaryColor = "#ffffff";
 
 // Accent Color
-export let accentColor = '#ff0000';
+export let accentColor = "#ff0000";
 
 // triangle pointer Distance from Center Multiplier
 let pDCM = (height / 21) * 10;
@@ -144,7 +172,9 @@ let cx = width / 2;
 let cy = height / 2;
 
 // Visualization method
-export let vMethod = 'barPlot';
+export let vMethod = "barPlot";
+
+const notificationPlacement = "topRight";
 
 const handleSpeedChange = (value) => {
   frameCount = value;
@@ -159,10 +189,11 @@ const handleIncrementChange = (value) => {
 const pauseOrPlay = () => {
   if (states.length === 0) {
     notification.warning({
-      message: 'No animations!',
-      description: 'You have to build the animations before trying to play them.',
+      message: "No animations!",
+      description:
+        "You have to build the animations before trying to play them.",
       duration: 2,
-      placement: 'bottomLeft',
+      placement: notificationPlacement,
     });
     return;
   }
@@ -209,8 +240,8 @@ const updateDir = (newDir) => {
   setDir(dir);
 };
 
-let algorithm = '';
-let input = '';
+let algorithm = "";
+let input = "";
 let autoRebuild = true;
 
 const Canvas = () => {
@@ -234,9 +265,9 @@ const Canvas = () => {
   const noAlgorithmNotification = useRef(
     _.debounce(() => {
       notification.warning({
-        message: 'Please choose an algorithm!',
+        message: "Please choose an algorithm!",
         duration: 2,
-        placement: 'bottomLeft',
+        placement: notificationPlacement,
       });
     }, 300)
   ).current;
@@ -244,10 +275,10 @@ const Canvas = () => {
   const noArrayNotification = useRef(
     _.debounce(() => {
       notification.warning({
-        message: 'No array to sort!',
+        message: "No array to sort!",
         description: `You have to generate an array using the 'Input' select.`,
         duration: 2,
-        placement: 'bottomLeft',
+        placement: notificationPlacement,
       });
     }, 300)
   ).current;
@@ -255,10 +286,10 @@ const Canvas = () => {
   const noInputTypeNotification = useRef(
     _.debounce(() => {
       notification.warning({
-        message: 'Input type not selected!',
+        message: "Input type not selected!",
         description: `Please select one of the given input array types.`,
         duration: 2,
-        placement: 'bottomLeft',
+        placement: notificationPlacement,
       });
     }, 300)
   ).current;
@@ -266,7 +297,7 @@ const Canvas = () => {
   const handleCascaderChange = (value) => {
     algorithm = value[value.length - 1];
     if (!autoRebuild) return;
-    if (input === '') {
+    if (input === "") {
       noInputTypeNotification();
       return;
     }
@@ -287,7 +318,9 @@ const Canvas = () => {
     for (let i = 1; i < count; i++) {
       if (elements[i].getValue() === elements[i - 1].getValue()) {
         if (elements[i].index < elements[i - 1].index) {
-          console.log(`Stability check NOT PASSED! Failed at indices: ${i - 1} and ${i}`);
+          console.log(
+            `Stability check NOT PASSED! Failed at indices: ${i - 1} and ${i}`
+          );
           return;
         }
       }
@@ -319,98 +352,98 @@ const Canvas = () => {
     if (!algorithm) {
       noAlgorithmNotification();
       return;
-    } else if (algorithm === 'bubbleSort') {
+    } else if (algorithm === "bubbleSort") {
       callSort(bubbleSort);
-    } else if (algorithm === 'coctailShakerSort') {
+    } else if (algorithm === "coctailShakerSort") {
       callSort(coctailShakerSort);
-    } else if (algorithm === 'quickSortLL') {
+    } else if (algorithm === "quickSortLL") {
       callSort(quickSortLL);
-    } else if (algorithm === 'quickSortLR') {
+    } else if (algorithm === "quickSortLR") {
       callSort(quickSortLR);
-    } else if (algorithm === 'quickSortDualPivot') {
+    } else if (algorithm === "quickSortDualPivot") {
       callSort(quickSortDualPivot);
-    } else if (algorithm === 'selectionSort') {
+    } else if (algorithm === "selectionSort") {
       callSort(selectionSort);
-    } else if (algorithm === 'gnomeSort') {
+    } else if (algorithm === "gnomeSort") {
       callSort(gnomeSort);
-    } else if (algorithm === 'doubleSelectionSort') {
+    } else if (algorithm === "doubleSelectionSort") {
       callSort(doubleSelectionSort);
-    } else if (algorithm === 'insertionSort') {
+    } else if (algorithm === "insertionSort") {
       callSort(insertionSort);
-    } else if (algorithm === 'binaryInsertionSort') {
+    } else if (algorithm === "binaryInsertionSort") {
       callSort(binaryInsertionSort);
-    } else if (algorithm === 'combSort') {
+    } else if (algorithm === "combSort") {
       callSort(combSort);
-    } else if (algorithm === 'combGnomeSort') {
+    } else if (algorithm === "combGnomeSort") {
       callSort(combGnomeSort);
-    } else if (algorithm === 'quickGnomeSort') {
+    } else if (algorithm === "quickGnomeSort") {
       callSort(quickGnomeSort);
-    } else if (algorithm === 'mergeSort') {
+    } else if (algorithm === "mergeSort") {
       callSort(mergeSort);
-    } else if (algorithm === 'bottomUpMergeSort') {
+    } else if (algorithm === "bottomUpMergeSort") {
       callSort(bottomUpMergeSort);
-    } else if (algorithm === 'mergeSortInPlace') {
+    } else if (algorithm === "mergeSortInPlace") {
       callSort(mergeSortInPlace);
-    } else if (algorithm === 'weaveMergeSort') {
+    } else if (algorithm === "weaveMergeSort") {
       callSort(weaveMergeSort);
-    } else if (algorithm === 'shellSort') {
+    } else if (algorithm === "shellSort") {
       callSort(shellSort);
-    } else if (algorithm === 'maxHeapSort') {
+    } else if (algorithm === "maxHeapSort") {
       callSort(maxHeapSort);
-    } else if (algorithm === 'minHeapSort') {
+    } else if (algorithm === "minHeapSort") {
       callSort(minHeapSort);
-    } else if (algorithm === 'minMaxHeapSort') {
+    } else if (algorithm === "minMaxHeapSort") {
       callSort(minMaxHeapSort);
-    } else if (algorithm === 'roomSort') {
+    } else if (algorithm === "roomSort") {
       callSort(roomSort);
-    } else if (algorithm === 'optimizedRoomSort') {
+    } else if (algorithm === "optimizedRoomSort") {
       callSort(optimizedRoomSort);
-    } else if (algorithm === 'rotateRoomSort') {
+    } else if (algorithm === "rotateRoomSort") {
       callSort(rotateRoomSort);
-    } else if (algorithm === 'optimizedRotateRoomSort') {
+    } else if (algorithm === "optimizedRotateRoomSort") {
       callSort(optimizedRotateRoomSort);
-    } else if (algorithm === 'rotateRoomShakerSort') {
+    } else if (algorithm === "rotateRoomShakerSort") {
       callSort(rotateRoomShakerSort);
-    } else if (algorithm === 'proxmapSort') {
+    } else if (algorithm === "proxmapSort") {
       callSort(proxmapSort);
-    } else if (algorithm === 'iterativePairwiseNetwork') {
+    } else if (algorithm === "iterativePairwiseNetwork") {
       callSort(iterativePairwiseNetwork);
-    } else if (algorithm === 'recursivePairwiseNetwork') {
+    } else if (algorithm === "recursivePairwiseNetwork") {
       callSort(recursivePairwiseNetwork);
-    } else if (algorithm === 'stoogeSort') {
+    } else if (algorithm === "stoogeSort") {
       callSort(stoogeSort);
-    } else if (algorithm === 'unbalancedTreeSort') {
+    } else if (algorithm === "unbalancedTreeSort") {
       callSort(unbalancedTreeSort);
-    } else if (algorithm === 'grailSort') {
+    } else if (algorithm === "grailSort") {
       callSort(grailSort);
-    } else if (algorithm === 'advancedRoomSort') {
+    } else if (algorithm === "advancedRoomSort") {
       callSort(advancedRoomSort);
-    } else if (algorithm === 'advancedRoomShaker') {
+    } else if (algorithm === "advancedRoomShaker") {
       callSort(advancedRoomShaker);
-    } else if (algorithm === 'bufferedRoomSort') {
+    } else if (algorithm === "bufferedRoomSort") {
       callSort(bufferedRoomSort);
-    } else if (algorithm === 'recursiveRotateMerge') {
+    } else if (algorithm === "recursiveRotateMerge") {
       callSort(recursiveRotateMerge);
-    } else if (algorithm === 'rewrittenGrailSort') {
+    } else if (algorithm === "rewrittenGrailSort") {
       callSort(rewrittenGrailSort);
-    } else if (algorithm === 'radixSortMSD') {
+    } else if (algorithm === "radixSortMSD") {
       callSort(radixSortMSD);
-    } else if (algorithm === 'cycleSort') {
+    } else if (algorithm === "cycleSort") {
       callSort(cycleSort);
-    } else if (algorithm === 'lazyMergeSort') {
+    } else if (algorithm === "lazyMergeSort") {
       callSort(lazyMergeSort);
-    } else if (algorithm.split('LSD')[0] === 'radixSort') {
-      if (vMethod === 'rainbow') {
+    } else if (algorithm.split("LSD")[0] === "radixSort") {
+      if (vMethod === "rainbow") {
         notification.warning({
-          message: 'Float numbers',
+          message: "Float numbers",
           description:
-            'Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.',
+            "Radix sort does not work for this visualization method, because the numbers compared here are floating point numbers. Radix only works for integers and/or types represented by integers.",
           duration: 4,
-          placement: 'bottomLeft',
+          placement: notificationPlacement,
         });
         return;
       }
-      const base = parseInt(algorithm.replace('radixSortLSDb', ''));
+      const base = parseInt(algorithm.replace("radixSortLSDb", ""));
       callSort(() => radixSortLSD(base));
     }
   };
@@ -418,29 +451,31 @@ const Canvas = () => {
   const callSort = async (sortingFunction) => {
     if (sortingFunction === cycleSort && count > 512) {
       notification.warning({
-        message: 'Insufficient memory!',
-        description: 'This sort is capped at 512 elements because of memory issues.',
+        message: "Insufficient memory!",
+        description:
+          "This sort is capped at 512 elements because of memory issues.",
         duration: 4,
-        placement: 'bottomLeft',
+        placement: notificationPlacement,
       });
       return;
     }
     notification.warning({
-      message: 'Building...',
-      description: 'Please wait while the animations are being built.',
+      message: "Building...",
+      description: "Please wait while the animations are being built.",
       duration: 1,
-      placement: 'bottomLeft',
+      placement: notificationPlacement,
     });
     setTimeout(() => {
+      pushFullState();
       sortingFunction();
 
       stateCheck();
 
       notification.success({
-        message: 'Done!',
-        description: 'You may now Play the visualization.',
+        message: "Done!",
+        description: "You may now Play the visualization.",
         duration: 1,
-        placement: 'bottomLeft',
+        placement: notificationPlacement,
       });
     }, 350);
   };
@@ -453,7 +488,7 @@ const Canvas = () => {
   const handleInputSelect = (value) => {
     input = value[value.length - 1];
 
-    if (input === '') {
+    if (input === "") {
       return;
     }
     randomize(input);
@@ -464,7 +499,7 @@ const Canvas = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      handleInputSelect(['default']);
+      handleInputSelect(["default"]);
     }, 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width]);
@@ -473,7 +508,7 @@ const Canvas = () => {
   const handleVMethodChange = (value) => {
     vMethod = value[value.length - 1];
     if (autoRebuild) {
-      if (input === '') {
+      if (input === "") {
         noInputTypeNotification();
         return;
       }
@@ -484,7 +519,7 @@ const Canvas = () => {
   };
 
   const reShuffle = () => {
-    if (input === '') {
+    if (input === "") {
       noInputTypeNotification();
       return;
     }
@@ -535,7 +570,7 @@ const Canvas = () => {
     count = values[value];
     barWidth = width / count;
     if (autoRebuild) {
-      if (input === '') {
+      if (input === "") {
         noInputTypeNotification();
         return;
       }
@@ -545,7 +580,9 @@ const Canvas = () => {
     }
   };
 
-  const debounceCountChange = useRef(_.debounce((value) => handleCountChange(value), 500)).current;
+  const debounceCountChange = useRef(
+    _.debounce((value) => handleCountChange(value), 500)
+  ).current;
 
   handleCountChange();
   if (globalP) {
@@ -574,14 +611,13 @@ const Canvas = () => {
 
   return (
     <>
-      <Row
-        style={{
-          backgroundColor: '#faf9f0',
-          padding: '8px',
-          marginBottom: '30px',
-          boxShadow: '0 5px 10px 10px rgba(0,0,0,0.1)',
-        }}
-      >
+      <CanvasWrapper justify="center">
+        <Col span={24}>
+          {/* <p style={{ zIndex: 23, position: 'relative', top: '50px', float: 'left' }}>Hi</p> */}
+          <P5Wrapper sketch={sketch} style={{ width: `${width}px` }} />
+        </Col>
+      </CanvasWrapper>
+      <ControlsWrapper>
         <Controls
           pausePlayClicked={pauseOrPlay}
           loop={loop}
@@ -602,13 +638,7 @@ const Canvas = () => {
           fps={frameCount}
           amplitude={volume}
         />
-      </Row>
-      <Row justify='center' style={{ backgroundColor: 'white' }}>
-        <Col span={24}>
-          {/* <p style={{ zIndex: 23, position: 'relative', top: '50px', float: 'left' }}>Hi</p> */}
-          <P5Wrapper sketch={sketch} style={{ width: `${width}px` }} />
-        </Col>
-      </Row>
+      </ControlsWrapper>
     </>
   );
 };
@@ -617,7 +647,7 @@ export default Canvas;
 
 const showFinalState = (index) => {
   for (let element of states[index]) {
-    element.show('original');
+    element.show("original");
   }
 };
 
@@ -666,7 +696,9 @@ export const sketch = (p) => {
             for (let element of states[i]) {
               element.show(primaryColor);
               if (states[i].length <= 5) {
-                oscs[j].freq(p.map(element.getValue(), min, max, minFreq, maxFreq));
+                oscs[j].freq(
+                  p.map(element.getValue(), min, max, minFreq, maxFreq)
+                );
               }
               j++;
             }
@@ -687,7 +719,9 @@ export const sketch = (p) => {
               for (let element of states[i]) {
                 element.show(primaryColor);
                 if (states[i].length <= 5) {
-                  oscs[j].freq(p.map(element.getValue(), min, max, minFreq, maxFreq));
+                  oscs[j].freq(
+                    p.map(element.getValue(), min, max, minFreq, maxFreq)
+                  );
                 }
                 j++;
               }
@@ -727,27 +761,28 @@ export const sketch = (p) => {
 
       for (let osc of oscs) osc.freq(0);
       for (let i = 0; i < states[stateIdx].length; i++) {
-        states[stateIdx][i].show('accent');
+        states[stateIdx][i].show("accent");
 
         if (states[stateIdx].length <= 5) {
           let osc = oscs[i];
-          osc.freq(p.map(states[stateIdx][i].getValue(), min, max, minFreq, maxFreq));
+          osc.freq(
+            p.map(states[stateIdx][i].getValue(), min, max, minFreq, maxFreq)
+          );
         }
       }
       oldStateIdx = stateIdx;
       stateIdx += dir * inc;
-    } /*
-    p.text(swaps, 30, 30);*/
+    }
   };
 };
 
 const randomize = (value) => {
   min = 0;
   max =
-    vMethod === 'barPlot' ||
-    vMethod === 'hrPyramid' ||
-    vMethod === 'scatterPlot' ||
-    vMethod === 'rainbowBarPlot'
+    vMethod === "barPlot" ||
+    vMethod === "hrPyramid" ||
+    vMethod === "scatterPlot" ||
+    vMethod === "rainbowBarPlot"
       ? height
       : 360;
 
@@ -765,10 +800,10 @@ const randomize = (value) => {
   }
 
   if (
-    vMethod === 'rainbow' ||
-    vMethod === 'rainbowBarPlot' ||
-    vMethod === 'rainbowCircle' ||
-    vMethod === 'disparityCircle'
+    vMethod === "rainbow" ||
+    vMethod === "rainbowBarPlot" ||
+    vMethod === "rainbowCircle" ||
+    vMethod === "disparityCircle"
   ) {
     globalP.colorMode(globalP.RGB);
     globalP.background(backgroundColor);
@@ -805,13 +840,13 @@ const randomizeHelper = (value) => {
     return;
   }
 
-  if (value === 'default') {
+  if (value === "default") {
     let numbers = [];
 
     for (let i = 0; i < count; i++) {
       let number = Math.floor((i + 1) * (height / count));
 
-      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+      if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
         number = i + 1;
       }
 
@@ -828,22 +863,22 @@ const randomizeHelper = (value) => {
 
       addElement(i, rNumber);
     }
-  } else if (value === 'reversed') {
+  } else if (value === "reversed") {
     for (let i = 0; i < count; i++) {
       let ele = height - i * (height / count);
 
-      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+      if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
         ele = count - i;
       }
 
       arr.push(ele);
       addElement(i, ele);
     }
-  } else if (value === 'almostSorted') {
+  } else if (value === "almostSorted") {
     for (let i = 0; i < count; i++) {
       let ele = Math.floor((height / count) * i) + 1;
 
-      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+      if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
         ele = i + 1;
       }
 
@@ -855,19 +890,19 @@ const randomizeHelper = (value) => {
       const random2 = Math.floor(Math.random() * count);
       swap(elements, random1, random2);
     }
-  } else if (value === 'doubleSlope') {
+  } else if (value === "doubleSlope") {
     for (let i = 0; i < count; i++) {
       let ele;
       if (i % 2 === 0) {
         ele = (height / count) * i + 1;
 
-        if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+        if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
           ele = i + 1;
         }
       } else {
         ele = height - i * (height / count);
 
-        if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+        if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
           ele = count - i;
         }
       }
@@ -875,50 +910,56 @@ const randomizeHelper = (value) => {
       arr.push(ele);
       addElement(i, ele);
     }
-  } else if (value === 'alreadySorted') {
+  } else if (value === "alreadySorted") {
     for (let i = 0; i < count; i++) {
       let ele = Math.floor((i + 1) * (height / count));
 
-      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+      if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
         ele = i + 1;
       }
 
       arr.push(ele);
       addElement(i, ele);
     }
-  } else if (value === 'randomGaussian') {
+  } else if (value === "randomGaussian") {
     for (let i = 0; i < count; i++) {
       let rNumber = globalP.randomGaussian(5, 15);
 
       let number = globalP.map(rNumber, -50, 50, 1, height);
 
-      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+      if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
         number = globalP.map(number, 1, height, 1, count);
       }
 
       arr.push(number);
       addElement(i, number);
     }
-  } else if (value === 'sinDistribution') {
+  } else if (value === "sinDistribution") {
     for (let i = 0; i < count; i++) {
-      let angle = globalP.map(i, 0, count - 1, globalP.TWO_PI / count, globalP.TWO_PI);
+      let angle = globalP.map(
+        i,
+        0,
+        count - 1,
+        globalP.TWO_PI / count,
+        globalP.TWO_PI
+      );
       let number = globalP.map(globalP.sin(angle), -1, 1, 1, height);
 
-      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+      if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
         number = globalP.map(number, 1, height, 1, count);
       }
 
       arr.push(number);
       addElement(i, number);
     }
-  } else if (value === 'sawTooth') {
+  } else if (value === "sawTooth") {
     let numbers = [];
 
     for (let tCount = 0; tCount < 4; tCount++) {
       for (let i = 0; i < count / 4; i++) {
         let number = Math.floor((i + 1) * (height / (count / 4)));
 
-        if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+        if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
           number = Math.floor(i + 1);
         }
 
@@ -933,11 +974,11 @@ const randomizeHelper = (value) => {
 
       addElement(i, num);
     }
-  } else if (value === 'threeUnique') {
+  } else if (value === "threeUnique") {
     for (let i = 0; i < count; i++) {
       let rNumber = Math.floor(Math.random() * 3 + 1) * (height / 3);
 
-      if (vMethod === 'rainbowCircle' || vMethod === 'disparityCircle') {
+      if (vMethod === "rainbowCircle" || vMethod === "disparityCircle") {
         rNumber = (Math.floor(Math.random() * 3 + 1) * count) / 3;
       }
 
@@ -954,9 +995,16 @@ export const addElement = (idx, rNumber) => {
 
   let index = idx;
 
-  if (vMethod === 'barPlot') {
-    element = new Bar(idx * barWidth, height - rNumber, barWidth, rNumber, primaryColor, index);
-  } else if (vMethod === 'hrPyramid') {
+  if (vMethod === "barPlot") {
+    element = new Bar(
+      idx * barWidth,
+      height - rNumber,
+      barWidth,
+      rNumber,
+      primaryColor,
+      index
+    );
+  } else if (vMethod === "hrPyramid") {
     element = new Bar(
       idx * barWidth,
       (height - rNumber) / 2,
@@ -965,11 +1013,18 @@ export const addElement = (idx, rNumber) => {
       primaryColor,
       index
     );
-  } else if (vMethod === 'scatterPlot') {
-    element = new Dot(idx * barWidth, height - rNumber, barWidth, barWidth, primaryColor, index);
-  } else if (vMethod === 'rainbow') {
+  } else if (vMethod === "scatterPlot") {
+    element = new Dot(
+      idx * barWidth,
+      height - rNumber,
+      barWidth,
+      barWidth,
+      primaryColor,
+      index
+    );
+  } else if (vMethod === "rainbow") {
     element = new ColoredBar(idx * barWidth, barWidth, rNumber, index);
-  } else if (vMethod === 'rainbowBarPlot') {
+  } else if (vMethod === "rainbowBarPlot") {
     element = new ColorHeightBar(
       idx * barWidth,
       height - rNumber,
@@ -978,99 +1033,253 @@ export const addElement = (idx, rNumber) => {
       rNumber,
       index
     );
-  } else if (vMethod === 'rainbowCircle') {
-    let x1 = cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
-    let y1 = cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
-    let x2 = cx + globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
-    let y2 = cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
-    let x3 = cx + globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
-    let y3 = cy + globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
+  } else if (vMethod === "rainbowCircle") {
+    let x1 =
+      cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
+    let y1 =
+      cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
+    let x2 =
+      cx +
+      globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
+    let y2 =
+      cy +
+      globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
+    let x3 =
+      cx +
+      globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
+    let y3 =
+      cy +
+      globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
 
-    let px1 = cx + globalP.sin(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) * (pDCM + 1);
-    let py1 = cy + globalP.cos(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) * (pDCM + 1);
-    let px2 = cx + globalP.sin(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) * (pDCM + 1);
-    let py2 = cy + globalP.cos(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let px1 =
+      cx +
+      globalP.sin(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) *
+        (pDCM + 1);
+    let py1 =
+      cy +
+      globalP.cos(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) *
+        (pDCM + 1);
+    let px2 =
+      cx +
+      globalP.sin(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) *
+        (pDCM + 1);
+    let py2 =
+      cy +
+      globalP.cos(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) *
+        (pDCM + 1);
     let px3 =
-      cx + globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * (height / 9) * 4;
+      cx +
+      globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) *
+        (height / 9) *
+        4;
     let py3 =
-      cy + globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * (height / 9) * 4;
+      cy +
+      globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) *
+        (height / 9) *
+        4;
 
     if (count < 100) {
-      px1 = cx + globalP.sin(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) * (pDCM + 1);
-      py1 = cy + globalP.cos(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) * (pDCM + 1);
-      px2 = cx + globalP.sin(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) * (pDCM + 1);
-      py2 = cy + globalP.cos(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+      px1 =
+        cx +
+        globalP.sin(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) *
+          (pDCM + 1);
+      py1 =
+        cy +
+        globalP.cos(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) *
+          (pDCM + 1);
+      px2 =
+        cx +
+        globalP.sin(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) *
+          (pDCM + 1);
+      py2 =
+        cy +
+        globalP.cos(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) *
+          (pDCM + 1);
     }
 
     if (count < 30) {
-      x1 = cx + globalP.sin(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) * (pDCM * 1.2);
-      y1 = cy + globalP.cos(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) * (pDCM * 1.2);
-      x2 = cx + globalP.sin(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) * (pDCM * 1.2);
-      y2 = cy + globalP.cos(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) * (pDCM * 1.2);
-      px1 = cx + globalP.sin(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
-      py1 = cy + globalP.cos(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
-      px2 = cx + globalP.sin(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
-      py2 = cy + globalP.cos(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+      x1 =
+        cx +
+        globalP.sin(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) *
+          (pDCM * 1.2);
+      y1 =
+        cy +
+        globalP.cos(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) *
+          (pDCM * 1.2);
+      x2 =
+        cx +
+        globalP.sin(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) *
+          (pDCM * 1.2);
+      y2 =
+        cy +
+        globalP.cos(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) *
+          (pDCM * 1.2);
+      px1 =
+        cx +
+        globalP.sin(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) *
+          (pDCM * 1.4);
+      py1 =
+        cy +
+        globalP.cos(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) *
+          (pDCM * 1.4);
+      px2 =
+        cx +
+        globalP.sin(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) *
+          (pDCM * 1.4);
+      py2 =
+        cy +
+        globalP.cos(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) *
+          (pDCM * 1.4);
     }
 
     let pointerOverlay = new Triangle(px1, py1, px2, py2, px3, py3, null);
     let trianglePointer = new Triangle(x1, y1, x2, y2, x3, y3, pointerOverlay);
 
     element = new ColoredTriangle(
-      cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * (height / 9) * 4,
-      cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * (height / 9) * 4,
-      cx + globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
-      cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * (height / 9) * 4,
+      cx +
+        globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) *
+          (height / 9) *
+          4,
+      cy +
+        globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) *
+          (height / 9) *
+          4,
+      cx +
+        globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) *
+          (height / 9) *
+          4,
+      cy +
+        globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) *
+          (height / 9) *
+          4,
       rNumber,
       trianglePointer,
       index
     );
-  } else if (vMethod === 'disparityCircle') {
-    let x1 = cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
-    let y1 = cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
-    let x2 = cx + globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
-    let y2 = cy + globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
-    let x3 = cx + globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
-    let y3 = cy + globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
+  } else if (vMethod === "disparityCircle") {
+    let x1 =
+      cx + globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
+    let y1 =
+      cy + globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * pDCM;
+    let x2 =
+      cx +
+      globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
+    let y2 =
+      cy +
+      globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * pDCM;
+    let x3 =
+      cx +
+      globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
+    let y3 =
+      cy +
+      globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * pDCMp;
 
-    let px1 = cx + globalP.sin(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) * (pDCM + 1);
-    let py1 = cy + globalP.cos(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) * (pDCM + 1);
-    let px2 = cx + globalP.sin(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) * (pDCM + 1);
-    let py2 = cy + globalP.cos(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) * (pDCM + 1);
+    let px1 =
+      cx +
+      globalP.sin(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) *
+        (pDCM + 1);
+    let py1 =
+      cy +
+      globalP.cos(globalP.PI + ((idx - 0.5) / count) * globalP.TWO_PI) *
+        (pDCM + 1);
+    let px2 =
+      cx +
+      globalP.sin(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) *
+        (pDCM + 1);
+    let py2 =
+      cy +
+      globalP.cos(globalP.PI + ((idx + 1.5) / count) * globalP.TWO_PI) *
+        (pDCM + 1);
     let px3 =
-      cx + globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * (height / 9) * 4;
+      cx +
+      globalP.sin(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) *
+        (height / 9) *
+        4;
     let py3 =
-      cy + globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) * (height / 9) * 4;
+      cy +
+      globalP.cos(globalP.PI + ((idx + 0.5) / count) * globalP.TWO_PI) *
+        (height / 9) *
+        4;
 
     if (count < 100) {
-      px1 = cx + globalP.sin(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) * (pDCM + 1);
-      py1 = cy + globalP.cos(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) * (pDCM + 1);
-      px2 = cx + globalP.sin(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) * (pDCM + 1);
-      py2 = cy + globalP.cos(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) * (pDCM + 1);
+      px1 =
+        cx +
+        globalP.sin(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) *
+          (pDCM + 1);
+      py1 =
+        cy +
+        globalP.cos(globalP.PI + ((idx - 0.15) / count) * globalP.TWO_PI) *
+          (pDCM + 1);
+      px2 =
+        cx +
+        globalP.sin(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) *
+          (pDCM + 1);
+      py2 =
+        cy +
+        globalP.cos(globalP.PI + ((idx + 1.15) / count) * globalP.TWO_PI) *
+          (pDCM + 1);
     }
 
     if (count < 30) {
-      x1 = cx + globalP.sin(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) * (pDCM * 1.2);
-      y1 = cy + globalP.cos(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) * (pDCM * 1.2);
-      x2 = cx + globalP.sin(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) * (pDCM * 1.2);
-      y2 = cy + globalP.cos(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) * (pDCM * 1.2);
-      px1 = cx + globalP.sin(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
-      py1 = cy + globalP.cos(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
-      px2 = cx + globalP.sin(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
-      py2 = cy + globalP.cos(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) * (pDCM * 1.4);
+      x1 =
+        cx +
+        globalP.sin(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) *
+          (pDCM * 1.2);
+      y1 =
+        cy +
+        globalP.cos(globalP.PI + ((idx + 0.45) / count) * globalP.TWO_PI) *
+          (pDCM * 1.2);
+      x2 =
+        cx +
+        globalP.sin(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) *
+          (pDCM * 1.2);
+      y2 =
+        cy +
+        globalP.cos(globalP.PI + ((idx + 0.55) / count) * globalP.TWO_PI) *
+          (pDCM * 1.2);
+      px1 =
+        cx +
+        globalP.sin(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) *
+          (pDCM * 1.4);
+      py1 =
+        cy +
+        globalP.cos(globalP.PI + ((idx - 0.05) / count) * globalP.TWO_PI) *
+          (pDCM * 1.4);
+      px2 =
+        cx +
+        globalP.sin(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) *
+          (pDCM * 1.4);
+      py2 =
+        cy +
+        globalP.cos(globalP.PI + ((idx + 1.05) / count) * globalP.TWO_PI) *
+          (pDCM * 1.4);
     }
 
     let pointerOverlay = new Triangle(px1, py1, px2, py2, px3, py3, null);
     let trianglePointer = new Triangle(x1, y1, x2, y2, x3, y3, pointerOverlay);
 
-    let tx1 = globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) * ((height / 9) * 4);
-    let ty1 = globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) * ((height / 9) * 4);
-    let tx2 = globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * ((height / 9) * 4);
-    let ty2 = globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) * ((height / 9) * 4);
+    let tx1 =
+      globalP.sin(globalP.PI + (idx / count) * globalP.TWO_PI) *
+      ((height / 9) * 4);
+    let ty1 =
+      globalP.cos(globalP.PI + (idx / count) * globalP.TWO_PI) *
+      ((height / 9) * 4);
+    let tx2 =
+      globalP.sin(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) *
+      ((height / 9) * 4);
+    let ty2 =
+      globalP.cos(globalP.PI + ((idx + 1) / count) * globalP.TWO_PI) *
+      ((height / 9) * 4);
 
     // right location x and y
-    let rx = cx + globalP.sin(globalP.PI + (rNumber / count) * globalP.TWO_PI) * ((height / 9) * 4);
-    let ry = cy + globalP.cos(globalP.PI + (rNumber / count) * globalP.TWO_PI) * ((height / 9) * 4);
+    let rx =
+      cx +
+      globalP.sin(globalP.PI + (rNumber / count) * globalP.TWO_PI) *
+        ((height / 9) * 4);
+    let ry =
+      cy +
+      globalP.cos(globalP.PI + (rNumber / count) * globalP.TWO_PI) *
+        ((height / 9) * 4);
 
     let magnitude = globalP.map(
       globalP.dist(tx1 + cx, ty1 + cy, rx, ry),
@@ -1106,7 +1315,7 @@ const showAllElements = () => {
   }
 
   for (let element of elements) {
-    element.show('original');
+    element.show("original");
   }
 };
 

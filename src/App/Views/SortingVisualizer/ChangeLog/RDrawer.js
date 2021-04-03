@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Drawer, Button } from 'antd';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Drawer, Button } from "antd";
+import styled from "styled-components";
 
-import { useWindowWidthContext } from '../../../../Context/useWindowWidthContext';
-import Versions from './Versions';
+import { useWindowWidthContext } from "../../../../Context/useWindowWidthContext";
+import Versions from "./Versions";
 
 const FloatingButtonMobile = styled(Button)`
   position: fixed;
@@ -13,15 +13,15 @@ const FloatingButtonMobile = styled(Button)`
 
 const FloatingButtonDesktop = styled(Button)`
   position: fixed;
-  top: 15vh;
-  right: 2vw;
+  bottom: 2vh;
+  right: 2vh;
 `;
 
 const RDrawer = () => {
   const [visible, setVisible] = useState(false);
   const { width } = useWindowWidthContext();
 
-  const drawerWidth = width > 768 ? 700 : '100%';
+  const drawerWidth = width > 768 ? 700 : "100%";
 
   const showDrawer = () => {
     setVisible(true);
@@ -34,19 +34,20 @@ const RDrawer = () => {
   return (
     <>
       {width > 768 ? (
-        <FloatingButtonDesktop type='primary' onClick={showDrawer}>
+        <FloatingButtonDesktop type="primary" onClick={showDrawer}>
           Change Log
         </FloatingButtonDesktop>
       ) : (
-        <FloatingButtonMobile type='primary' onClick={showDrawer}>
+        <FloatingButtonMobile type="primary" onClick={showDrawer}>
           Change Log
         </FloatingButtonMobile>
       )}
       <Drawer
-        title='Change Log'
-        placement='right'
+        title="Change Log"
+        placement="right"
         onClose={onClose}
         visible={visible}
+        bodyStyle={{ padding: "1rem 0.5rem" }}
         width={drawerWidth}
       >
         <Versions />

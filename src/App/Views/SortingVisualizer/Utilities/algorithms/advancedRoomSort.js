@@ -1,4 +1,4 @@
-import { count, elements } from '../../Canvas';
+import { count, elements } from "../../Canvas";
 import {
   pushLastState,
   swap,
@@ -6,8 +6,8 @@ import {
   setValuesAtIndex,
   setValuesAtIndexes,
   reverse,
-} from '../helperFunctions';
-import { binaryInsertionSortHelper } from './binaryInsertionSort';
+} from "../helperFunctions";
+import { binaryInsertionSortHelper } from "./binaryInsertionSort";
 
 export const binaryInsertion = (oneBeforeStart, end) => {
   return binaryInsertionSortHelper(oneBeforeStart + 1, end);
@@ -43,8 +43,30 @@ export const insertOne = (start, end) => {
   pushNewState([lo, end]);
 };
 
-export const rotateBlock = (blockStart, destination, length) => {
+export const rotateBlock = (
+  blockStart,
+  destination,
+  length,
+  forward = false
+) => {
+  if (forward) {
+    rotateBlockForward(blockStart, destination, length);
+  } else {
+    rotateBlockReverse(blockStart, destination, length);
+  }
+};
+
+export const rotateBlockForward = (blockStart, destination, length) => {
   for (let i = destination; i < destination + length; i++, blockStart++) {
+    pushNewState([blockStart, i]);
+    swap(elements, blockStart, i);
+    pushNewState([blockStart, i]);
+  }
+};
+
+export const rotateBlockReverse = (blockStart, destination, length) => {
+  blockStart = blockStart + length - 1;
+  for (let i = destination + length - 1; i >= destination; i--, blockStart--) {
     pushNewState([blockStart, i]);
     swap(elements, blockStart, i);
     pushNewState([blockStart, i]);
@@ -57,7 +79,7 @@ export const rotate = (blockStart, to, blockLen) => {
 };
 
 export const reversalRotate = (start, leftLen, rightLen) => {
-  reverse(elements, start, leftLen);            // reverse left part of subarray
+  reverse(elements, start, leftLen); // reverse left part of subarray
   reverse(elements, start + leftLen, rightLen); // reverse right part of subarray
   reverse(elements, start, leftLen + rightLen); // reverse entire subarray
 };
@@ -80,7 +102,7 @@ export const griesMillsRotate = (blockStart, to, blockLen) => {
     let rotations = Math.floor(distance / blockLen);
 
     for (let i = 0; i < rotations; i++) {
-      rotateBlock(blockStart, blockStart + blockLen, blockLen);
+      rotateBlock(blockStart, blockStart + blockLen, blockLen, true);
       changed = true;
       blockStart += blockLen;
     }
@@ -160,10 +182,7 @@ export const advancedRoomSortHelper = (start, end) => {
       // first stage to sort a room, count how many (if any) sorted (but greater or equal to the room max) elements there are ahead of the room
       let foundSorted = 0;
       let i = endOfRoom;
-      while (
-        i < end &&
-        elements[i].getValue() >= elements[i - 1].getValue()
-      ) {
+      while (i < end && elements[i].getValue() >= elements[i - 1].getValue()) {
         foundSorted++;
         pushNewState([i, i - 1]);
         i++;
@@ -222,7 +241,9 @@ export const advancedRoomSortHelper = (start, end) => {
         continue;
       }
 
-      changed = rotate(roomStart, roomStart + roomLength + shiftAmount, roomLength) || changed;
+      changed =
+        rotate(roomStart, roomStart + roomLength + shiftAmount, roomLength) ||
+        changed;
 
       roomStart += shiftAmount;
       endOfRoom += shiftAmount;

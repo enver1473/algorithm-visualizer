@@ -110,6 +110,12 @@ class GrailSort {
             this.grailSwap(array, a + i, b + i);
         }
     }
+
+    grailBlockSwapReverse(array, a, b, blockLen) {
+        for(let i = blockLen - 1; i >= 0; i--) {
+            this.grailSwap(array, a + i, b + i);
+        }
+    }
     
     grailRotate(array, start, leftLen, rightLen) {
         while(leftLen > 0 && rightLen > 0) {
@@ -119,7 +125,7 @@ class GrailSort {
                 rightLen -= leftLen;
             } 
             else {
-                this.grailBlockSwap(array, start + leftLen - rightLen, start + leftLen, rightLen);
+                this.grailBlockSwapReverse(array, start + leftLen - rightLen, start + leftLen, rightLen);
                 leftLen -= rightLen;
             }
         }

@@ -1,19 +1,26 @@
-import React from 'react';
-import { Layout as AntLayout } from 'antd';
-import 'antd/dist/antd.css';
-import './style.css';
-import Canvas from '../Views/SortingVisualizer/Canvas';
-import { default as ChangeLog } from '../Views/SortingVisualizer/ChangeLog';
+import React from "react";
+import { Layout as AntLayout } from "antd";
+import styled from "styled-components";
+import Canvas from "../Views/SortingVisualizer/Canvas";
+import ChangeLog from "../Views/SortingVisualizer/ChangeLog";
+
+import "antd/dist/antd.css";
+import "./style.css";
 
 const { Content } = AntLayout;
+const StyledContent = styled(Content)`
+  height: 100%;
+  background-color: hsl(0, 0%, 88%);
+  position: relative;
+`;
 
 const Layout = () => {
   return (
-    <div className='Layout'>
-      <Content style={{ height: '100%' }}>
+    <div className="Layout">
+      <StyledContent>
         <Canvas />
         <ChangeLog />
-      </Content>
+      </StyledContent>
     </div>
   );
 };

@@ -1,8 +1,8 @@
-import { states, elements, count } from '../Canvas';
-import ColoredBar from '../ElementTypes/ColoredBar';
-import ColorHeightBar from '../ElementTypes/ColorHeightBar';
-import ColoredTriangle from '../ElementTypes/ColoredTriangle';
-import VarColoredTriangle from '../ElementTypes/VarColoredTriangle';
+import { states, elements, count } from "../Canvas";
+import ColoredBar from "../ElementTypes/ColoredBar";
+import ColorHeightBar from "../ElementTypes/ColorHeightBar";
+import ColoredTriangle from "../ElementTypes/ColoredTriangle";
+import VarColoredTriangle from "../ElementTypes/VarColoredTriangle";
 
 export const reverse = (array, start, reverseLen) => {
   if (reverseLen <= 1) return;
@@ -136,8 +136,7 @@ export const pushNewState = (accentIdxs = []) => {
   states.push(newState);
 };
 
-export const pushLastState = () => {
-  // Push last state with no accent colors
+export const pushFullState = () => {
   const newState = [];
   for (let k = 0; k < count; k++) {
     let element;
@@ -148,6 +147,8 @@ export const pushLastState = () => {
   }
   states.push(newState);
 };
+
+export const pushLastState = pushFullState;
 
 // Custom swap function
 export const swap = (arr, i, j) => {
@@ -239,5 +240,5 @@ export const midValue = (i1, i2, i3) => {
 };
 
 export const sleep = (ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
