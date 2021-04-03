@@ -4,6 +4,11 @@ import Version from "./Version";
 
 const versions = [
   {
+    title: "1.3.5",
+    content: ["Minor optimization to Grailsort's rotations", "App redesign"],
+    date: "April 3rd, 2021",
+  },
+  {
     title: "1.3.4",
     content: [
       "Added cycle Sort",
